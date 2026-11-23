@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#02030a">
+<title>Моя рутина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* «Полёт сквозь космос»: одна страница, четыре сцены одной WebGL-картины.
+   Галактика = обзор дня, туманность = ритм и тело, чёрное кольцо = учёба, планета = деньги. */
+:root{--ink:#eef1ff;--mute:rgba(238,241,255,.6);--dim:rgba(238,241,255,.38);--line:rgba(255,255,255,.08);
+--ice:#cfe3ff;--vio:#b9a2ff;--pink:#ff9cc6;--teal:#7fe0e6;--bad:#ff8fa3;
+--glass:rgba(9,11,34,.52);--glass-r:rgba(6,8,20,.62);--glass-p:rgba(2,16,22,.6);
+--out:cubic-bezier(.16,1,.3,1);--in:cubic-bezier(.55,0,.75,.2);
+--f:"Jost",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#02030a}
+body{margin:0;background:#02030a;color:var(--ink);font:400 16px/1.45 var(--f);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.fallback{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60% 30% at 50% 22%,rgba(140,150,255,.28),transparent 70%),radial-gradient(50% 30% at 40% 60%,rgba(185,100,220,.18),transparent 70%),radial-gradient(70% 30% at 50% 110%,rgba(80,200,210,.3),transparent 70%),#02030a}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:0 18px calc(120px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+input,select{font:inherit;color:var(--ink);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;padding:12px 13px;width:100%;min-width:0;transition:border-color .2s var(--out),background-color .2s}
+input:focus,select:focus{border-color:rgba(207,227,255,.6);background:rgba(255,255,255,.08);outline:none}
+input::placeholder{color:var(--dim)}
+select option{background:#0b0d22;color:var(--ink)}
+:focus-visible{outline:1.5px solid var(--ice);outline-offset:3px}
+label{display:block;font-size:12px;color:var(--mute);margin:0 0 6px}
+h1,h2,h3,p{margin:0;font-weight:400}
+.mu{color:var(--mute);font-size:13px}
+.row{display:flex;gap:8px;align-items:center}.sp{justify-content:space-between}
+.num{font-variant-numeric:tabular-nums}
+.press{transition:transform .15s var(--out),opacity .15s}
+.press:active{transform:scale(.95)}
+/* ---------- секции ---------- */
+.sec{position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;padding-top:calc(16px + env(safe-area-inset-top,0px));font-size:13px;color:var(--mute)}
+.top b{font-weight:500;color:var(--ink);letter-spacing:.02em}
+.sy{font-size:12px;color:var(--dim)}
+.date{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+.date .d{font-size:14px;color:var(--mute)}
+.dnav{display:flex;gap:8px}
+.dnav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(2,3,10,.35);font-size:18px;color:var(--ink);transition:transform .15s var(--out),opacity .2s}
+.dnav button:active{transform:scale(.88)}
+.dnav button:disabled{opacity:.25}
+.score{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:4px}
+.score b{font-weight:200;font-size:clamp(76px,24vw,104px);line-height:.95;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.score b i{font-style:normal;font-size:.3em;color:var(--ice);letter-spacing:0;margin-left:4px;font-weight:300}
+.score>span{font-size:13px;color:var(--mute);text-align:right;max-width:140px;padding-bottom:12px}
+/* галактика и подписи на рукавах */
+.stage{position:relative;height:340px;margin:0 -18px}
+.lab{position:absolute;display:flex;align-items:center;gap:8px;padding:6px 0}
+.lab .t{display:flex;flex-direction:column}
+.lab .t small{font-size:12px;color:var(--mute)}
+.lab .t b{font-size:21px;font-weight:500;line-height:1.15;font-variant-numeric:tabular-nums}
+.lab .ln{width:44px;height:1px;background:var(--c);opacity:.8;transform-origin:var(--o) center}
+.lab .dt{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c)}
+.lab.r .t{text-align:right}
+.lab.attn .t b{color:var(--pink)}
+.l1{left:24px;top:22px;--c:var(--vio);--o:left}
+.l2{right:24px;top:56px;--c:var(--ice);--o:right}
+.l3{left:24px;top:232px;--c:var(--pink);--o:left}
+.l4{right:24px;top:262px;--c:var(--teal);--o:right}
+/* что важно */
+.focus{margin-top:6px;display:grid;gap:10px}
+.focus h3{font-size:13px;color:var(--mute)}
+.pill{display:block;width:100%;text-align:center;padding:15px;border-radius:999px;background:var(--ink);color:#060920;font-weight:500;font-size:15px;box-shadow:0 0 30px rgba(207,227,255,.18)}
+.fi{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 2px;border-top:1px solid var(--line);font-size:14px}
+.fi:first-of-type{border-top:0}
+.fi i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.fi span{flex:1;min-width:0}.fi em{font-style:normal;color:var(--dim)}
+.calm{padding:14px 0;color:var(--mute);font-size:14px}
+/* заголовки сцен */
+.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:120px}
+.tt{font-size:32px;font-weight:300;line-height:1.1;overflow:hidden;padding-bottom:2px}
+.tt>span{display:inline-block}
+.sub{font-size:13px;color:var(--mute);margin-top:4px}
+.lnk{font-size:13px;color:var(--mute);padding:6px 2px}
+.gap-neb{height:230px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.card{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(130%);backdrop-filter:blur(20px) saturate(130%);border:1px solid rgba(180,190,255,.16);border-radius:28px;padding:6px 18px;margin-bottom:10px}
+.card.pad{padding:18px}
+.card h3{font-size:13px;color:var(--mute);margin-bottom:10px}
+#s-ring .card{background:var(--glass-r);border-color:rgba(200,215,255,.14)}
+.under .card{background:var(--glass-p);border-color:rgba(127,224,230,.2)}
+/* привычки */
+.hb{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.hb:first-child{border-top:0}
+.ck{position:relative;flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(238,241,255,.55);display:grid;place-items:center;transition:background-color .2s var(--out),border-color .2s var(--out),transform .15s var(--out),box-shadow .3s}
+.ck:active{transform:scale(.82)}
+.ck svg{width:15px;height:15px;fill:none;stroke:#060920;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;opacity:0}
+.ck.on{background:var(--ink);border-color:var(--ink);box-shadow:0 0 16px rgba(207,227,255,.35)}
+.ck.on svg{stroke-dashoffset:0;opacity:1}
+.ck.pop svg{animation:draw .3s var(--out) both}
+.ck.pop::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--ice);animation:burst .5s var(--out) forwards;pointer-events:none}
+@keyframes draw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+@keyframes burst{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(2.4)}}
+.spark{position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--c,#cfe3ff);pointer-events:none;animation:fly .6s var(--out) forwards}
+@keyframes fly{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--x),var(--y)) scale(.2);opacity:0}}
+.hb .n{flex:1;min-width:0;transition:color .3s}
+.hb.done .n{color:var(--dim)}
+.hb .meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.hb .meta small{font-size:11px;color:var(--vio)}
+.wk{display:flex;gap:3px}
+.wk i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.14)}
+.wk i.on{background:var(--vio);box-shadow:0 0 6px var(--vio)}
+.x{flex:none;width:34px;height:34px;border-radius:50%;color:var(--dim);font-size:20px}
+.addrow{display:flex;gap:8px;padding:12px 0 14px}
+/* плитки */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(180,190,255,.14);border-radius:24px;padding:14px}
+.tile.wide{grid-column:1/-1}
+.tile .k{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.tile .v{font-size:34px;font-weight:200;line-height:1;margin:10px 0 8px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;min-height:34px}
+.tile .v small{font-size:13px;font-weight:400;color:var(--mute);letter-spacing:0;margin-left:4px}
+.spk{display:flex;align-items:flex-end;gap:4px;height:24px;margin-bottom:12px}
+.spk i{flex:1;border-radius:2px;background:rgba(255,255,255,.2);transform-origin:50% 100%;height:100%;transform:scaleY(var(--h))}
+.spk i.t{background:var(--c,var(--ice));box-shadow:0 0 8px var(--c,var(--ice))}
+.spk i.t.grow{animation:sy .4s var(--out) both}
+@keyframes sy{from{transform:scaleY(var(--h0,0))}to{transform:scaleY(var(--h))}}
+.stp{display:flex;gap:6px}
+.stp button{flex:1;height:40px;border-radius:13px;border:1px solid var(--line);font-size:20px;font-weight:300;transition:transform .12s var(--out),background-color .2s,color .2s}
+.stp button:active{transform:scale(.9);background:var(--ink);color:#060920}
+/* кольцо */
+.ringbox{position:relative;width:210px;height:210px;margin:56px auto 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ringbox b{font-size:86px;font-weight:200;line-height:.9;font-variant-numeric:tabular-nums}
+.ringbox>span{font-size:13px;color:var(--ice);margin-top:6px;max-width:150px}
+.dl{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.dl:first-child{border-top:0}
+.dl .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.dl .t b{font-weight:400;font-size:15px;overflow-wrap:anywhere}
+.dl .t span{font-size:12px;color:var(--mute)}
+.dl.done .t{opacity:.4}
+.chip{font-size:13px;color:var(--mute);white-space:nowrap}
+.chip.warn{color:var(--pink)}.chip.bad{color:var(--bad)}
+.dl.new{animation:fromring .5s var(--out) both}
+@keyframes fromring{from{opacity:0;transform:translateY(-30px) scale(.6)}to{opacity:1;transform:none}}
+/* деньги */
+.total b{display:block;font-size:clamp(52px,16vw,64px);font-weight:200;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.total>span{font-size:13px;color:var(--mute)}
+.bud{position:relative;height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin:20px 0 10px}
+.bud i{position:absolute;left:0;top:0;bottom:0;width:100%;border-radius:2px;background:var(--teal);box-shadow:0 0 10px var(--teal);transform-origin:left center;transform:scaleX(var(--w));transition:transform .6s var(--out)}
+.bud.over i{background:var(--pink);box-shadow:0 0 10px var(--pink)}
+.bud em{position:absolute;top:-6px;width:1.5px;height:15px;background:var(--mute);left:calc(var(--p)*100%)}
+.cat{padding:9px 0}
+.cat .row{font-size:14px;margin-bottom:7px}
+.cb{height:2px;border-radius:1px;background:rgba(255,255,255,.08);overflow:hidden}
+.cb i{display:block;height:100%;width:100%;background:rgba(238,241,255,.8);transform-origin:left center;transform:scaleX(var(--w))}
+.rv.in .cb i,.rv.in .bud i{animation:gx .8s var(--out) both;animation-delay:calc(.15s + var(--i,0)*70ms)}
+.rv.in.inst .cb i,.rv.in.inst .bud i{animation:none}
+@keyframes gx{from{transform:scaleX(0)}to{transform:scaleX(var(--w))}}
+.horizon{height:420px}
+.li{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.li .t b{font-weight:400;font-size:15px}.li .t span{font-size:12px;color:var(--mute)}
+.btn{display:block;width:100%;text-align:center;padding:14px 18px;border-radius:999px;background:var(--ink);color:#060920;font-weight:500;font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.2)}
+.btn.sm{display:inline-block;width:auto;padding:9px 16px;font-size:14px}
+.gapf{display:grid;gap:12px}
+.meteor{position:fixed;z-index:20;left:0;top:0;width:10px;height:10px;margin:-5px;border-radius:50%;background:#fff;box-shadow:0 0 14px 4px var(--teal),0 0 40px 10px rgba(127,224,230,.35);pointer-events:none}
+.demo{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px dashed rgba(255,255,255,.22);border-radius:20px;padding:11px 14px;margin-top:14px;font-size:13px;color:var(--mute);background:rgba(2,3,10,.4)}
+.foot{text-align:center;color:var(--dim);font-size:12px;padding:24px 0 0}
+.flash{animation:fl .5s var(--out)}
+@keyframes fl{0%{opacity:.35}100%{opacity:1}}
+/* режим, помощник, питание, тренировки, вес, бюджет */
+.dtype{display:inline-block;font-size:12px;color:var(--ice);border:1px solid rgba(207,227,255,.3);border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.tl{display:grid;grid-template-columns:50px 14px 1fr;gap:10px;align-items:start;padding:7px 0;position:relative}
+.tl .tm{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums;padding-top:1px}
+.tl .dt{width:9px;height:9px;border-radius:50%;margin-top:5px;background:var(--k,#cfe3ff);box-shadow:0 0 8px var(--k,#cfe3ff)}
+.tl .tx{font-size:14px;line-height:1.35}
+.tl .tx small{display:block;font-size:12px;color:var(--mute)}
+.tl.past{opacity:.38}
+.tl.now .tx{font-weight:500}
+.tl.now .dt{transform:scale(1.4);animation:pulse 1.8s var(--out) infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px var(--k)}50%{box-shadow:0 0 16px 3px var(--k)}}
+.nowchip{display:inline-block;font-size:11px;color:#060920;background:var(--ice);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:1px}
+.k-sleep{--k:#9aa8ff}.k-eat{--k:#7fe0e6}.k-study{--k:#cfe3ff}.k-work{--k:#ff9cc6}.k-train{--k:#b9a2ff}.k-move{--k:rgba(238,241,255,.55)}.k-rule{--k:#ffd59a}
+.tip{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.4}
+.tip:first-of-type{border-top:0}
+.tip i{flex:none;width:7px;height:7px;border-radius:50%;margin-top:7px;background:var(--c,#cfe3ff);box-shadow:0 0 8px var(--c,#cfe3ff)}
+.tip.day{color:var(--mute);font-size:13px}
+.meal{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+.meal:first-of-type{border-top:0}
+.meal .t{flex:1;min-width:0;display:flex;flex-direction:column}.meal .t b{font-weight:400;font-size:14px}.meal .t span{font-size:12px;color:var(--mute)}
+.meal.done .t{opacity:.45}
+.pbar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden;margin:6px 0 10px}
+.pbar i{display:block;height:100%;width:100%;background:var(--teal);box-shadow:0 0 8px var(--teal);transform-origin:left;transform:scaleX(var(--w));transition:transform .5s var(--out)}
+.ex{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.ex:first-of-type{border-top:0}
+.ex .t{flex:1;min-width:0;font-size:14px}.ex .r{font-size:13px;color:var(--mute);white-space:nowrap}
+.ex.done .t{opacity:.45}
+.wchart{display:block;width:100%;height:auto;margin:6px 0 10px}
+.cashbig b{display:block;font-size:44px;font-weight:200;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.cashbig>span{font-size:13px;color:var(--mute)}
+.inc{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.inc:first-child{border-top:0}
+.inc .t{flex:1;min-width:0;display:flex;flex-direction:column}.inc .t b{font-weight:400;font-size:14px}.inc .t span{font-size:12px;color:var(--mute)}
+.inc.ok .t{opacity:.45}
+.inc input{width:110px;text-align:right;padding:8px 10px}
+/* работа */
+#s-work .card,#s-work .tile{background:rgba(5,9,26,.58);border-color:rgba(160,200,255,.16)}
+.starbox{position:relative;height:270px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;padding-bottom:4px}
+.shiftring{position:absolute;left:50%;top:12px;width:170px;height:170px;margin-left:-85px;transform:rotate(-90deg);overflow:visible}
+.shiftring circle{fill:none;stroke-width:2}
+.shiftring .tr{stroke:rgba(200,220,255,.12)}
+.shiftring .fg{stroke:#dbe8ff;stroke-linecap:round;filter:drop-shadow(0 0 6px #9fc4ff);transition:stroke-dashoffset 1.2s var(--out)}
+.starbox b{font-size:20px;font-weight:400;max-width:300px}
+.starbox>span{font-size:13px;color:var(--mute);margin-top:2px}
+.wst{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.wst .tile .v{font-size:32px;margin:8px 0 2px}
+.wst .tile .s{font-size:12px;color:var(--mute)}
+.bud.ice i{background:var(--ice);box-shadow:0 0 10px var(--ice)}
+.calh{display:flex;justify-content:space-between;align-items:center;margin:10px 0 14px}
+.calh button{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);font-size:18px;transition:transform .15s var(--out)}
+.calh button:active{transform:scale(.88)}
+.calh b{font-weight:500;font-size:17px}
+.cgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;text-align:center}
+.cgrid.sl-l{animation:slL .45s var(--out)}.cgrid.sl-r{animation:slR .45s var(--out)}
+@keyframes slL{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes slR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.wd{font-size:12px;color:var(--dim);padding:2px 0 4px}
+.cd{position:relative;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:15px;background:rgba(255,255,255,.05);color:var(--mute);transition:background-color .35s var(--out),color .35s,box-shadow .5s,transform .15s var(--out)}
+.cd:active{transform:scale(.86)}
+.cd.on{background:radial-gradient(circle at 38% 32%,#fff 0,#e3edff 50%,#a9c6ff 100%);color:#060920;font-weight:500;box-shadow:0 0 16px rgba(170,200,255,.55)}
+.cd.on.fut{background:rgba(207,227,255,.07);color:var(--ink);box-shadow:inset 0 0 0 1.5px rgba(207,227,255,.85),0 0 14px rgba(170,200,255,.3)}
+.cd.tod::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(207,227,255,.75)}
+.cd .pd{position:absolute;bottom:13%;width:4px;height:4px;border-radius:50%;background:#060920;opacity:.45}
+.cd.ign{animation:ign .55s var(--out)}
+@keyframes ign{0%{transform:scale(.55);box-shadow:0 0 0 rgba(170,200,255,0)}55%{transform:scale(1.15);box-shadow:0 0 34px rgba(190,215,255,.9)}100%{transform:scale(1)}}
+.cd.fade{animation:fadeo .4s var(--out)}
+@keyframes fadeo{0%{transform:scale(1.12);opacity:.5}100%{transform:scale(1);opacity:1}}
+.cnote{font-size:12px;color:var(--dim);margin:14px 0 8px}
+.pay{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.pay:first-child{border-top:0}
+.pay .t{flex:1;min-width:0;display:flex;flex-direction:column}.pay .t b{font-weight:400;font-size:15px}.pay .t span{font-size:12px;color:var(--mute)}
+.pay input{width:128px;flex:none;text-align:right;font-variant-numeric:tabular-nums;padding:10px 12px}
+.pay.need input{border-color:rgba(255,156,198,.55)}.pay.need .t span{color:var(--pink)}
+.pay.fut{opacity:.55}
+.wsub{font-size:12px;color:var(--mute);margin:14px 0 4px}
+.o.w{background:radial-gradient(circle,#fff 0 16%,#bcd6ff 30%,rgba(110,160,255,.35) 55%,transparent 72%)}
+/* док */
+.dock{position:fixed;z-index:10;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:grid;grid-template-columns:repeat(5,62px);padding:8px 6px 6px;border-radius:26px;background:rgba(4,6,18,.62);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.1);--i:0}
+.dock::before{content:"";position:absolute;left:6px;top:6px;width:62px;height:calc(100% - 12px);border-radius:20px;background:rgba(207,227,255,.1);border:1px solid rgba(207,227,255,.22);transform:translateX(calc(var(--i)*62px));transition:transform .45s var(--out)}
+.dock button{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0 4px;font-size:10.5px;color:var(--dim);transition:color .3s}
+.dock button.on{color:var(--ink)}
+.dock .o{width:24px;height:24px;border-radius:50%;transition:transform .45s var(--out)}
+.dock button.on .o{transform:scale(1.15)}
+.o.g{background:radial-gradient(circle,#fff 0 14%,#a9b2ff 36%,rgba(120,110,255,.25) 60%,transparent 72%)}
+.o.n{background:radial-gradient(circle at 35% 30%,#fff 0,#c7a9ff 34%,#4a2a8a 100%)}
+.o.r{background:radial-gradient(circle,#000 0 50%,#d8e8ff 56%,rgba(150,190,255,.3) 66%,transparent 76%)}
+.o.p{background:radial-gradient(circle at 35% 30%,#fff 0,#7fe0e6 38%,#0b3a40 100%)}
+/* появление */
+.in0{opacity:0;transform:translateY(18px);transition:opacity .9s var(--out) var(--d,0s),transform .9s var(--out) var(--d,0s)}
+.go .in0{opacity:1;transform:none}
+.lab .ln{transform:scaleX(0);transition:transform .8s var(--out) var(--d,0s)}
+.go .lab .ln{transform:scaleX(1)}
+.rv{opacity:0;transform:translateY(26px)}
+.rv.in{opacity:1;transform:none;transition:opacity .8s var(--out) calc(var(--i,0)*70ms),transform .8s var(--out) calc(var(--i,0)*70ms)}
+.rv.in.inst{transition:none}
+.tt>span{transform:translateY(105%)}
+.rv.in .tt>span,.in .tt>span{transform:none;transition:transform .9s var(--out) .05s}
+.rv.in.inst .tt>span{transition:none}
+.tl.now .dt{}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+.rv,.in0{opacity:1;transform:none}.tt>span,.lab .ln{transform:none}.spark,.ck.pop::after{display:none}}
+/* ---------- план до июля: выезжающий справочник ---------- */
+.dock{grid-template-columns:repeat(6,var(--dw,58px))}
+.dock::before{width:var(--dw,58px);transform:translateX(calc(var(--i)*var(--dw,58px)))}
+@media (max-width:370px){.dock{--dw:52px}}
+.o.pl{background:radial-gradient(circle at 28% 36%,#fff 0 1.8px,transparent 2.8px),radial-gradient(circle at 72% 28%,#ffd1e6 0 1.4px,transparent 2.4px),radial-gradient(circle at 58% 74%,#cfe3ff 0 1.8px,transparent 2.8px),radial-gradient(circle at 24% 78%,#b9a2ff 0 1.2px,transparent 2.2px),radial-gradient(circle,rgba(185,162,255,.32),transparent 70%)}
+.dock .dk-plan.act{color:var(--ink)}.dock .dk-plan.act .o{transform:scale(1.15) rotate(30deg)}
+.dock .dk-plan .o{transition:transform .6s var(--out)}
+.sheet{position:fixed;inset:0;z-index:30;display:flex;justify-content:center;align-items:flex-end}
+.sheet[hidden]{display:none}
+.sh-bg{position:absolute;inset:0;background:rgba(1,2,8,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .45s var(--out)}
+.sheet.op .sh-bg{opacity:1}
+.sh-panel{position:relative;width:100%;max-width:560px;height:calc(100% - 18px - env(safe-area-inset-top,0px));display:flex;flex-direction:column;border-radius:30px 30px 0 0;background:linear-gradient(180deg,rgba(10,12,34,.9),rgba(4,5,16,.94));-webkit-backdrop-filter:blur(30px) saturate(150%);backdrop-filter:blur(30px) saturate(150%);border:1px solid rgba(180,190,255,.16);border-bottom:0;transform:translateY(104%);transition:transform .55s var(--out);overflow:hidden}
+.sheet.op .sh-panel{transform:none}
+.sheet.cl .sh-panel{transition:transform .35s var(--in)}
+.sh-panel.drag{transition:none}
+.sh-top{flex:none;padding:8px 20px 0;touch-action:none;cursor:grab}
+.sh-grab{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.22);margin:0 auto 10px}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sh-head h2{font-size:26px;font-weight:300;line-height:1.1}
+.sh-x{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);font-size:22px;color:var(--mute);transition:transform .15s var(--out)}
+.sh-x:active{transform:scale(.88)}
+.ptabs{position:relative;flex:none;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:14px 20px 12px;margin-top:2px;-webkit-mask:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 16px),transparent);mask:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 16px),transparent)}
+.ptabs::-webkit-scrollbar{display:none}
+.ptabs button{position:relative;z-index:1;flex:none;padding:8px 14px;border-radius:999px;font-size:14px;color:var(--mute);transition:color .3s}
+.ptabs button[aria-selected="true"]{color:#060920}
+.pind{position:absolute;z-index:0;left:0;top:14px;height:calc(100% - 26px);border-radius:999px;background:var(--ink);box-shadow:0 0 22px rgba(207,227,255,.35);transition:transform .45s var(--out),width .45s var(--out);pointer-events:none}
+.pbody{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px 18px calc(28px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+.pp.anim>*{animation:pin .6s var(--out) both;animation-delay:calc(var(--n,0)*55ms)}
+.pp.anim.fl>*{animation-name:pinl}.pp.anim.fr>*{animation-name:pinr}
+@keyframes pin{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pinl{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+@keyframes pinr{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:6px 0 16px}
+.ph b{font-weight:200;font-size:72px;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.ph>span{font-size:13px;color:var(--mute);text-align:right;max-width:170px;padding-bottom:8px}
+.prg{padding:10px 0;border-top:1px solid var(--line)}
+.prg:first-of-type{border-top:0}
+.prg .row{font-size:14px}.prg .num{color:var(--mute);font-size:13px}
+.prg .pbar{margin:8px 0 0}
+.prg .pbar i{background:var(--c,var(--teal));box-shadow:0 0 8px var(--c,var(--teal))}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.kv{padding:14px 15px;border-radius:22px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.kv span{display:block;font-size:12px;color:var(--mute)}
+.kv b{display:block;font-weight:300;font-size:21px;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+.kv b.sm{font-size:18px;white-space:nowrap}
+.kv small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+.note{font-size:14px;color:var(--mute);line-height:1.5}
+.note b{color:var(--ink);font-weight:400}
+.ul{list-style:none;margin:0;padding:0}
+.ul li{position:relative;padding:9px 0 9px 19px;font-size:14px;line-height:1.45;border-top:1px solid var(--line)}
+.ul li:first-child{border-top:0}
+.ul li::before{content:"";position:absolute;left:2px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--c,var(--ice));box-shadow:0 0 8px var(--c,var(--ice))}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.seg button{padding:7px 12px;border-radius:999px;border:1px solid var(--line);font-size:13px;color:var(--mute);transition:background-color .25s,color .25s,border-color .25s}
+.seg button.on{background:rgba(207,227,255,.14);border-color:rgba(207,227,255,.45);color:var(--ink)}
+.seg button em{font-style:normal;font-size:11px;color:var(--ice);margin-left:5px}
+.wkr{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.wkr:first-of-type{border-top:0}
+.wkr>b{font-weight:500;font-size:14px}
+.wkr .t{display:flex;flex-direction:column;font-size:14px}.wkr .t span{font-size:12px;color:var(--mute)}
+.wkr.today>b{color:var(--ice)}
+.tag{font-size:12px;padding:4px 9px;border-radius:999px;white-space:nowrap;border:1px solid rgba(127,224,230,.35);color:var(--teal)}
+.tag.bad{border-color:rgba(255,143,163,.4);color:var(--bad)}
+.tag.mid{border-color:rgba(255,213,154,.4);color:#ffd59a}
+.chk{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+.chk:first-of-type{border-top:0}
+.chk .t{flex:1;min-width:0;display:flex;flex-direction:column;font-size:14px;line-height:1.4}
+.chk .t span{font-size:12px;color:var(--mute)}
+.chk .r{font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chk.done .t,.chk.done .r{opacity:.42}
+.chk.done .t b{text-decoration:line-through;text-decoration-color:rgba(238,241,255,.4)}
+.chk .t b{font-weight:400}
+.chk input{width:96px;flex:none;text-align:right;padding:8px 10px;font-size:14px}
+.sumr{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding-top:12px;margin-top:4px;border-top:1px solid rgba(255,255,255,.16)}
+.sumr b{font-weight:300;font-size:28px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dish{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:11px 0;border-top:1px solid var(--line)}
+.dish:first-of-type{border-top:0}
+.dish b{font-weight:500;font-size:14px}.dish p{grid-column:1/2;font-size:13px;color:var(--mute);line-height:1.4}
+.dish .k{grid-row:1/3;grid-column:2;text-align:right;font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
+.dish .k strong{display:block;color:var(--teal);font-weight:400;font-size:15px}
+.mtr{padding:11px 0;border-top:1px solid var(--line)}
+.mtr:first-of-type{border-top:0}
+.mtr>b{display:block;font-weight:400;font-size:14px;margin-bottom:6px}
+.mtr.cur>b{color:var(--teal)}
+.mtr .chips{display:flex;flex-wrap:wrap;gap:5px}
+.mtr .chips span{font-size:12px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.sos{margin-top:12px;border-radius:22px;border:1px solid rgba(255,156,198,.3);background:rgba(255,156,198,.06);padding:4px 16px;overflow:hidden}
+.sos ol{margin:0;padding:6px 0 6px 20px;font-size:14px;line-height:1.5}
+.sos li{padding:5px 0}
+.tmr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0 12px}
+.tmr b{font-weight:200;font-size:40px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stg{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
+.stg h4{margin:0;font-size:17px;font-weight:400}
+.alc{padding:9px 0;border-top:1px solid var(--line)}
+.alc:first-of-type{border-top:0}
+.alc .row{font-size:14px}
+.alc .cb{height:4px;border-radius:2px;background:rgba(255,255,255,.06);margin-top:7px;overflow:hidden}
+.alc .cb i{display:block;height:100%;background:var(--c,var(--ice));box-shadow:0 0 8px var(--c,var(--ice));transform-origin:left;transform:scaleX(var(--w));transition:transform .6s var(--out)}
+.pp.anim .alc .cb i{animation:gx .9s var(--out) both;animation-delay:calc(.25s + var(--j,0)*60ms)}
+.gl{position:relative;padding:12px 0 12px 22px;border-top:1px solid var(--line)}
+.gl:first-of-type{border-top:0}
+.gl::before{content:"";position:absolute;left:3px;top:19px;width:8px;height:8px;border-radius:50%;border:1.5px solid var(--dim)}
+.gl.past::before{background:var(--dim);border-color:var(--dim)}
+.gl.cur::before{border-color:var(--ice);background:var(--ice);box-shadow:0 0 12px var(--ice)}
+.gl.past{opacity:.5}
+.gl>b{display:block;font-weight:500;font-size:15px;margin-bottom:4px}
+.gl .g3{display:grid;gap:3px;font-size:13px;color:var(--mute);line-height:1.4}
+.gl .g3 i{font-style:normal;color:var(--ink)}
+.warnc{border-color:rgba(255,143,163,.32)}
+.warnc h3{color:var(--bad)}
+.ask{padding:11px 0;border-top:1px solid var(--line)}
+.ask:first-of-type{border-top:0}
+.ask .row{align-items:flex-start}
+.ask .t{flex:1;font-size:14px;line-height:1.4;padding-top:3px}
+.ask.done .t{opacity:.45}
+.ask input{margin-top:8px;font-size:14px;padding:10px 12px}
+.plk{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;color:var(--ice);padding:6px 0}
+.plk::after{content:"›";font-size:16px;transition:transform .2s var(--out)}
+.plk:active::after{transform:translateX(3px)}
+@media (prefers-reduced-motion:reduce){.sh-panel,.sheet .sh-bg{transition:opacity .15s!important}.sh-panel{transform:none!important;opacity:0}.sheet.op .sh-panel{opacity:1}.pp.anim>*{animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main class="wrap">
+<section class="sec" id="s-gal" aria-label="Обзор дня"></section>
+<section class="sec" id="s-neb" aria-label="Ритм и тело"></section>
+<section class="sec" id="s-ring" aria-label="Учёба"></section>
+<section class="sec" id="s-work" aria-label="Работа"></section>
+<section class="sec" id="s-pla" aria-label="Деньги"></section>
+<div class="foot" data-sy></div>
+</main>
+<nav class="dock" id="dock" aria-label="Сцены">
+<button data-go="s-gal"><i class="o g"></i><span>День</span></button>
+<button data-go="s-neb"><i class="o n"></i><span>Ритм</span></button>
+<button data-go="s-ring"><i class="o r"></i><span>Учёба</span></button>
+<button data-go="s-work"><i class="o w"></i><span>Работа</span></button>
+<button data-go="s-pla"><i class="o p"></i><span>Деньги</span></button>
+<button class="dk-plan" data-plan="main" aria-haspopup="dialog"><i class="o pl"></i><span>План</span></button>
+</nav>
+<div class="sheet" id="plan" role="dialog" aria-modal="true" aria-labelledby="pl-t" hidden><div class="sh-bg" data-pclose></div><div class="sh-panel"><div class="sh-top"><div class="sh-grab" aria-hidden="true"></div><div class="sh-head"><div><h2 id="pl-t">План до июля</h2><p class="sub">режим, еда, тренировки, деньги и цели</p></div><button class="sh-x" data-pclose aria-label="Закрыть план">×</button></div></div><div class="ptabs" id="ptabs" role="tablist" aria-label="Разделы плана"><i class="pind" aria-hidden="true"></i></div><div class="pbody" id="pbody" role="tabpanel" tabindex="-1"></div></div></div>
+<script>
+/* ================= данные ================= */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const a=s.split('-');return new Date(+a[0],+a[1]-1,+a[2],12)};
+const addD=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const TODAY=iso(new Date());
+const MN=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MNN=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+const DWF=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+const fmt=(n,d=1)=>Number(n).toLocaleString('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:d});
+const num=v=>parseFloat(String(v).replace(',','.').replace(/\s/g,''));
+const plural=(n,a,b,c)=>{n=Math.abs(n)%100;const m=n%10;return n>10&&n<20?c:m>1&&m<5?b:m===1?a:c};
+const RM=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+const GOAL={sleep:8,water:2,sport:30,study:2};
+const WPRE={'2026-11-01':16600,'2026-11-03':19600,'2026-11-04':17200,'2026-11-07':16000,'2026-11-08':16000,'2026-11-10':14200,'2026-11-11':16000,'2026-11-12':25000,'2026-11-15':17200,'2026-11-16':18100,'2026-11-19':17500,'2026-11-20':19900,'2026-11-21':13900,'2026-11-23':0,'2026-11-24':0,'2026-11-27':0,'2026-11-28':0};
+const DEF=()=>({v:3,cur:'₸',budget:150000,work:{start:'20:00',end:'08:00',rate:0,goal:0,shifts:Object.assign({},WPRE)},weights:{'2026-11-23':92},train:{done:{},ex:{}},cash:{start:50000,at:new Date(2026,10,23,0,0).getTime(),reserve:5000,inc:[{id:1,d:'2026-12-06',amt:100000,n:'Поступление 100 000',got:false},{id:2,d:'2026-12-15',amt:0,n:'Зарплата за смены',got:false,salary:1}],fix:[{id:3,n:'Тариф связи',amt:7000,d:'2026-11-30',paid:false},{id:4,n:'Аренда',amt:50000,d:'2026-12-06',paid:false}]},habits:[{id:'h1',name:'Подъём по плану'},{id:'h2',name:'Спорт'},{id:'h3',name:'Чтение'},{id:'h4',name:'План на завтра'}],cats:['Еда','Транспорт','Учёба','Подписки','Другое'],days:{},spend:[],dl:[]});
+let st=DEF(),sel=TODAY,edit=false;
+let dbDoc=null,dbReady=false,dirty=false,sync='load',wt=null,wbusy=false,wagain=false;
+const apply=o=>{const d=DEF();st=Object.assign(d,o||{});delete st.sky;['habits','cats'].forEach(k=>{if(!Array.isArray(st[k]))st[k]=d[k]});if(!st.days||typeof st.days!=='object')st.days={};if(!Array.isArray(st.spend))st.spend=[];if(!Array.isArray(st.dl))st.dl=[];if(!(st.budget>0))st.budget=d.budget;if(!st.work||typeof st.work!=='object')st.work=d.work;if(!st.weights||typeof st.weights!=='object')st.weights=d.weights;if(!st.train||typeof st.train!=='object')st.train=d.train;if(!st.train.done)st.train.done={};if(!st.train.ex)st.train.ex={};if(!st.cash||typeof st.cash!=='object')st.cash=d.cash;if(!Array.isArray(st.cash.inc))st.cash.inc=d.cash.inc;if(!Array.isArray(st.cash.fix))st.cash.fix=d.cash.fix;if(!st.work.shifts||typeof st.work.shifts!=='object')st.work.shifts={};['start','end'].forEach(k=>{if(!/^\d\d:\d\d$/.test(st.work[k]||''))st.work[k]=d.work[k]})};
+try{const s=localStorage.getItem('routine1');if(s)apply(JSON.parse(s))}catch(e){}
+/* графики смен из рабочего чата (Алинур): в диапазоне ставятся только эти дни; оплаченные смены не трогаются */
+const PATCHES=[{id:'alinur-2026-11-21',from:'2026-11-21',to:'2026-11-30',days:['2026-11-23','2026-11-26','2026-11-27','2026-11-30']}];
+function applyPatches(){if(!Array.isArray(st.patches))st.patches=[];let ch=false;const S=st.work.shifts;
+PATCHES.forEach(P=>{if(st.patches.includes(P.id))return;for(let k=P.from;k<=P.to;k=addD(k,1)){const want=P.days.includes(k);if(want&&S[k]==null)S[k]=st.work.rate||0;else if(!want&&S[k]!=null&&!(S[k]>0))delete S[k]}st.patches.push(P.id);ch=true});
+return ch}
+const SYT={load:'Загрузка…',ok:'Сохранено',saving:'Сохраняю…',err:'Не сохранилось в облако',local:'Только на этом устройстве'};
+function setSync(){document.querySelectorAll('[data-sy]').forEach(e=>e.textContent=SYT[sync]||'')}
+async function pushDb(){if(!dbDoc||!dbReady)return;if(wbusy){wagain=true;return}wbusy=true;
+try{await dbDoc.set(JSON.parse(JSON.stringify(st)));sync='ok'}catch(e){sync='err'}
+wbusy=false;if(wagain){wagain=false;pushDb()}else setSync()}
+function save(){try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}dirty=true;if(dbDoc&&dbReady){sync='saving';setSync();clearTimeout(wt);wt=setTimeout(pushDb,400)}}
+const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+const day=k=>st.days[k]||{};
+function setDay(k,fn){const o=Object.assign({},st.days[k]);delete o.demo;fn(o);st.days[k]=o;save()}
+const hasDemo=()=>Object.values(st.days).some(d=>d.demo)||st.spend.some(s=>s.demo)||st.dl.some(s=>s.demo);
+function seed(){
+const rows=[[7.5,2,3,45,1.5,7],[6,1.5,2.5,0,1,5],[7,3,4,30,2,8],[8,2,3.5,60,1.75,8],[6.5,0,1,0,1,4],[7.5,2.5,4,40,2,7],[7,2,3,30,1.5,6]];
+rows.forEach((r,i)=>{const k=addD(TODAY,i-6);if(st.days[k])return;const done={};st.habits.forEach((h,j)=>{if((i+j)%3!==0)done[h.id]=true});
+st.days[k]={sleep:r[0],study:r[1],deep:r[2],sport:r[3],water:r[4],mood:r[5],done,demo:1}});
+[['Еда',3200],['Транспорт',900],['Еда',2400],['Подписки',1500],['Учёба',4000]].forEach((s,i)=>st.spend.push({id:Date.now()+i,d:addD(TODAY,-i),cat:s[0],amt:s[1],note:'',demo:1}));
+[['Физика','Лабораторная',2],['Математика','Контрольная',5],['Английский','Эссе',9]].forEach((s,i)=>st.dl.push({id:Date.now()+10+i,subj:s[0],task:s[1],due:addD(TODAY,s[2]),done:false,demo:1}));
+save()}
+function unseed(){Object.keys(st.days).forEach(k=>{if(st.days[k].demo)delete st.days[k]});st.spend=st.spend.filter(s=>!s.demo);st.dl=st.dl.filter(s=>!s.demo);save()}
+const greet=()=>{const h=new Date().getHours();return h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер'};
+const longDate=k=>{const d=parse(k);return DWF[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()]};
+const shortDate=k=>{const d=parse(k);return d.getDate()+' '+MN[d.getMonth()]};
+const dleft=due=>Math.round((parse(due)-parse(TODAY))/864e5);
+const week=()=>{const a=[];for(let i=6;i>=0;i--)a.push(addD(sel,-i));return a};
+function streak(id){let n=0,k=sel;if(!(day(k).done||{})[id])k=addD(k,-1);while((day(k).done||{})[id]){n++;k=addD(k,-1)}return n}
+function model(){
+const d=day(sel),dn=d.done||{},nh=st.habits.length,dc=st.habits.filter(h=>dn[h.id]).length,hr=new Date().getHours(),isT=sel===TODAY;
+const open=st.dl.filter(x=>!x.done).sort((a,b)=>a.due.localeCompare(b.due)),nx=open[0];
+const mk=TODAY.slice(0,7),ms=st.spend.filter(s=>s.d.slice(0,7)===mk),spent=ms.reduce((a,s)=>a+s.amt,0);
+const td=new Date(),dim=new Date(td.getFullYear(),td.getMonth()+1,0).getDate(),pace=td.getDate()/dim,over=spent>st.budget*pace;
+return {d,dn,nh,dc,hr,isT,open,nx,nd:nx?dleft(nx.due):null,ms,spent,pace,over}}
+/* ================= работа ================= */
+let wm=TODAY.slice(0,7),wdir='',wset=false,wign=null,wfade=null;
+const tmin=t=>{const a=t.split(':');return +a[0]*60+ +a[1]};
+const shiftH=()=>{let d=tmin(st.work.end)-tmin(st.work.start);if(d<=0)d+=1440;return d/60};
+const startAt=k=>{const d=parse(k),m=tmin(st.work.start);d.setHours(Math.floor(m/60),m%60,0,0);return d};
+function wmodel(month){const S=st.work.shifts,H=shiftH(),ks=Object.keys(S).filter(k=>k.slice(0,7)===month).sort();
+const fut=ks.filter(k=>k>TODAY),paid=ks.filter(k=>S[k]>0),earned=paid.reduce((a,k)=>a+S[k],0),need=ks.filter(k=>k<TODAY&&!(S[k]>0));
+const avg=paid.length?earned/paid.length:0,open=ks.filter(k=>!(S[k]>0)).length,forecast=earned+open*(st.work.rate||avg);
+return {ks,fut,paid,earned,need,avg,H,hours:ks.length*H,perH:paid.length?earned/(paid.length*H):0,forecast,best:paid.reduce((a,k)=>S[k]>a?S[k]:a,0)}}
+function wstatus(){const S=st.work.shifts,H=shiftH()*3600e3,now=new Date();
+for(const k of [addD(TODAY,-1),TODAY]){if(S[k]==null)continue;const a=startAt(k);if(now>=a&&now<a.getTime()+H)return {live:1,fr:(now-a)/H,left:a.getTime()+H-now}}
+const nx=Object.keys(S).filter(k=>k>=addD(TODAY,-1)).sort().map(startAt).find(a=>a>now);return {live:0,next:nx?nx-now:null,nextD:nx}}
+const dur=ms=>{const m=Math.round(ms/6e4),h=Math.floor(m/60),mm=m%60;return h>=24?Math.floor(h/24)+' '+plural(Math.floor(h/24),'день','дня','дней')+(h%24?' '+h%24+' ч':''):(h?h+' ч ':'')+mm+' мин'};
+function wtext(){const w=wstatus();if(w.live)return {b:'Смена идёт',s:'осталось '+dur(w.left),fr:w.fr};
+if(w.next==null)return {b:'Смен впереди нет',s:'отметь смены в календаре',fr:0};
+const d=w.nextD,dk=iso(d);return {b:'Смена через '+dur(w.next),s:(dk===TODAY?'сегодня':dk===addD(TODAY,1)?'завтра':shortDate(dk))+', '+st.work.start+'–'+st.work.end,fr:0}}
+function updStatus(){const t=wtext(),b=document.getElementById('st-b'),sp=document.getElementById('st-s'),c=document.getElementById('st-fg');if(b)b.textContent=t.b;if(sp)sp.textContent=t.s;if(c)c.style.strokeDashoffset=(c.dataset.c*(1-t.fr)).toFixed(1)}
+setInterval(updStatus,30000);
+/* ================= план дня: пары, тип дня, режим ================= */
+const CLS={1:['08:30','15:20'],2:['08:30','13:20'],3:['08:30','14:20'],4:['08:30','12:20'],5:['10:30','12:20']};
+const COM=60,GYM='2027-01-18',WSTART='2026-11-23',WEND='2027-06-30',WKG0=92,WKG1=78,PROT=160,KCAL=2400;
+const hm=m=>{m=((Math.round(m)%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)};
+const wdn=k=>{const g=parse(k).getDay();return g===0?7:g};
+function clsOf(k){const c=CLS[wdn(k)];return c?{s:tmin(c[0]),e:tmin(c[1])}:null}
+function dayType(k){const S=st.work.shifts,on=S[k]!=null,prev=S[addD(k,-1)]!=null,c=clsOf(k);if(prev&&on)return 'G2';if(prev&&c)return 'V';if(prev)return 'G';if(on)return c?'A':'A0';return c?'D':'E'}
+const DTN={A:'Пары, ночью смена',A0:'Ночью смена',V:'После смены, есть пары',G:'После смены, выходной',G2:'Между двумя сменами',D:'Учебный день',E:'Выходной'};
+function wakeOf(k){const c=clsOf(k);return c?c.s-COM-60:480}
+function bedFor(k){const w=wakeOf(addD(k,1))+1440;return Math.min(1380,Math.max(1350,w-480))}
+/* тренировки */
+const WO={A:{n:'Дом А',ex:[['Приседания с рюкзаком','4 × 15–20'],['Отжимания','4 × до отказа −2'],['Тяга рюкзака в наклоне','4 × 12–15'],['Болгарские выпады','3 × 10 на ногу'],['Румынская тяга на одной ноге','3 × 12 на ногу'],['Планка','3 × 40–60 с']]},
+B:{n:'Дом Б',ex:[['Подтягивания или австралийские','4 × до отказа −1'],['Выпады назад','4 × 12 на ногу'],['Отжимания с поднятым тазом','3 × 8–10'],['Ягодичный мост на одной ноге','3 × 15 на ногу'],['Отжимания от стула на трицепс','3 × 12–15'],['Подъём ног лёжа','3 × 15']]},
+U:{n:'Зал: верх',ex:[['Жим штанги лёжа','4 × 6–8'],['Тяга штанги в наклоне','4 × 8'],['Жим гантелей сидя','3 × 10'],['Тяга верхнего блока','3 × 10–12'],['Разведения в стороны','3 × 15'],['Бицепс и трицепс на блоке','по 2 × 12']]},
+L:{n:'Зал: низ',ex:[['Приседания со штангой','4 × 6–8'],['Румынская тяга','3 × 8–10'],['Жим ногами','3 × 12'],['Выпады с гантелями','2 × 10 на ногу'],['Подъёмы на носки','3 × 15'],['Скручивания на блоке','3 × 12']]},
+F:{n:'Зал: всё тело',ex:[['Становая тяга (техника важнее веса)','3 × 5'],['Жим гантелей на наклонной','3 × 10'],['Подтягивания или гравитрон','3 × 8–10'],['Болгарские выпады','3 × 10 на ногу'],['Тяга каната к лицу','3 × 15'],['Планка','3 × 45 с']]}};
+function weekCount(k){const d=parse(k),off=(d.getDay()+6)%7;let n=0;for(let i=0;i<7;i++){const x=addD(k,i-off);if(x!==k&&st.train.done[x])n++}return n}
+function trainFor(k){const D=st.train.done;if(D[k])return {code:D[k],w:WO[D[k]],done:true};const T=dayType(k);
+if(!['D','E','G'].includes(T))return {why:T==='A'||T==='A0'?'Ночью смена: сил и сна на тренировку не хватит':T==='G2'?'Между сменами тренировка не нужна':'После смены — восстановление, тренировки нет'};
+if(D[addD(k,-1)])return {why:'Вчера была тренировка: сегодня отдых и шаги'};
+if(weekCount(k)>=3)return {why:'Три тренировки на этой неделе уже есть'};
+const rot=k<GYM?['A','B']:['U','L','F'];const n=Object.keys(D).filter(x=>x<k&&(k<GYM?x<GYM:x>=GYM)).length;const code=rot[n%rot.length];return {code,w:WO[code],light:T==='G'}}
+/* питание по типу дня: [время, что, белок] */
+const ML={D:[['06:45','Завтрак: овсянка 70 г, банан, омлет из 3 яиц',29],['12:30','Обед: крупа 90 г, курица 180 г, капуста 200 г',60],['16:30','Перекус: творог 0% 200 г и яблоко',36],['20:15','Ужин: чечевичный суп 400 мл и хлеб',28],['22:00','Кефир 250 мл, если голоден',8]],
+A:[['06:45','Завтрак: овсянка 70 г, банан, омлет из 3 яиц',29],['12:30','Обед: крупа 90 г, курица 180 г, капуста 200 г',60],['18:30','Ужин перед сменой: суп или картошка 250 г и 2 яйца',28],['23:30','На смене: контейнер крупа, курица, овощи',60],['03:00','На смене: творог 200 г и яблоко',36]],
+V:[['08:30','Кефир и банан или 2 яйца',14],['14:45','Обед-контейнер: крупа, курица, овощи',60],['17:00','Творог 200 г и яблоко',36],['19:30','Ужин: суп или картошка и 2 яйца',28],['22:00','Кефир 250 мл',8]],
+G2:[['08:30','Кефир и 2 яйца, потом спать',20],['16:15','Обед-контейнер: крупа, курица, овощи',60],['18:30','Ужин перед сменой: суп',28],['23:30','На смене: контейнер крупа, курица, овощи',60],['03:00','На смене: творог 200 г и яблоко',36]],
+E:[['08:30','Завтрак: овсянка, банан, омлет из 3 яиц',29],['12:00','Обед: крупа, курица, овощи',60],['16:00','Творог 200 г и яблоко',36],['19:30','Ужин: чечевичный суп и хлеб',28],['22:00','Кефир 250 мл',8]]};
+const mealsOf=k=>{const T=dayType(k);return ML[T==='A0'?'A':T==='G'?'V':T]};
+function protein(k){const m=day(k).meals||{};return mealsOf(k).reduce((a,x,i)=>a+(m[i]?x[2]:0),0)}
+/* режим дня */
+function plan(k){const T=dayType(k),c=clsOf(k),L=[],a=(t,x,kd,e)=>L.push({t,x,k:kd,e}),tr=trainFor(k),trn=tr.w&&!tr.done?tr.w.n:null,s0=tmin(st.work.start);
+const night=()=>{a(s0-30,'Выход на работу','move');a(s0,'Начало смены, вода 1,5 л за ночь','work');a(s0+210,'Главная еда смены из контейнера','eat');a(s0+360,'Последний кофе — не позже 02:00','rule');a(s0+420,'Перекус: творог и яблоко. Самое сонное время: пройдись, умойся','eat');a(s0+540,'После 05:00 без еды и кофе','rule');a(s0+720,'Конец смены, очки по дороге домой','work')};
+const prevShift=['V','G','G2'].includes(T);if(prevShift)a(0,'Ночная смена до 08:00','work');else a(0,'Сон','sleep');
+if(T==='D'||T==='A'){const w=c.s-COM-60,lv=c.s-COM,home=c.e+COM;a(w,'Подъём, вода, завтрак','eat');a(lv,'Выход, в дороге повторение','move');a(c.s,'Пары до '+hm(c.e),'study');a(c.e+10,'Обед из контейнера','eat');a(home,'Дома','move');
+if(T==='D'){let t=home;if(home+30<=990){a(home+10,'Короткий сон 20 минут','sleep');t=home+40}a(t,'Учёба: домашка и семинары, 1,5 часа','study');const tt=Math.max(t+100,1110);a(tt,trn?'Тренировка: '+trn:'Прогулка 30 минут, шаги','train');a(Math.max(tt+100,1215),'Ужин','eat');a(bedFor(k)-15,'Экраны тусклее, сбор на завтра','move');a(bedFor(k),'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
+else{const s1=home+25;if(s1<1095-45)a(s1,'Сон перед сменой до 18:15','sleep');a(1110,'Ужин перед сменой, контейнеры на ночь','eat');night()}}
+else if(T==='A0'){a(480,'Подъём, завтрак','eat');a(570,'Учёба или дела','study');a(720,'Обед','eat');a(840,'Сон перед сменой до 18:15','sleep');a(1110,'Ужин перед сменой, контейнеры на ночь','eat');night()}
+else if(T==='V'){a(480,'С работы сразу на учёбу, кефир и банан','move');a(c.s,c.s<540?'Пары до '+hm(c.e)+' (к первой опоздаешь)':'Пары до '+hm(c.e),'study');const home=c.e+COM,se=Math.min(home+25+285,1140);a(home,'Дома, небольшой обед','eat');a(home+25,'Сон после смены до '+hm(se),'sleep');a(se+15,'Ужин и прогулка 20–30 минут','eat');a(se+60,'Лёгкие дела, повторение. Тренировки нет','study');a(1380,'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
+else if(T==='G'){a(510,'Дома: лёгкий завтрак, душ','eat');a(540,'Сон после смены до 14:30','sleep');a(885,'Обед','eat');a(930,'Учёба или дела','study');a(1050,trn?'Тренировка (легко): '+trn:'Прогулка 30 минут','train');a(1170,'Ужин','eat');a(1380,'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
+else if(T==='G2'){a(510,'Дома: лёгкий завтрак','eat');a(540,'Сон между сменами до 16:00','sleep');a(975,'Обед','eat');a(1020,'Прогулка 30 минут, сборы','move');a(1110,'Ужин перед сменой','eat');night()}
+else{a(480,'Подъём, завтрак','eat');a(570,'Учёба: самое сложное за неделю','study');a(720,'Обед','eat');a(780,'Магазин и заготовки на 2–3 дня','eat');a(1050,trn?'Тренировка: '+trn:'Прогулка 30 минут','train');a(1170,'Ужин, план на неделю','eat');a(bedFor(k),'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
+return L.sort((x,y)=>x.t-y.t)}
+/* бюджет до поступления */
+function salaryAmt(inc){const d=parse(inc.d);d.setMonth(d.getMonth()-1);const W=wmodel(iso(d).slice(0,7));return Math.round(W.forecast)}
+function cash(){const C=st.cash,spent=st.spend.filter(s=>s.id>C.at&&!s.demo).reduce((a,s)=>a+s.amt,0),got=C.inc.filter(i=>i.got).reduce((a,i)=>a+i.amt,0),bal=C.start+got-spent;
+const nx=C.inc.filter(i=>!i.got).sort((a,b)=>a.d.localeCompare(b.d))[0],days=nx?Math.max(1,dleft(nx.d)):30,fx=C.fix.filter(f=>!f.paid&&(!nx||f.d<nx.d)).reduce((a,f)=>a+f.amt,0);
+const per=Math.max(0,Math.floor((bal-fx-(C.reserve||0))/days)),today=st.spend.filter(s=>s.d===TODAY&&!s.demo&&s.cat!=='Обязательные').reduce((a,s)=>a+s.amt,0);return {bal,nx,days,fx,per,today}}
+/* помощник: советы на сегодня */
+const TIPS=['Белок в каждом приёме пищи — меньше тяги к сладкому.','Голоден между приёмами — сначала варёное яйцо или творог, потом решаешь.','Дневной сон после смены не дольше 5,5 часа, иначе ночью не уснёшь.','Шаги — твоё кардио: от остановки пешком вместо джета.','Сладкое не покупаешь домой. Хочется — одна штука после еды.','Кола зеро не после 18:00 в дни без смены: в ней кофеин.','Заготовки на 2–3 дня экономят и деньги, и силу воли.','Вес скачет на 1–2 кг из-за воды. Смотри на среднее за неделю.','На тренировке техника важнее веса, особенно присед и становая.','Перед сном 30 минут без яркого экрана — уснёшь быстрее.','Подушку переводишь первой, в день зарплаты, а не «что останется».','Уставать после ночной смены нормально. Устаёшь всегда — проверь сон за неделю.','Пей воду: 2,5–3 л в день, на смене 1,5 л.','Учить новое ночью бесполезно. Ночью только лёгкое повторение.','Один сорванный приём пищи — не повод срывать весь день.'];
+function tips(k){const T=dayType(k),L=plan(k),f=(re)=>L.find(x=>re.test(x.x)),R=[],tr=trainFor(k),p=protein(k),C=cash();
+if(T==='A'||T==='A0'){const s=f(/^Сон перед сменой/);R.push(['var(--ice)',s?'Перед сменой поспи '+hm(s.t)+'–18:15. Это главное дело дня.':'Перед сменой мало времени на сон: хотя бы 20 минут лёжа с закрытыми глазами.'])}
+if(T==='V'){const s=f(/^Сон после смены/);R.push(['var(--ice)','После пар сразу спать'+(s?' с '+hm(s.t):'')+'. Тренировки сегодня нет.'])}
+if(T==='G')R.push(['var(--ice)','Спи до 14:30, не дольше: вечером вернёшься в обычный режим.']);
+if(T==='G2')R.push(['var(--ice)','Две смены подряд: днём спи 7 часов, с 09:00 до 16:00.']);
+if(T==='D'||T==='E')R.push(['var(--ice)','Ложись в '+hm(bedFor(k))+': завтра подъём в '+hm(wakeOf(addD(k,1)))+'.']);
+if(st.work.shifts[k]!=null)R.push(['var(--pink)','Ночью кофе — одна чашка и не позже 02:00. Энергетики не пьём.']);
+R.push(['var(--vio)',tr.w?(tr.done?'Тренировка «'+tr.w.n+'» сделана.':'Сегодня тренировка: '+tr.w.n+(tr.light?', на лёгком уровне':'')+'.'):tr.why+'.']);
+R.push(['var(--teal)','Белок: '+p+' из '+PROT+' г. Отмечай еду в разделе «Ритм и тело».']);
+if(C.nx)R.push(['var(--teal)','До «'+C.nx.n+'» '+C.days+' '+plural(C.days,'день','дня','дней')+': можно тратить до '+fmt(C.per,0)+' '+st.cur+' в день.']);
+{const bad=upcoming(7).find(x=>nightRisk(x)[0]==='bad');if(bad)R.push(['var(--pink)','Смена '+relDay(bad)+': '+nightRisk(bad)[1]+'. Предупреди преподавателя или попроси обмен.'])}
+{const pp=P().prep;if(T==='E'&&(!pp.d||dleft(pp.d)<=-2))R.push(['var(--teal)','Сегодня хороший день для заготовок на 2–3 дня: список в «Плане».'])}
+const lw=Object.keys(st.weights).sort().pop();if(!lw||dleft(lw)<=-7)R.push(['var(--ice)','Пора взвеситься: утром натощак, запиши вес в разделе «Ритм и тело».']);
+return {list:R,day:TIPS[Math.floor(parse(k)/864e5)%TIPS.length]}}
+/* ================= разметка ================= */
+const CHK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const pv={},seen=new Set();
+const nv=(key,v,d)=>'<span class="cu" data-k="'+key+'" data-v="'+v+'" data-d="'+d+'">'+fmt(v,d)+'</span>';
+const rv=(key,i)=>'class="rv'+(seen.has(key)?' in inst':'')+'" data-rk="'+key+'" style="--i:'+(i||0)+'"';
+const rvc=(key,i,cls)=>'class="'+cls+' rv'+(seen.has(key)?' in inst':'')+'" data-rk="'+key+'" style="--i:'+(i||0)+'"';
+function head(key,title,sub,right){return '<div class="sh"><div '+rv(key+'-h',0)+'><h2 class="tt"><span>'+title+'</span></h2><p class="sub">'+sub+'</p></div>'+(right||'')+'</div>'}
+function focusList(M){const f=[];const d=M.d;
+if(M.nh&&M.dc<M.nh){const left=st.habits.filter(h=>!M.dn[h.id]);f.push({pill:1,a:'hb',id:left[0].id,t:'Отметить: '+left[0].name.toLowerCase()})}
+M.open.filter(x=>dleft(x.due)<=3).slice(0,2).forEach(x=>{const n=dleft(x.due);f.push({go:'s-ring',c:'var(--pink)',t:x.task+', '+x.subj.toLowerCase()+': '+(n<0?'просрочено на '+(-n)+' дн.':n===0?'сегодня':'через '+n+' '+plural(n,'день','дня','дней'))})});
+if(M.isT&&d.sleep==null)f.push({go:'s-neb',c:'var(--ice)',t:'Записать, сколько спал'});
+else if(M.isT&&M.hr>=12&&(d.water||0)<GOAL.water)f.push({go:'s-neb',c:'var(--ice)',t:'Вода: ещё '+fmt(GOAL.water-(d.water||0),2)+' л'});
+{const W=wmodel(TODAY.slice(0,7)),ws=wstatus();if(ws.live)f.push({go:'s-work',c:'var(--ice)',t:'Смена идёт, осталось '+dur(ws.left)});else if(ws.nextD&&iso(ws.nextD)===TODAY)f.push({go:'s-work',c:'var(--ice)',t:'Сегодня смена в '+st.work.start});
+if(W.need.length)f.push({go:'s-work',c:'var(--pink)',t:'Внести оплату: '+W.need.length+' '+plural(W.need.length,'смена','смены','смен')})}
+if(M.over)f.push({go:'s-pla',c:'var(--teal)',t:'Траты выше плана на '+fmt(M.spent-st.budget*M.pace,0)+' '+st.cur});
+return f.slice(0,4)}
+function vGal(M){
+const pct=M.nh?Math.round(M.dc/M.nh*100):0,full=M.nh>0&&M.dc===M.nh;
+let h='<div class="top in0" style="--d:.1s"><b>Моя рутина</b><span class="sy" data-sy aria-live="polite">'+(SYT[sync]||'')+'</span></div>';
+h+='<div class="date in0" style="--d:.25s"><div><div class="d">'+(M.isT?greet():'Другой день')+'</div><div style="font-size:18px">'+longDate(sel)+'</div></div><div class="dnav"><button data-a="pd" aria-label="Предыдущий день">‹</button><button data-a="nd" aria-label="Следующий день"'+(sel>=TODAY?' disabled':'')+'>›</button></div></div>';
+h+='<div class="score in0" style="--d:.4s"><b role="img" aria-label="Выполнено '+pct+'%">'+nv('pct'+sel,pct,0)+'<i>%</i></b><span>'+(full?'все привычки выполнены':'день собран, '+M.dc+' из '+M.nh+' '+plural(M.nh,'привычки','привычек','привычек'))+'</span></div>';
+const L=[
+{c:'l1',go:'s-neb',s:'Ритм',v:M.dc+' из '+M.nh,attn:false},
+{c:'l2 r',go:'s-neb',s:'Тело',v:M.d.sleep!=null?'сон '+fmt(M.d.sleep)+' ч':'сон?',attn:M.isT&&M.d.sleep==null},
+{c:'l3',go:'s-ring',s:'Учёба',v:M.nx?(M.nd<0?'просрочено':M.nd===0?'сегодня':M.nd+' '+plural(M.nd,'день','дня','дней')):'свободно',attn:M.nx&&M.nd<=2},
+{c:'l4 r',go:'s-pla',s:'Деньги',v:fmt(M.spent,0)+' '+st.cur,attn:M.over}];
+h+='<div class="stage" id="a-gal">'+L.map((l,i)=>{const r=l.c.indexOf(' r')>0,dly=(.9+i*.12)+'s';
+const t='<span class="t"><small>'+l.s+'</small><b>'+esc(l.v)+'</b></span>',ln='<span class="ln" style="--d:'+dly+'"></span>',dt='<span class="dt"></span>';
+return '<button class="lab press '+l.c+(l.attn?' attn':'')+' in0" style="--d:'+dly+'" data-go="'+l.go+'" aria-label="'+l.s+': '+esc(l.v)+'">'+(r?dt+ln+t:t+ln+dt)+'</button>'}).join('')+'</div>';
+const F=focusList(M);
+h+='<div class="focus in0" style="--d:1.4s"><h3>Что важно сейчас</h3>';
+if(!F.length)h+='<div class="calm">Всё под контролем. Хорошего дня.</div>';
+F.forEach(x=>{h+=x.pill?'<button class="pill press" data-a="hb" data-id="'+x.id+'" data-fx="pill">'+esc(x.t)+'</button>':'<button class="fi" data-go="'+x.go+'" style="--c:'+x.c+'"><i></i><span>'+esc(x.t)+'</span><em>›</em></button>'});
+h+='</div>';
+const TP=tips(sel),PL=plan(sel),nowM=new Date().getHours()*60+new Date().getMinutes();let cur=-1;if(M.isT)PL.forEach((x,i)=>{if(x.t<=nowM)cur=i});
+h+='<div class="card pad in0" style="--d:1.5s;margin-top:14px"><h3>Помощник</h3>'+TP.list.map(x=>'<div class="tip" style="--c:'+x[0]+'"><i></i><span>'+esc(x[1])+'</span></div>').join('')+'<div class="tip day"><i style="--c:var(--dim)"></i><span>Совет дня: '+esc(TP.day)+'</span></div><button class="btn ghost press" data-plan="main" style="margin-top:12px">Весь план до июля</button></div>';
+h+='<div class="card pad in0" style="--d:1.6s"><div class="row sp"><h3 style="margin:0">Режим на '+(M.isT?'сегодня':shortDate(sel))+'</h3></div><div class="dtype" style="margin-top:10px">'+DTN[dayType(sel)]+'</div>'+PL.map((x,i)=>'<div class="tl k-'+x.k+(M.isT&&i<cur?' past':'')+(i===cur?' now':'')+'"><span class="tm">'+hm(x.t)+'</span><span class="dt"></span><span class="tx">'+esc(x.x)+(i===cur?'<span class="nowchip">сейчас</span>':'')+'</span></div>').join('')+'</div>';
+const empty=!Object.keys(st.days).length&&!st.spend.length&&!st.dl.length;
+if(empty)h+='<div class="demo in0" style="--d:1.6s"><span>Пока пусто. Посмотреть с примером?</span><button class="btn ghost sm press" data-a="seed">Показать</button></div>';
+else if(hasDemo())h+='<div class="demo"><span>Это пример данных</span><button class="btn ghost sm press" data-a="unseed">Убрать</button></div>';
+return h}
+const MET={sleep:['Сон','ч',.5,16],water:['Вода','л',.25,6],sport:['Спорт','мин',15,300],mood:['Настроение','/10',1,10],deep:['Глубокая работа','ч',.5,16],study:['Учёба сегодня','ч',.5,16]};
+let grown=null;
+function tile(key,i,wide,c){const m=MET[key],v=day(sel)[key],g=GOAL[key],W=week(),vals=W.map(k=>day(k)[key]||0),mx=Math.max(...vals,g||0,1);
+return '<div '+rvc('t-'+key,i,'tile'+(wide?' wide':''))+'><div class="k"><span>'+m[0]+'</span>'+(g?'<span>цель '+fmt(g)+'</span>':'')+'</div><div class="v">'+(v==null?'—':nv('m'+key+sel,v,2)+'<small>'+m[1]+'</small>')+'</div><div class="spk" aria-hidden="true" style="--c:'+(c||'var(--ice)')+'">'+vals.map((x,j)=>'<i class="'+(j===6?'t'+(grown&&grown.k===key?' grow':''):'')+'" style="--h:'+Math.max(.06,x/mx).toFixed(3)+(j===6&&grown&&grown.k===key?';--h0:'+Math.max(.06,grown.f/mx).toFixed(3):'')+'"></i>').join('')+'</div><div class="stp"><button data-a="adj" data-k="'+key+'" data-s="-1" aria-label="Меньше: '+m[0]+'">−</button><button data-a="adj" data-k="'+key+'" data-s="1" aria-label="Больше: '+m[0]+'">+</button></div></div>'}
+function vNeb(M){const W=week();
+let h=head('neb','Ритм и тело','туманность, где рождается день','<button class="lnk" data-a="edit">'+(edit?'Готово':'Изменить')+'</button>');
+const best=st.habits.reduce((a,x)=>Math.max(a,streak(x.id)),0);
+h+='<div class="gap-neb" id="a-neb"><span class="mu">'+(best?'лучшая серия: '+best+' '+plural(best,'день','дня','дней'):'начни серию сегодня')+'</span></div>';
+h+='<div '+rvc('habits',0,'card')+'>'+(M.nh?st.habits.map(x=>{const on=M.dn[x.id],s=streak(x.id);return '<div class="hb'+(on?' done':'')+'"><button class="ck'+(on?' on':'')+'" data-a="hb" data-id="'+x.id+'" aria-label="'+esc(x.name)+'" aria-pressed="'+(on?'true':'false')+'">'+CHK+'</button><span class="n">'+esc(x.name)+'</span>'+(edit?'<button class="x" data-a="hdel" data-id="'+x.id+'" aria-label="Удалить привычку">×</button>':'<span class="meta"><small>'+(s?'серия '+s:'')+'</small><span class="wk" aria-label="За неделю: '+W.filter(k=>(day(k).done||{})[x.id]).length+' из 7">'+W.map(k=>'<i'+((day(k).done||{})[x.id]?' class="on"':'')+'></i>').join('')+'</span></span>')+'</div>'}).join(''):'<div class="calm">Привычек пока нет. Нажми «Изменить», чтобы добавить.</div>');
+if(edit)h+='<div class="addrow"><input id="hn" placeholder="Новая привычка" data-enter="#hadd" aria-label="Новая привычка"><button class="btn sm press" id="hadd" data-a="hadd">Добавить</button></div>';
+h+='</div>'+vFood()+vTrain()+vWeight()+'<div class="grid2">'+tile('sleep',0,0,'var(--ice)')+tile('water',1,0,'var(--ice)')+tile('sport',2,0,'var(--vio)')+tile('mood',3,0,'var(--vio)')+tile('deep',4,1,'var(--pink)')+'</div>';
+return h}
+function vFood(){const ms=mealsOf(sel),m=day(sel).meals||{},p=protein(sel);
+return '<div '+rvc('food',0,'card pad')+'><div class="row sp"><h3 style="margin:0">Питание '+(sel===TODAY?'сегодня':shortDate(sel))+'</h3><span class="mu">'+KCAL+' ккал, белок '+PROT+' г</span></div><div class="row sp" style="margin-top:12px;font-size:14px"><span>Белок</span><span class="num">'+nv('pr'+sel,p,0)+' / '+PROT+' г</span></div><div class="pbar"><i style="--w:'+Math.min(1,p/PROT).toFixed(3)+'"></i></div>'+ms.map((x,i)=>'<div class="meal'+(m[i]?' done':'')+'"><button class="ck'+(m[i]?' on':'')+'" data-a="meal" data-i="'+i+'" aria-label="'+esc(x[1])+'" aria-pressed="'+(!!m[i])+'">'+CHK+'</button><div class="t"><b>'+esc(x[1])+'</b><span>'+x[0]+', белок '+x[2]+' г</span></div></div>').join('')+'<button class="plk" data-plan="food">Меню, заготовки и покупки</button></div>'}
+function vTrain(){const tr=trainFor(sel);let h='<div '+rvc('train',0,'card pad')+'><div class="row sp"><h3 style="margin:0">Тренировка</h3><span class="mu">'+(sel<GYM?'дома до 18 января':'зал')+'</span></div>';
+if(!tr.w)return h+'<div class="calm">'+esc(tr.why)+'.</div></div>';const ex=(st.train.ex[sel]||{});
+h+='<div style="font-size:20px;font-weight:300;margin:10px 0 4px">'+esc(tr.w.n)+(tr.light?' <span class="mu">(на лёгком уровне)</span>':'')+'</div>'+tr.w.ex.map((x,i)=>'<div class="ex'+(ex[i]?' done':'')+'"><button class="ck'+(ex[i]?' on':'')+'" data-a="tex" data-i="'+i+'" aria-label="'+esc(x[0])+'" aria-pressed="'+(!!ex[i])+'">'+CHK+'</button><span class="t">'+esc(x[0])+'</span><span class="r">'+x[1]+'</span></div>').join('');
+return h+'<button class="btn press" data-a="tdone" style="margin-top:12px">'+(tr.done?'Отменить отметку':'Тренировка выполнена')+'</button><button class="plk" data-plan="sport">Вся программа</button></div>'}
+const planKg=k=>{const t=(parse(k)-parse(WSTART))/(parse(WEND)-parse(WSTART));return WKG0+(WKG1-WKG0)*Math.max(0,Math.min(1,t))};
+function vWeight(){const W=st.weights,ks=Object.keys(W).sort(),last=ks[ks.length-1],cur=last?W[last]:WKG0,pl=planKg(TODAY),df=cur-planKg(last||TODAY);
+const X=k=>20+(parse(k)-parse(WSTART))/(parse(WEND)-parse(WSTART))*320,Y=v=>10+(94-v)/(94-74)*90;
+let svg='<svg class="wchart" viewBox="0 0 360 120" aria-hidden="true"><rect x="20" y="'+Y(79)+'" width="320" height="'+(Y(75)-Y(79))+'" fill="rgba(127,224,230,.08)"/><line x1="'+X(WSTART)+'" y1="'+Y(WKG0)+'" x2="'+X(WEND)+'" y2="'+Y(WKG1)+'" stroke="rgba(238,241,255,.35)" stroke-dasharray="4 4"/>'+ks.map(k=>'<circle cx="'+X(k).toFixed(1)+'" cy="'+Y(W[k]).toFixed(1)+'" r="3.5" fill="#7fe0e6"/>').join('')+'<text x="20" y="116" fill="rgba(238,241,255,.4)" font-size="9">ноябрь</text><text x="340" y="116" text-anchor="end" fill="rgba(238,241,255,.4)" font-size="9">июнь, цель 75–79</text></svg>';
+return '<div '+rvc('wt',0,'card pad')+'><div class="row sp"><h3 style="margin:0">Вес</h3><span class="mu">план на сегодня '+fmt(pl,1)+' кг</span></div><div class="row sp" style="align-items:flex-end;margin-top:8px"><div class="cashbig"><b>'+nv('wk',cur,1)+'<small style="font-size:16px;color:var(--mute)"> кг</small></b></div><span class="mu" style="text-align:right">'+(last?(Math.abs(df)<.3?'точно по плану':df>0?'выше плана на '+fmt(df,1)+' кг':'ниже плана на '+fmt(-df,1)+' кг'):'')+'<br>старт 92 кг, '+fmt(WKG0-cur,1)+' кг уже ушло</span></div>'+svg+'<div class="row"><input id="w-kg" inputmode="decimal" placeholder="вес сегодня, кг" aria-label="Вес сегодня" data-enter="#w-go"><button class="btn sm press" id="w-go" data-a="wlog">Записать</button></div></div>'}
+let newDl=null;
+function vRing(M){
+let h=head('ring','Учёба','дедлайны затягивают, как чёрная дыра','<button class="lnk" data-plan="study">План учёбы</button>');
+h+='<div class="ringbox" id="a-ring">'+(M.nx?'<b>'+(M.nd<0?'!':nv('nd',M.nd,0))+'</b><span>'+(M.nd<0?'просрочено: ':M.nd===0?'сегодня: ':plural(M.nd,'день','дня','дней')+' до: ')+esc(M.nx.task.toLowerCase())+'</span>':'<b>0</b><span>дедлайнов нет, свободная орбита</span>')+'</div>';
+const L=[...st.dl].sort((a,b)=>(a.done-b.done)||a.due.localeCompare(b.due));
+h+='<div '+rvc('dls',0,'card')+'>'+(L.length?L.map(x=>{const n=dleft(x.due);return '<div class="dl'+(x.done?' done':'')+(newDl===x.id?' new':'')+'" data-row="'+x.id+'"><button class="ck'+(x.done?' on':'')+'" data-a="dlt" data-id="'+x.id+'" aria-label="Выполнено: '+esc(x.task)+'" aria-pressed="'+(x.done?'true':'false')+'">'+CHK+'</button><div class="t"><b>'+esc(x.task)+'</b><span>'+esc(x.subj)+', '+shortDate(x.due)+'</span></div>'+(x.done?'':'<span class="chip'+(n<0?' bad':n<=3?' warn':'')+'">'+(n<0?'просрочено':n===0?'сегодня':n+' '+plural(n,'день','дня','дней'))+'</span>')+'<button class="x" data-a="dld" data-id="'+x.id+'" aria-label="Удалить">×</button></div>'}).join(''):'<div class="calm">Дедлайнов нет.</div>')+'</div>';
+h+='<div '+rvc('dladd',1,'card pad')+'><h3>Новый дедлайн</h3><div class="gapf"><div class="grid2"><div><label for="dl-s">Предмет</label><input id="dl-s" placeholder="Физика"></div><div><label for="dl-d">Срок</label><input id="dl-d" type="date" value="'+addD(TODAY,1)+'"></div></div><div><label for="dl-t">Задача</label><input id="dl-t" placeholder="Лабораторная №3" data-enter="#dl-go"></div><button class="btn press" id="dl-go" data-a="dladd">Добавить дедлайн</button></div></div>';
+h+='<div class="grid2">'+tile('study',2,1,'var(--ice)')+'</div>';
+return h}
+const WD=['пн','вт','ср','чт','пт','сб','вс'];
+const wdate=k=>{const d=parse(k);return WD[(d.getDay()+6)%7]+', '+d.getDate()+' '+MN[d.getMonth()]};
+function vWork(){const W=wmodel(wm),S=st.work.shifts,t=wtext(),R0=82,C=2*Math.PI*R0;
+let h=head('work','Работа','ночные смены '+st.work.start+'–'+st.work.end,'<button class="lnk" data-a="wset">'+(wset?'Готово':'Настроить')+'</button>');
+h+='<div class="starbox" id="a-star"><svg class="shiftring" viewBox="-90 -90 180 180" aria-hidden="true"><circle class="tr" r="'+R0+'"/><circle class="fg" id="st-fg" data-c="'+C.toFixed(1)+'" r="'+R0+'" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-t.fr)).toFixed(1)+'"/></svg><b id="st-b">'+esc(t.b)+'</b><span id="st-s">'+esc(t.s)+'</span></div>';
+if(wset)h+='<div class="card pad"><div class="gapf"><div class="grid2"><div><label for="w-start">Начало смены</label><input id="w-start" type="time" value="'+st.work.start+'"></div><div><label for="w-end">Конец смены</label><input id="w-end" type="time" value="'+st.work.end+'"></div></div><div class="grid2"><div><label for="w-rate">Оплата по умолчанию</label><input id="w-rate" inputmode="numeric" placeholder="0" value="'+(st.work.rate||'')+'"></div><div><label for="w-goal">Цель на месяц</label><input id="w-goal" inputmode="numeric" placeholder="не задана" value="'+(st.work.goal||'')+'"></div></div></div></div>';
+const mo=parse(wm+'-15');
+h+='<div class="wst">'+[['Смены',nv('ws'+wm,W.ks.length,0),W.fut.length?'впереди '+W.fut.length:'в этом месяце'],['Часы',nv('wh'+wm,W.hours,0),'по '+fmt(W.H)+' ч за смену'],['Заработано',nv('we'+wm,W.earned,0),esc(st.cur)+', '+W.paid.length+' '+plural(W.paid.length,'смена','смены','смен')],['В час',nv('wp'+wm,Math.round(W.perH),0),esc(st.cur)+', средняя за смену '+fmt(Math.round(W.avg),0)]].map((x,i)=>'<div '+rvc('wt'+i,i,'tile')+'><div class="k"><span>'+x[0]+'</span></div><div class="v">'+x[1]+'</div><div class="s">'+x[2]+'</div></div>').join('')+'</div>';
+const tgt=st.work.goal>0?st.work.goal:Math.max(W.forecast,1);
+h+='<div '+rvc('wfc',0,'card pad')+'><div class="row sp"><h3 style="margin:0">'+(st.work.goal>0?'Цель на '+MNN[mo.getMonth()]:'Прогноз на '+MNN[mo.getMonth()])+'</h3><span class="mu">'+(st.work.goal>0?'прогноз '+fmt(Math.round(W.forecast),0):'по средней смене')+'</span></div><div class="total" style="margin-top:8px"><b style="font-size:44px">'+nv('wf'+wm,Math.round(st.work.goal>0?st.work.goal:W.forecast),0)+' '+esc(st.cur)+'</b></div><div class="bud ice" style="--w:'+Math.min(1,W.earned/tgt).toFixed(3)+';--p:'+Math.min(1,W.forecast/tgt).toFixed(3)+'"><i></i><em></em></div><div class="mu">'+(st.work.goal>0?(W.earned>=st.work.goal?'цель достигнута':'осталось '+fmt(st.work.goal-W.earned,0)+' '+esc(st.cur)+', черта: прогноз'):'заработано '+fmt(W.earned,0)+', черта: прогноз с учётом смен впереди')+'</div></div>';
+const first=parse(wm+'-01'),dim=new Date(first.getFullYear(),first.getMonth()+1,0).getDate(),off=(first.getDay()+6)%7;
+let cells='';for(let i=0;i<off;i++)cells+='<span></span>';
+for(let dd=1;dd<=dim;dd++){const k=wm+'-'+pad(dd),on=S[k]!=null,cls='cd'+(on?' on':'')+(on&&k>TODAY?' fut':'')+(k===TODAY?' tod':'')+(wign===k?' ign':'')+(wfade===k?' fade':'');
+cells+='<button class="'+cls+'" data-a="cal" data-d="'+k+'" aria-pressed="'+on+'" aria-label="'+dd+' '+MN[first.getMonth()]+(on?', смена':'')+'">'+dd+(on&&S[k]>0?'<i class="pd"></i>':'')+'</button>'}
+h+='<div '+rvc('wcal',0,'card pad')+'><div class="calh"><button data-a="wm" data-s="-1" aria-label="Предыдущий месяц">‹</button><b>'+MNN[first.getMonth()][0].toUpperCase()+MNN[first.getMonth()].slice(1)+' '+first.getFullYear()+'</b><button data-a="wm" data-s="1" aria-label="Следующий месяц">›</button></div><div class="cgrid'+(wdir?' sl-'+wdir:'')+'">'+WD.map(x=>'<span class="wd">'+x+'</span>').join('')+cells+'</div><div class="cnote">Нажми на день, чтобы добавить или убрать смену. Точка: оплата внесена.</div><button class="plk" data-plan="week">Какие ночи брать</button></div>';
+const past=W.ks.filter(k=>k<=TODAY).reverse(),fu=W.fut;
+h+='<div '+rvc('wpay',0,'card pad')+'><h3>Оплата за смену</h3>'+(past.length?past.map(k=>{const need=k<TODAY&&!(S[k]>0);return '<div class="pay'+(need?' need':'')+'"><div class="t"><b>'+wdate(k)+'</b><span>'+(need?'внеси сумму':k===TODAY?'сегодня':'')+'</span></div><input inputmode="numeric" data-pay="'+k+'" value="'+(S[k]>0?S[k]:'')+'" placeholder="'+(W.avg?fmt(Math.round(W.avg),0):'0')+'" aria-label="Оплата за '+shortDate(k)+'"></div>'}).join(''):'<div class="calm">В этом месяце смен пока не было.</div>')+(fu.length?'<div class="wsub">Впереди</div>'+fu.map(k=>'<div class="pay fut"><div class="t"><b>'+wdate(k)+'</b><span>через '+dleft(k)+' '+plural(dleft(k),'день','дня','дней')+'</span></div></div>').join(''):'')+'</div>';
+return h}
+function vPla(M){
+const by={};M.ms.forEach(s=>by[s.cat]=(by[s.cat]||0)+s.amt);const cats=Object.entries(by).sort((a,b)=>b[1]-a[1]),mx=cats.length?cats[0][1]:1,left=st.budget-M.spent;
+const C=cash();let hc='<div '+rvc('cash',0,'card pad')+' style="margin-top:28px"><div class="row sp"><h3 style="margin:0">До поступления</h3><span class="mu">'+(C.nx?esc(C.nx.n)+', '+shortDate(C.nx.d):'поступлений нет')+'</span></div><div class="cashbig" style="margin-top:10px"><b>'+nv('cper',C.per,0)+' '+esc(st.cur)+'</b><span>можно тратить в день'+(C.nx?', осталось '+C.days+' '+plural(C.days,'день','дня','дней'):'')+'</span></div><div class="row sp" style="margin-top:12px;font-size:14px"><span>Сегодня потрачено</span><span class="num">'+fmt(C.today,0)+' / '+fmt(C.per,0)+'</span></div><div class="pbar"><i style="--w:'+(C.per?Math.min(1,C.today/C.per):0).toFixed(3)+'"></i></div><div class="mu">На руках примерно '+fmt(C.bal,0)+' '+esc(st.cur)+', впереди обязательных '+fmt(C.fx,0)+', резерв '+fmt(st.cash.reserve,0)+'.</div>';
+hc+='<div class="wsub" style="margin-top:16px">Поступления</div>'+st.cash.inc.slice().sort((a,b)=>a.d.localeCompare(b.d)).map(i=>{const amt=i.salary&&!i.amt?salaryAmt(i):i.amt;return '<div class="inc'+(i.got?' ok':'')+'"><div class="t"><b>'+esc(i.n)+'</b><span>'+shortDate(i.d)+', '+(i.salary&&!i.amt?'прогноз ':'')+fmt(amt,0)+' '+esc(st.cur)+'</span></div>'+(i.got?'<span class="chip">пришло</span>':(i.salary?'<input inputmode="numeric" data-incamt="'+i.id+'" placeholder="сумма" aria-label="Сумма зарплаты">':'')+'<button class="btn ghost sm press" data-a="inc" data-id="'+i.id+'">Пришло</button>')+'</div>'}).join('');
+hc+='<div class="wsub">Обязательные платежи</div>'+st.cash.fix.slice().sort((a,b)=>a.d.localeCompare(b.d)).map(f=>'<div class="inc'+(f.paid?' ok':'')+'"><div class="t"><b>'+esc(f.n)+'</b><span>до '+shortDate(f.d)+', '+fmt(f.amt,0)+' '+esc(st.cur)+'</span></div>'+(f.paid?'<span class="chip">оплачено</span>':'<button class="btn ghost sm press" data-a="fix" data-id="'+f.id+'">Оплатил</button>')+'</div>').join('');
+hc+='<div class="row" style="margin-top:14px"><input id="cash-now" inputmode="numeric" placeholder="сколько на руках сейчас" aria-label="Сколько денег на руках" data-enter="#cash-go"><button class="btn sm press" id="cash-go" data-a="cashset">Уточнить</button></div><button class="plk" data-plan="money">Распределить зарплату и подушка</button></div>';
+let h=head('pla','Деньги',MNN[parse(TODAY).getMonth()]+', бюджет '+fmt(st.budget,0)+' '+esc(st.cur));
+h+=hc+'<div '+rvc('total',0,'total')+' id="a-total" style="margin-top:28px;--i:0"><b>'+nv('mt',M.spent,0)+' '+esc(st.cur)+'</b><span>'+(left>=0?'осталось '+fmt(left,0):'перерасход '+fmt(-left,0))+' '+esc(st.cur)+', черта: план на сегодня</span>';
+{const W=wmodel(TODAY.slice(0,7));if(W.earned>0)h+='<div class="mu" style="margin-top:6px">доход со смен '+fmt(W.earned,0)+' '+esc(st.cur)+', баланс '+(W.earned-M.spent>=0?'+':'−')+fmt(Math.abs(W.earned-M.spent),0)+'</div>'}
+h+='<div class="bud'+(M.over?' over':'')+'" style="--w:'+Math.min(1,M.spent/st.budget).toFixed(3)+';--p:'+M.pace.toFixed(3)+'"><i></i><em></em></div>';
+h+=(cats.length?cats.map((c,i)=>'<div class="cat" style="--i:'+i+'"><div class="row sp"><span>'+esc(c[0])+'</span><span class="num">'+fmt(c[1],0)+'</span></div><div class="cb"><i style="--w:'+(c[1]/mx).toFixed(3)+'"></i></div></div>').join(''):'<div class="calm">Трат в этом месяце пока нет.</div>')+'</div>';
+h+='<div class="horizon" id="a-hz"></div><div class="under">';
+h+='<div '+rvc('spadd',0,'card pad')+'><h3>Новая трата'+(sel!==TODAY?' за '+shortDate(sel):'')+'</h3><div class="gapf"><div class="grid2"><div><label for="m-amt">Сумма, '+esc(st.cur)+'</label><input id="m-amt" inputmode="decimal" placeholder="2500" data-enter="#m-go"></div><div><label for="m-cat">Категория</label><select id="m-cat">'+st.cats.map(c=>'<option>'+esc(c)+'</option>').join('')+'</select></div></div><div><label for="m-note">Заметка</label><input id="m-note" placeholder="необязательно" data-enter="#m-go"></div><button class="btn press" id="m-go" data-a="addsp">Записать</button></div></div>';
+const R=[...M.ms].sort((a,b)=>b.d.localeCompare(a.d)||b.id-a.id).slice(0,20);
+if(R.length)h+='<div '+rvc('recent',1,'card')+'>'+R.map(s=>'<div class="li"><div class="t"><b>'+esc(s.cat)+(s.note?', '+esc(s.note):'')+'</b><span>'+shortDate(s.d)+'</span></div><span class="num">'+fmt(s.amt,0)+'</span><button class="x" data-a="spd" data-id="'+s.id+'" aria-label="Удалить трату">×</button></div>').join('')+'</div>';
+h+='<div '+rvc('set',2,'card pad')+'><div class="grid2"><div><label for="bud">Бюджет на месяц</label><input id="bud" inputmode="numeric" value="'+st.budget+'"></div><div><label for="cur">Валюта</label><input id="cur" value="'+esc(st.cur)+'" maxlength="6"></div></div></div>';
+return h+'</div>'}
+/* ================= рендер ================= */
+const SEC={gal:document.getElementById('s-gal'),neb:document.getElementById('s-neb'),ring:document.getElementById('s-ring'),work:document.getElementById('s-work'),pla:document.getElementById('s-pla')};
+const VIEW={gal:vGal,neb:vNeb,ring:vRing,work:vWork,pla:vPla};
+const io=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');seen.add(e.target.dataset.rk);io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'}):null;
+function countUp(el,from,to,d,D){const t0=performance.now();D=D||500;(function f(t){const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*e,d);if(k<1)requestAnimationFrame(f)})(t0)}
+function render(which){
+const M=model();(which||['gal','neb','ring','work','pla']).forEach(k=>{SEC[k].innerHTML=VIEW[k](M)});
+document.querySelectorAll('.cu[data-k]').forEach(el=>{const k=el.dataset.k,v=+el.dataset.v,d=+el.dataset.d,f=pv[k];pv[k]=v;
+if(RM.matches)return;if(f==null&&k.startsWith('pct')&&!booted){el.textContent='0';setTimeout(()=>countUp(el,0,v,d,1400),500)}else if(f!=null&&f!==v){el.textContent=fmt(f,d);countUp(el,f,v,d)}});
+document.querySelectorAll('.rv:not(.in)').forEach(el=>{if(io&&!RM.matches)io.observe(el);else el.classList.add('in')});
+grown=null;newDl=null;wign=null;wfade=null;wdir='';FX.anchors();FX.set(M.nh?M.dc/M.nh:0);spy()}
+/* ================= эффекты действий ================= */
+function sparks(el,c){if(RM.matches||!el)return;for(let i=0;i<10;i++){const s=document.createElement('i');s.className='spark';const a=Math.PI*2*i/10+Math.random()*.4,r=26+Math.random()*22;
+s.style.setProperty('--x',(Math.cos(a)*r).toFixed(1)+'px');s.style.setProperty('--y',(Math.sin(a)*r).toFixed(1)+'px');if(c)s.style.setProperty('--c',c);el.appendChild(s);setTimeout(()=>s.remove(),700)}}
+function suck(row,done){const ring=document.getElementById('a-ring');if(RM.matches||!row||!ring||!row.animate){done();return}
+const a=row.getBoundingClientRect(),b=ring.getBoundingClientRect(),dx=b.left+b.width/2-(a.left+a.width/2),dy=b.top+b.height/2-(a.top+a.height/2);
+row.style.position='relative';row.style.zIndex=5;
+const an=row.animate([{transform:'none',opacity:1},{transform:'translate('+dx*.35+'px,'+dy*.35+'px) scale(.7) rotate(-20deg)',opacity:.9,offset:.45},{transform:'translate('+dx+'px,'+dy+'px) scale(.04) rotate(-220deg)',opacity:0}],{duration:750,easing:'cubic-bezier(.55,0,.75,.2)',fill:'forwards'});
+an.onfinish=done}
+function meteor(from,done){const to=document.getElementById('a-total');if(RM.matches||!from||!to||!document.body.animate){done();return}
+const a=from.getBoundingClientRect(),b=to.getBoundingClientRect(),m=document.createElement('i');m.className='meteor';document.body.appendChild(m);
+const x0=a.left+a.width/2,y0=a.top+a.height/2,x1=b.left+60,y1=b.top+30;
+const an=m.animate([{transform:'translate('+x0+'px,'+y0+'px) scale(.6)',opacity:0},{transform:'translate('+(x0+x1)/2+'px,'+(Math.min(y0,y1)-120)+'px) scale(1.3)',opacity:1,offset:.5},{transform:'translate('+x1+'px,'+y1+'px) scale(.4)',opacity:0}],{duration:800,easing:'cubic-bezier(.45,0,.2,1)'});
+an.onfinish=()=>{m.remove();done()}}
+/* второе нажатие подтверждает удаление смены с внесённой оплатой */
+let delArm=null;function confirmDel(btn,k){if(delArm===k){delArm=null;return true}delArm=k;btn.style.boxShadow='0 0 0 2px var(--pink)';btn.setAttribute('aria-label','Нажми ещё раз, чтобы убрать смену с оплатой');setTimeout(()=>{if(delArm===k){delArm=null;btn.style.boxShadow=''}},2500);return false}
+/* ================= прокрутка и док ================= */
+const dock=document.getElementById('dock'),ORDER=['s-gal','s-neb','s-ring','s-work','s-pla'];
+let scrollAnim=0;
+function goTo(id){buzz(8);const el=document.getElementById(id);if(!el)return;const y=id==='s-gal'?0:el.getBoundingClientRect().top+scrollY-10;
+if(RM.matches){scrollTo(0,y);return}cancelAnimationFrame(scrollAnim);const y0=scrollY,dy=y-y0,D=Math.min(1400,500+Math.abs(dy)*.35),t0=performance.now();
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;(function f(t){const k=Math.min(1,(t-t0)/D);scrollTo(0,y0+dy*ease(k));if(k<1)scrollAnim=requestAnimationFrame(f)})(t0)}
+function spy(){const y=innerHeight*.45;let cur=0;ORDER.forEach((id,i)=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=y)cur=i});
+dock.style.setProperty('--i',cur);dock.querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('on',i===cur);if(i===cur)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')})}
+addEventListener('wheel',()=>cancelAnimationFrame(scrollAnim),{passive:true});addEventListener('touchstart',()=>cancelAnimationFrame(scrollAnim),{passive:true});
+let sq=0;addEventListener('scroll',()=>{if(!sq)sq=requestAnimationFrame(()=>{sq=0;spy()})},{passive:true});
+dock.addEventListener('click',e=>{const p=e.target.closest('[data-plan]');if(p){if(popen)closePlan();else openPlan(p.dataset.plan);return}const b=e.target.closest('[data-go]');if(b){if(popen)closePlan();goTo(b.dataset.go)}});
+/* ================= действия ================= */
+const app=document.querySelector('.wrap');
+app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.pay){e.target.blur();return}if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.enter){const b=document.querySelector(e.target.dataset.enter);if(b)b.click()}});
+app.addEventListener('change',e=>{const t=e.target;
+if(t.dataset&&t.dataset.pay){const k=t.dataset.pay,v=num(t.value);st.work.shifts[k]=v>0?Math.round(v):0;save();if(v>0){buzz(8);FX.pulse('W',.7)}render(['gal','work','pla']);return}
+if(t.id==='w-start'||t.id==='w-end'){if(/^\d\d:\d\d$/.test(t.value)){st.work[t.id==='w-start'?'start':'end']=t.value;save();render(['gal','work'])}return}
+if(t.id==='w-rate'||t.id==='w-goal'){const v=num(t.value);st.work[t.id==='w-rate'?'rate':'goal']=v>0?Math.round(v):0;save();render(['work']);return}
+if(t.id==='cur'){st.cur=t.value.trim()||'₸';save();render(['gal','pla'])}
+else if(t.id==='bud'){const v=num(t.value);if(v>0){st.budget=Math.round(v);save();render(['gal','pla'])}else t.value=st.budget}});
+function toggleHabit(hid,fromPill){const was=!!(day(sel).done||{})[hid];
+setDay(sel,o=>{o.done=Object.assign({},o.done);if(o.done[hid])delete o.done[hid];else o.done[hid]=true});
+const M=model();const all=M.nh>0&&M.dc===M.nh;
+render(['gal','neb']);
+if(!was){buzz(all?[14,40,20,40,30]:10);const b=document.querySelector('#s-neb [data-a="hb"][data-id="'+hid+'"]');if(b){b.classList.add('pop');sparks(b,'var(--vio)')}
+if(fromPill){const p=document.querySelector('#s-gal .score b');sparks(p,'var(--ice)')}
+FX.pulse('K',all?1:.35)}}
+app.addEventListener('click',e=>{
+const g=e.target.closest('[data-go]');if(g){goTo(g.dataset.go);return}
+const pl=e.target.closest('[data-plan]');if(pl){openPlan(pl.dataset.plan);return}
+const a=e.target.closest('[data-a]');if(!a||a.disabled)return;const v=a.dataset.a,id=+a.dataset.id;
+if(v==='hb'){toggleHabit(a.dataset.id,a.dataset.fx==='pill');return}
+if(v==='seed'){buzz(10);seed();render();FX.pulse('K',.6);return}
+if(v==='unseed'){unseed();render();return}
+if(v==='pd'||v==='nd'){if(v==='pd')sel=addD(sel,-1);else if(sel<TODAY)sel=addD(sel,1);buzz(6);render();document.querySelectorAll('.sec').forEach(s=>{s.classList.remove('flash');void s.offsetWidth;s.classList.add('flash')});return}
+if(v==='adj'){const k=a.dataset.k,m=MET[k],cur=day(sel)[k]||0,n=Math.min(m[3],Math.max(0,Math.round((cur+(+a.dataset.s)*m[2])*100)/100));if(n===cur&&day(sel)[k]!=null)return;buzz(6);grown={k,f:cur};setDay(sel,o=>{o[k]=n});render(k==='study'?['gal','ring']:['gal','neb']);return}
+if(v==='edit'){edit=!edit;render(['neb']);if(edit){const i=document.getElementById('hn');if(i)i.focus()}return}
+if(v==='hdel'){st.habits=st.habits.filter(x=>x.id!==a.dataset.id);save();render(['gal','neb']);return}
+if(v==='hadd'){const i=document.getElementById('hn'),n=i.value.trim();if(!n){i.focus();return}st.habits.push({id:'h'+Date.now(),name:n.slice(0,60)});save();render(['gal','neb']);const ni=document.getElementById('hn');if(ni)ni.focus();return}
+if(v==='dlt'){const x=st.dl.find(y=>y.id===id);if(!x)return;
+if(!x.done){buzz([10,30,16]);a.classList.add('on','pop');suck(a.closest('.dl'),()=>{x.done=true;delete x.demo;save();FX.pulse('M',1);render(['gal','ring'])})}
+else{x.done=false;save();render(['gal','ring'])}return}
+if(v==='dld'){st.dl=st.dl.filter(y=>y.id!==id);save();render(['gal','ring']);return}
+if(v==='dladd'){const s=document.getElementById('dl-s'),t=document.getElementById('dl-t'),d=document.getElementById('dl-d');
+if(!t.value.trim()){t.style.borderColor='var(--bad)';t.placeholder='Напиши задачу';t.focus();return}
+if(!d.value){d.style.borderColor='var(--bad)';d.focus();return}
+const nid=Date.now();st.dl.push({id:nid,subj:s.value.trim().slice(0,40)||'Без предмета',task:t.value.trim().slice(0,80),due:d.value,done:false});save();buzz(10);newDl=nid;FX.pulse('M',.6);render(['gal','ring']);return}
+if(v==='addsp'){const i=document.getElementById('m-amt'),am=num(i.value);
+if(!(am>0)){i.style.borderColor='var(--bad)';i.placeholder='Сумма больше нуля';i.focus();return}
+const rec={id:Date.now(),d:sel,cat:document.getElementById('m-cat').value,amt:am,note:document.getElementById('m-note').value.trim().slice(0,80)};buzz(10);
+a.disabled=true;meteor(i,()=>{st.spend.push(rec);save();FX.pulse('A',1);render(['gal','pla'])});return}
+if(v==='cal'){const k=a.dataset.d,S=st.work.shifts;if(S[k]!=null){if(S[k]>0&&!confirmDel(a,k))return;delete S[k];wfade=k;buzz(6)}else{S[k]=st.work.rate||0;wign=k;buzz([10,30,14]);FX.pulse('W',1)}save();render(['gal','work','pla']);if(wign){const b=document.querySelector('#s-work [data-d="'+k+'"]');sparks(b,'#bcd6ff')}return}
+if(v==='wm'){const d=parse(wm+'-15');d.setMonth(d.getMonth()+(+a.dataset.s));wm=iso(d).slice(0,7);wdir=+a.dataset.s>0?'l':'r';buzz(6);render(['work']);return}
+if(v==='wset'){wset=!wset;render(['work']);return}
+if(v==='meal'){const i=a.dataset.i;let on=false;setDay(sel,o=>{o.meals=Object.assign({},o.meals);if(o.meals[i])delete o.meals[i];else{o.meals[i]=true;on=true}});render(['gal','neb']);if(on){buzz(8);const b=document.querySelector('#s-neb [data-a="meal"][data-i="'+i+'"]');if(b){b.classList.add('pop');sparks(b,'var(--teal)')}}return}
+if(v==='tex'){const i=a.dataset.i,E=st.train.ex[sel]=Object.assign({},st.train.ex[sel]);let on=!E[i];if(E[i])delete E[i];else E[i]=true;save();render(['neb']);if(on){buzz(6);const b=document.querySelector('#s-neb [data-a="tex"][data-i="'+i+'"]');if(b){b.classList.add('pop');sparks(b,'var(--vio)')}}return}
+if(v==='tdone'){const tr=trainFor(sel);if(tr.done)delete st.train.done[sel];else if(tr.code){st.train.done[sel]=tr.code;buzz([14,40,20]);FX.pulse('K',.7)}save();render(['gal','neb']);return}
+if(v==='wlog'){const i=document.getElementById('w-kg'),kg=num(i.value);if(!(kg>30&&kg<250)){i.style.borderColor='var(--bad)';i.placeholder='вес в кг, например 91,4';i.focus();return}st.weights[sel]=Math.round(kg*10)/10;save();buzz(8);render(['gal','neb']);return}
+if(v==='inc'){const it=st.cash.inc.find(x=>x.id===id);if(!it)return;if(it.salary){const inp=document.querySelector('[data-incamt="'+id+'"]'),val=inp?num(inp.value):0;it.amt=val>0?Math.round(val):salaryAmt(it)}it.got=true;save();buzz([10,30,14]);FX.pulse('A',1);render(['gal','pla']);return}
+if(v==='fix'){const f=st.cash.fix.find(x=>x.id===id);if(!f)return;f.paid=true;st.spend.push({id:Date.now(),d:TODAY,cat:'Обязательные',amt:f.amt,note:f.n});save();buzz(8);render(['gal','pla']);return}
+if(v==='cashset'){const i=document.getElementById('cash-now'),val=num(i.value);if(!(val>=0)||i.value.trim()===''){i.style.borderColor='var(--bad)';i.focus();return}st.cash.start=Math.round(val);st.cash.at=Date.now();st.cash.inc.forEach(x=>{if(x.d<=TODAY)x.got=true;if(x.got&&!x.amt&&x.salary)x.amt=salaryAmt(x)});st.cash.inc.forEach(x=>{if(x.got)x.amt=x.amt});st.cash.start-=st.cash.inc.filter(x=>x.got).reduce((s2,x)=>s2+x.amt,0);save();buzz(8);render(['gal','pla']);return}
+if(v==='spd'){st.spend=st.spend.filter(s=>s.id!==id);save();render(['gal','pla']);return}
+});
+/* ================= план до июля: справочник в выезжающей панели ================= */
+const PEND='2027-06-30';
+const PT=[['main','Главное'],['week','Неделя'],['day','Режим'],['sleep','Сон'],['food','Еда'],['sport','Спорт'],['money','Деньги'],['study','Учёба'],['goals','Цели'],['ask','Уточнить']];
+let ptab='main',popen=false,pfocus=null,pdt=null,pedit=false,psos=false,ptm=null,ptEnd=0;
+const monOf=k=>{const d=parse(k),off=(d.getDay()+6)%7;return addD(k,-off)};
+function P(){if(!st.plan||typeof st.plan!=='object')st.plan={};const p=st.plan,wk=monOf(TODAY);
+['price','todo','ask','note'].forEach(k=>{if(!p[k]||typeof p[k]!=='object')p[k]={}});
+if(!p.shop||p.shop.wk!==wk)p.shop={wk,got:{}};if(!p.rev||p.rev.wk!==wk)p.rev={wk,done:{}};
+if(!p.prep||typeof p.prep!=='object')p.prep={done:{}};if(!p.prep.done)p.prep.done={};if(!(p.saved>=0))p.saved=0;return p}
+const lastW=()=>{const k=Object.keys(st.weights).sort().pop();return k?st.weights[k]:WKG0};
+/* --- данные плана --- */
+const SHOP=[['Куриные окорочка, заморозка','3,5 кг',3.5,1351,'кг'],['Яйца','30 шт',1,1825,'30 шт'],['Творог','5 пачек по 200 г',5,415,'пачку'],['Кефир','2 пакета',2,410,'пакет'],['Гречка','1 кг',1,321,'кг'],['Рис','1 кг',1,345,'кг'],['Овсянка','1 кг',1,600,'кг',1],['Чечевица','0,5 кг',.5,700,'кг',1],['Картофель','2 кг',2,206,'кг'],['Капуста','1,5 кг',1.5,176,'кг'],['Морковь','1 кг',1,188,'кг'],['Лук','1 кг',1,122,'кг'],['Яблоки','1,5 кг',1.5,499,'кг'],['Бананы','0,5 кг',.5,900,'кг',1],['Хлеб социальный','2 буханки',2,99,'буханку']];
+const shopPrice=i=>{const v=P().price[i];return v>0?v:SHOP[i][3]};
+const shopCost=i=>Math.round(SHOP[i][2]*shopPrice(i));
+const PREP=['Курица: 1,7 кг окорочков со специями в духовку, 45 минут при 200°','Пока запекается: сварить 300 г гречки и 300 г риса','Потушить 1 кг капусты с морковью и луком','Суп на 3 л: 300 г чечевицы, 400 г курицы, 3 картофелины, морковь, лук','Сварить 10 яиц','Снять с курицы кожу, мясо с костей, разложить по 6–8 контейнерам. Третий день сразу в морозилку'];
+const DISH=[['Завтрак','Овсянка 70 г на воде, банан, омлет из 3 яиц',590,29],['Обед-контейнер','Гречка или рис 90 г сухой, курица 180 г, тушёная капуста с морковью 200 г, 1 ч. л. масла',750,60],['Перекус','Творог 0% 200 г и яблоко',250,36],['Ужин','Чечевичный суп с курицей 400 мл и хлеб, или картошка 250 г и 2 яйца',430,28],['Кефир','Кефир 1% 250 мл',100,8],['На выбор','Фрукт или одна сладость до 150 ккал',150,0]];
+const MT=[['D','Учёба без смены',['завтрак 06:45','обед 12:30–14:30','перекус 16:30','ужин 20:15','кефир, если голоден']],['A','Пары и ночная смена',['завтрак 06:45','обед 12:30','ужин 18:30','контейнер 23:30','творог 03:00']],['V','После смены',['08:30 кефир и банан, потом спать','обед 14:45','перекус 17:00','ужин 19:30']],['E','Выходной',['завтрак 08:30','обед 12:00','перекус 16:00','ужин 19:30']]];
+const FRULE=['Ешь каждые 3–4 часа и в каждом приёме белок: срывы идут от долгого голода, особенно после ночи.','Сладкое домой не покупаешь. Хочется — одна штука до 150 ккал после еды, не вместо неё.','Кола зеро до 0,5 л в день и не после 18:00 в дни без смены: в ней кофеин.','В холодильнике всегда «аварийный» белок: варёные яйца и творог. Голоден — сначала они.','Сорвался — не наказываешь себя голодом, следующий приём по плану.','Скидываешь больше 1 кг в неделю две недели подряд — добавь 100 г гречки в день. Вес стоит 3 недели — убери сладость и добавь 2 000 шагов.'];
+const DTS=[['A','А','Пары, ночью смена',[['06:30','Подъём, стакан воды, завтрак','eat'],['07:30','Выход, в дороге 15 минут повторения','move'],['08:30','Пары до 12:20','study'],['12:30','Обед из контейнера','eat'],['13:20','Дома: телефон в авиарежим, шторы','move'],['14:00','Сон перед сменой до 18:15','sleep'],['18:30','Ужин, собрать контейнеры на ночь','eat'],['19:30','Выход на работу','work']],'В понедельник пары до 15:20: до смены остаётся только 2 часа сна. Эту ночь лучше не брать.'],
+['B','Б','Ночь на смене',[['20:00','Начало смены, 1,5 л воды под рукой','work'],['22:00','Одна чашка кофе в окно 22:00–02:00. Энергетики не пьём','rule'],['23:30','Главная еда смены из контейнера','eat'],['03:00','Творог и яблоко. Самое сонное время: пройдись 5 минут, умойся холодной водой','eat'],['05:00','Без тяжёлой еды и кофе, чтобы потом уснуть','rule'],['08:00','Конец смены. Очки или капюшон по дороге: утренний свет «будит» мозг','work']],''],
+['V','В','После смены, днём пары',[['08:00','С работы сразу на учёбу, кефир и банан','move'],['10:30','Пары до 12:20 (если пара в 08:30 — ко второй половине)','study'],['13:20','Дома, небольшой обед','eat'],['13:45','Сон до 18:30','sleep'],['18:45','Ужин, прогулка 20–30 минут','eat'],['19:30','Лёгкие дела, повторение. Тренировки нет','study'],['23:00','Ночной сон до 07:00: режим возвращается за одну ночь','sleep']],''],
+['G','Г','После смены, без пар',[['08:30','Дома: 2 яйца и кефир, душ','eat'],['09:00','Сон до 14:30, темнота и тишина','sleep'],['14:45','Обед','eat'],['15:30','Учёба или дела','study'],['17:30','Тренировка на лёгком уровне, если поспал 5+ часов','train'],['19:30','Ужин','eat'],['23:00','Ночной сон до 07:30','sleep']],'Не отсыпайся до вечера: 4–5,5 часа днём, потом нормальная ночь.'],
+['G2','Г2','Между двумя сменами',[['08:30','Дома: лёгкий завтрак, душ','eat'],['09:00','Сон до 16:00, 7 часов','sleep'],['16:15','Обед','eat'],['16:45','Прогулка 30 минут, сборы','move'],['18:30','Ужин','eat'],['19:30','Выход на смену','work']],'Тренировки между сменами нет.'],
+['D','Д','Учебный день',[['06:30','Подъём, завтрак','eat'],['07:30','Выход (в пятницу подъём 08:00, выход 09:30)','move'],['08:30','Пары, обед из контейнера в перерыв','study'],['дома','Короткий сон 20 минут, не позже 16:30','sleep'],['затем','Учёба 1,5 часа: домашка и семинары','study'],['18:30','Тренировка','train'],['20:15','Ужин','eat'],['22:15','Экраны тусклее, сумка и контейнер на завтра','move'],['22:30','Сон 8 часов до 06:30','sleep']],''],
+['E','Е','Выходной',[['08:00','Подъём, не позже чем на 1,5 часа от буднего','eat'],['09:30','Учёба: самое сложное за неделю, 2 часа','study'],['12:00','Обед','eat'],['13:00','Магазин по списку и заготовки на 2–3 дня','eat'],['16:00','Свободно','move'],['17:30','Тренировка','train'],['19:30','Ужин, план на неделю на 10 минут','eat'],['23:00','Сон до 07:00','sleep']],'']];
+const WKD=[[1,'Пн','08:30–15:20','выход 07:30, дома 16:20','bad','во вторник пара в 08:30'],[2,'Вт','08:30–13:20','выход 07:30, дома 14:20','bad','в среду 08:30'],[3,'Ср','08:30–14:20','выход 07:30, дома 15:20','bad','в четверг 08:30'],[4,'Чт','08:30–12:20','выход 07:30, дома 13:20','ok','в пятницу пара в 10:30'],[5,'Пт','10:30–12:20','выход 09:30, дома 13:20','ok','суббота свободна'],[6,'Сб','пар нет','','ok','воскресенье свободно'],[7,'Вс','пар нет','','bad','в понедельник 08:30']];
+const SLEEP=['Считай сон за сутки, а не за ночь. Дневной сон перед сменой и после неё — настоящий сон, его нельзя резать ради дел.','Якорь: в дни без смен ложись и вставай в одно время (22:30–06:30), в выходные сдвиг не больше 1,5 часа.','После смены не отсыпайся до вечера: 4–5,5 часа днём, потом нормальная ночь.','Перед сменой спи днём хотя бы 2 часа, лучше 4. Вторая ночь 2/2 — 7 часов днём.','Темнота днём: шторы или маска для сна (около 1 500 ₸), беруши, телефон в авиарежиме. Самая дешёвая и сильная покупка из всего плана.','Кофеин: не больше одной чашки кофе в сутки, на смене — до 02:00. Энергетики и кола зеро после 18:00 в дни без смены сбивают сон.','Свет: утром в дни без смены 10 минут на улице, после ночной смены по дороге домой — наоборот, очки.','Проверка через 3 недели: если при 8+ часах сна в сутки сил всё ещё нет, сходи к терапевту: общий анализ крови, ферритин, витамин D.'];
+const GOALM=[['2026-12','Декабрь',[90,89],'89–90 кг, режим сна по типам дней держится',60000,'дожить до зарплаты без долгов, первые 60 000 в подушку','статусы предметов выяснены, сессия без «хвостов»'],['2027-01','Январь',[88,87],'87–88 кг, абонемент куплен, 3 тренировки в неделю',120000,'подушка 120 000','стипендия сохранена'],['2027-03','Февраль — март',[86,83],'83–86 кг, рабочие веса не падают',240000,'подушка 240 000','рубежные контроли без провалов'],['2027-05','Апрель — май',[82,79],'79–82 кг',360000,'подушка 360 000','подготовка к летней сессии заранее'],['2027-06','Июнь',[79,75],'75–79 кг',400000,'подушка около 400 000','сессия сдана, стипендия на следующий семестр']];
+const curGoal=()=>GOALM.find(g=>g[0]>=TODAY.slice(0,7))||GOALM[GOALM.length-1];
+const STODO=['Узнать у эдвайзера, что значит «Сәтсіз аяқталды» и что нужно сделать','Узнать даты рубежного контроля и сессии','Узнать минимальный балл для стипендии и сколько можно пропустить'];
+const SHOW=['День Д: 1,5 часа после короткого сна — домашка и подготовка к семинарам.','Выходной Е: 2 часа утром на самое сложное: физика и высшая математика.','Дорога: час до учёбы — повторение конспектов и английских слов.','Ночь на смене: если тихо и можно по работе, 30 минут лёгкого повторения до 02:00. Новое ночью не учим.','За 2 недели до сессии не берёшь смены в ночи перед экзаменами и не выходишь за других.'];
+const ASKQ=['До какого числа платить аренду 50 000 ₸? Если раньше 6 декабря, план денег нужно пересчитать.','Что значит «Сәтсіз аяқталды» у шести предметов?','Даты рубежного контроля и сессии.','Сколько стоит абонемент в зал, который хочешь взять?','Сколько стоит подписка PS и домен, и что из этого платится каждый месяц?','Можно ли на смене повторять учёбу, когда тихо?','Какие цены в твоём магазине на курицу, яйца и творог?'];
+const REV=['Отметить смены на две недели вперёд','Внести дедлайны недели','Взвеситься утром и записать вес','Проверить деньги до поступления','Выбрать день для магазина и заготовок'];
+/* --- анализ смен: какие ночи тяжёлые --- */
+function nightRisk(k){const n=addD(k,1),c=clsOf(n);if(wdn(k)===1)return ['bad','после длинного понедельника, перед парой в 08:30'];if(c&&c.s<=510)return ['bad','утром пара в 08:30'];if(c)return ['ok','утром пара в '+hm(c.s)];return ['ok','утром пар нет']}
+function upcoming(n){const S=st.work.shifts;return Object.keys(S).filter(k=>k>=TODAY&&k<=addD(TODAY,n)).sort()}
+/* --- распределение зарплаты --- */
+function alloc(S){const R=[['Подушка, первой',Math.round(S*.2),'var(--ice)'],['Аренда',50000,'var(--pink)'],['Еда',60000,'var(--teal)'],['Тариф связи',7000,'var(--pink)'],['Транспорт',9000,'var(--pink)'],['Зал (с января, уточни цену)',20000,'var(--vio)'],['Подписки',10000,'var(--vio)']];
+const used=R.reduce((a,x)=>a+x[1],0),rest=S-used;if(rest>0){R.push(['Сетап, домен, PS',Math.round(rest*.6),'#ffd59a']);R.push(['Личное и развлечения',rest-Math.round(rest*.6),'rgba(238,241,255,.6)'])}return {R,rest}}
+/* --- разметка вкладок --- */
+const card=(inner,cls)=>'<div class="card pad'+(cls?' '+cls:'')+'">'+inner+'</div>';
+const ul=(arr,c)=>'<ul class="ul"'+(c?' style="--c:'+c+'"':'')+'>'+arr.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+const ckb=(pa,i,on,label)=>'<button class="ck'+(on?' on':'')+'" data-pa="'+pa+'" data-i="'+i+'" aria-pressed="'+(on?'true':'false')+'" aria-label="'+esc(label)+'">'+CHK+'</button>';
+const prg=(label,val,frac,c)=>'<div class="prg" style="--c:'+c+'"><div class="row sp"><span>'+label+'</span><span class="num">'+val+'</span></div><div class="pbar"><i style="--w:'+Math.max(0,Math.min(1,frac)).toFixed(3)+'"></i></div></div>';
+function tlRows(L){return L.map(x=>'<div class="tl k-'+x[2]+'"><span class="tm">'+x[0]+'</span><span class="dt"></span><span class="tx">'+esc(x[1])+'</span></div>').join('')}
+function weekTrain(){const m=monOf(TODAY);let n=0;for(let i=0;i<7;i++)if(st.train.done[addD(m,i)])n++;return n}
+function nextTrain(){for(let i=0;i<8;i++){const k=addD(TODAY,i),t=trainFor(k);if(t.w&&!t.done)return {k,t}}return null}
+const relDay=k=>k===TODAY?'сегодня':k===addD(TODAY,1)?'завтра':DWF[parse(k).getDay()].toLowerCase()+', '+shortDate(k);
+const PV={
+main(){const p=P(),left=Math.max(0,dleft(PEND)),cur=lastW(),g=curGoal(),pr=protein(TODAY),T=dayType(TODAY);
+let h='<div class="ph"><b>'+nv('pl-left',left,0)+'</b><span>'+plural(left,'день','дня','дней')+' до 30 июня: конца этого плана</span></div>';
+h+=card('<h3>Где ты сейчас</h3>'+prg('Вес',fmt(cur,1)+' кг, цель 75–79',(WKG0-cur)/(WKG0-WKG1),'var(--ice)')+prg('Подушка',fmt(p.saved,0)+' из 400 000 ₸',p.saved/400000,'var(--teal)')+prg('Тренировки на этой неделе',weekTrain()+' из 3',weekTrain()/3,'var(--vio)')+prg('Белок сегодня',pr+' из '+PROT+' г',pr/PROT,'var(--pink)')+'<div class="note" style="margin-top:10px">Цель месяца ('+g[1].toLowerCase()+'): '+esc(g[3])+'.</div>');
+h+='<div class="kgrid">'+[['Калории','2 400','ккал в день'],['Б / Ж / У','160 / 70 / 280','граммов в день'],['Сон','8+ часов','за сутки, можно частями'],['Шаги','8–10 тыс.','это твоё кардио'],['Тренировки','3 в неделю','дома до января, потом зал'],['Еда','≈ 1 900 ₸','в день, заготовки на 2–3 дня']].map(x=>'<div class="kv"><span>'+x[0]+'</span><b'+(x[1].length>11?' class="sm"':'')+'>'+x[1]+'</b><small>'+x[2]+'</small></div>').join('')+'</div>';
+h+=card('<h3>Сегодня</h3><div class="dtype">'+DTN[T]+'</div><div class="note">Распорядок на сегодня уже собран на главном экране. Здесь — полный режим для каждого типа дня.</div><button class="plk" data-pt="day">Режим этого типа дня</button>');
+h+=card('<div class="row sp"><h3 style="margin:0">Воскресенье, 10 минут</h3><span class="mu">'+Object.keys(p.rev.done).length+' из '+REV.length+'</span></div><div style="margin-top:6px">'+REV.map((x,i)=>'<div class="chk'+(p.rev.done[i]?' done':'')+'">'+ckb('rev',i,p.rev.done[i],x)+'<div class="t"><b>'+esc(x)+'</b></div></div>').join('')+'</div><div class="note" style="margin-top:8px">Галочки сбрасываются каждый понедельник.</div>');
+h+=card('<h3>Важно</h3><div class="note">Тебе 17, поэтому дефицит калорий небольшой, а сон в приоритете: тело ещё растёт, и жёсткая сушка с недосыпом дадут обратный эффект — то самое постоянное «устал».</div>');
+return h},
+week(){const wd=wdn(TODAY),U=upcoming(14);
+let h=card('<h3>Какие ночи брать</h3><div class="note" style="margin-bottom:6px">Лучшие ночи для смен — <b>четверг, пятница, суббота</b>: после них первая пара в 10:30 или пар нет.</div>'+WKD.map(r=>'<div class="wkr'+(r[0]===wd?' today':'')+'"><b>'+r[1]+'</b><div class="t">'+r[2]+(r[3]?'<span>'+r[3]+'</span>':'')+'</div><span class="tag'+(r[4]==='bad'?' bad':'')+'">'+(r[4]==='bad'?'ночь тяжёлая':'ночь хорошая')+'</span></div>').join(''));
+h+=card('<div class="row sp"><h3 style="margin:0">Твои смены на 2 недели</h3><button class="lnk" data-go="s-work">Календарь</button></div>'+(U.length?U.map(k=>{const r=nightRisk(k);return '<div class="wkr"><b>'+['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][parse(k).getDay()]+'</b><div class="t">'+relDay(k)+'<span>'+r[1]+'</span></div><span class="tag'+(r[0]==='bad'?' bad':'')+'">'+(r[0]==='bad'?'конфликт':'нормально')+'</span></div>'}).join(''):'<div class="calm">Смен впереди нет. Отметь их в разделе «Работа».</div>'));
+h+=card('<h3>Если ночь перед парой 08:30</h3>'+ul(['Проси старшего смены чаще ставить четверг–пятницу и пятницу–субботу: для 2/2 это идеальные пары ночей.','С работы прямо на учёбу, первую пару частично пропускаешь, заранее предупредив преподавателя. После пар сразу спать.','Не бери две такие ночи подряд и не выходи за кого-то, если утром контрольная или практика с оценкой.'],'var(--pink)'));
+h+=card('<div class="note">Смены 20:00–08:00, около 15 в месяц по 2/2. Дорога 30 минут: выход в 19:30, дома в 08:30. Онлайн-пар нет: всё время после очных пар — сон, учёба и тренировки.</div>');
+return h},
+day(){const map={A:'A',A0:'A',V:'V',G:'G',G2:'G2',D:'D',E:'E'},live=wstatus().live,mine=live?'B':map[dayType(TODAY)];if(!pdt)pdt=mine;const D=DTS.find(x=>x[0]===pdt)||DTS[0];
+let h='<div class="seg" role="group" aria-label="Тип дня">'+DTS.map(x=>'<button class="'+(x[0]===pdt?'on':'')+'" data-pdt="'+x[0]+'" aria-pressed="'+(x[0]===pdt)+'">'+x[1]+(x[0]===mine?'<em>сегодня</em>':'')+'</button>').join('')+'</div>';
+h+=card('<h3>'+D[1]+'. '+esc(D[2])+'</h3>'+tlRows(D[3])+(D[4]?'<div class="note" style="margin-top:10px">'+esc(D[4])+'</div>':''));
+h+=card('<div class="note">Сайт сам определяет тип дня по твоим сменам и парам и строит распорядок на главном экране. Еда для каждого типа — во вкладке «Еда».</div><button class="plk" data-pt="food">Когда есть</button>');
+return h},
+sleep(){const L=plan(TODAY).filter(x=>x.k==='sleep');
+let h='<div class="ph"><b>8+</b><span>часов сна за сутки: в 17 лет нужно 8–9, сейчас у тебя 6–7</span></div>';
+h+=card('<h3>Окна сна сегодня</h3><div class="dtype">'+DTN[dayType(TODAY)]+'</div>'+L.map(x=>'<div class="tl k-sleep"><span class="tm">'+hm(x.t)+'</span><span class="dt"></span><span class="tx">'+esc(x.x)+'</span></div>').join('')+'<div class="note" style="margin-top:8px">Окна считаются сами по сменам и парам.</div>');
+h+=card('<h3>Правила</h3>'+ul(SLEEP.map(esc),'#9aa8ff'));
+h+=card('<div class="note">Твоя усталость скорее от того, что сон рвётся, а не только от количества часов. Поэтому важен якорь: одно время отбоя в дни без смен.</div>');
+return h},
+food(){const p=P(),tot=SHOP.reduce((a,x,i)=>a+shopCost(i),0),got=SHOP.reduce((a,x,i)=>a+(p.shop.got[i]?shopCost(i):0),0),gn=Object.keys(p.shop.got).length,pd=Object.keys(p.prep.done).length,T=dayType(TODAY),mt=T==='A0'||T==='G2'?'A':T==='G'?'V':T;
+let h='<div class="kgrid"><div class="kv"><span>Калории</span><b>2 400</b><small>на 500 ниже нормы</small></div><div class="kv"><span>Белок</span><b>160 г</b><small>вода 2,5–3 л</small></div></div>';
+h+=card('<h3>Базовые блюда</h3>'+DISH.map(x=>'<div class="dish"><b>'+x[0]+'</b><p>'+esc(x[1])+'</p><div class="k"><strong>'+x[2]+'</strong>'+(x[3]?'белок '+x[3]+' г':'ккал')+'</div></div>').join('')+'<div class="sumr"><span class="mu">Итого за день</span><b>≈ 2 270 ккал</b></div><div class="note" style="margin-top:6px">Запас около 130 ккал до 2 400 — на масло, соусы и погрешность.</div>');
+h+=card('<h3>Когда есть</h3>'+MT.map(r=>'<div class="mtr'+(r[0]===mt?' cur':'')+'"><b>'+r[1]+(r[0]===mt?' (сегодня)':'')+'</b><div class="chips">'+r[2].map(c=>'<span>'+c+'</span>').join('')+'</div></div>').join('')+'<div class="note" style="margin-top:10px">На смену: контейнер, творог 200 г, яблоко, 1,5 л воды. После 05:00 ничего тяжёлого.</div>');
+h+=card('<h3>Как не срываться</h3>'+ul(FRULE.map(esc),'var(--teal)')+'<button class="btn ghost press" data-pa="sos" style="margin-top:12px">'+(psos?'Справился':'Тянет сорваться')+'</button>'+(psos?'<div class="sos"><ol><li>Стакан воды прямо сейчас.</li><li>«Аварийный» белок: 2 варёных яйца или творог.</li><li>Подожди 10 минут — тяга обычно проходит.</li><li>Всё ещё хочется — одна сладость до 150 ккал после еды, и дальше по плану.</li></ol><div class="tmr"><b id="pt-tm">'+(ptEnd>Date.now()?tmrTxt():'10:00')+'</b><button class="btn sm press" data-pa="tmr">'+(ptEnd>Date.now()?'Сбросить':'Запустить 10 минут')+'</button></div></div>':''));
+h+=card('<div class="row sp"><h3 style="margin:0">Заготовки на 2–3 дня</h3><span class="mu">'+pd+' из '+PREP.length+'</span></div><div class="note" style="margin:6px 0 4px">Около 1,5 часа. '+(p.prep.d?'Последний раз: '+relDay(p.prep.d)+'.':'Ещё не делал.')+'</div>'+PREP.map((x,i)=>'<div class="chk'+(p.prep.done[i]?' done':'')+'">'+ckb('prep',i,p.prep.done[i],x)+'<div class="t"><b>'+esc(x)+'</b></div></div>').join('')+(pd?'<button class="lnk" data-pa="prepreset" style="margin-top:6px">Начать заново</button>':''));
+h+=card('<div class="row sp"><h3 style="margin:0">Покупки на неделю</h3><button class="lnk" data-pa="pedit">'+(pedit?'Готово':'Изменить цены')+'</button></div><div class="note" style="margin:6px 0 4px">'+gn+' из '+SHOP.length+' куплено. Список обнуляется по понедельникам.</div>'+SHOP.map((x,i)=>{const on=p.shop.got[i];return '<div class="chk'+(on?' done':'')+'">'+ckb('shop',i,on,x[0])+'<div class="t"><b>'+esc(x[0])+'</b><span>'+x[1]+', '+fmt(shopPrice(i),0)+' ₸ за '+x[4]+(x[5]&&!(p.price[i]>0)?', примерно':'')+'</span></div>'+(pedit?'<input inputmode="numeric" data-price="'+i+'" value="'+shopPrice(i)+'" aria-label="Цена: '+esc(x[0])+'">':'<span class="r">'+fmt(shopCost(i),0)+'</span>')+'</div>'}).join('')+'<div class="sumr"><span class="mu">Всего, осталось купить на '+fmt(tot-got,0)+'</span><b>'+nv('pl-shop',tot,0)+' ₸</b></div><div class="note" style="margin-top:8px">≈ '+fmt(Math.round(tot/7/10)*10,0)+' ₸ в день. Цены — супермаркеты Астаны, ноябрь 2026. Раз в месяц: масло (841 ₸ за литр), специи и соль, около 1 500 ₸. Куриное филе не берём: 3 100–4 000 ₸ за кг, белок из окорочков, яиц и творога дешевле.</div>');
+return h},
+sport(){const nt=nextTrain(),wt=weekTrain(),gym=TODAY>=GYM,dg=dleft(GYM);
+let h='<div class="ph"><b>'+wt+'<small style="font-size:.4em;color:var(--mute)"> / 3</small></b><span>тренировки на этой неделе'+(nt?'. Следующая: '+esc(nt.t.w.n)+', '+relDay(nt.k):'')+'</span></div>';
+h+=card('<h3>Когда можно</h3>'+ul(['Можно: учебный день (18:30), выходной (17:30), после смены без пар на лёгком уровне, если поспал днём 5+ часов.','Нельзя: в день перед ночной сменой, между двумя сменами, сразу после смены без сна.','Между тренировками хотя бы один день. Физкультура во вторник и четверг — активность, не тренировка.','Кардио заменяют шаги: до автобуса пешком вместо джета, прогулка 20–30 минут после ужина.'],'var(--vio)')+'<button class="plk" data-go="s-neb">Тренировка на сегодня</button>');
+const stage=(t,sub,on,codes)=>card('<div class="stg"><h4>'+t+'</h4>'+(on?'<span class="tag">сейчас</span>':'')+'</div><div class="note" style="margin-bottom:8px">'+sub+'</div>'+codes.map(c=>'<div style="margin-top:10px"><div class="mu" style="margin-bottom:2px">'+WO[c].n+'</div>'+WO[c].ex.map(e=>'<div class="ex"><span class="t">'+esc(e[0])+'</span><span class="r">'+e[1]+'</span></div>').join('')+'</div>').join(''));
+const s1=stage('Этап 1. Дома','До середины января, тренировки А и Б по очереди. Рюкзак с книгами или бутылками, стул, турник во дворе. 40–45 минут, отдых 60–90 секунд.',!gym,['A','B']);
+const s2=stage('Этап 2. Зал','С середины января'+(gym?'':' (через '+dg+' '+plural(dg,'день','дня','дней')+')')+': верх, низ, всё тело. 60–70 минут, разминка 5–7 минут. Каждый подход заканчиваешь с запасом 1–2 повтора.',gym,['U','L','F']);
+h+=gym?s2+s1:s1+s2;
+h+=card('<h3>Как прогрессировать</h3>'+ul(['Дома: все подходы на верхней границе повторов — добавь в рюкзак 2–3 кг или опускайся медленнее, 3 секунды вниз.','Зал: сначала добиваешь повторы во всех подходах, потом +2,5 кг, ноги +5 кг. На сушке удержать силу — уже хорошо.','Каждую 7-ю неделю разгрузка: веса минус 30% и на подход меньше. Неделя сессии тоже лёгкая.','Не проверяй максимумы на раз и не гонись за весом в приседе и становой: спина важнее рекорда.'],'var(--vio)'));
+return h},
+money(){const p=P(),C=cash(),si=st.cash.inc.find(x=>x.salary),sal=p.sal>0?p.sal:(si?(si.amt||salaryAmt(si)):297000),A=alloc(sal),mx=Math.max(...A.R.map(x=>x[1]),1),g=curGoal();
+let h='<div class="ph"><b>'+nv('pl-per',C.per,0)+'</b><span>₸ можно тратить в день'+(C.nx?' до «'+esc(C.nx.n)+'»':'')+'</span></div>';
+h+=card('<h3>До 15 декабря</h3><div class="dish"><b>23 ноября — 5 декабря</b><p>Стипендия 50 000: еда 28 600, тариф 7 000, транспорт 3 500</p><div class="k"><strong>10 900</strong>в резерв</div></div><div class="dish"><b>6 — 15 декабря</b><p>Приход 100 000: аренда 50 000, еда 22 000, транспорт 2 500</p><div class="k"><strong>+25 500</strong>запас ≈ 36 400</div></div><div class="dish"><b>До 15 декабря</b><p>Зарплата за ноябрь, прогноз ≈ '+fmt(si?salaryAmt(si):297000,0)+' ₸</p><div class="k"><strong>шаблон</strong>ниже</div></div><div class="note" style="margin-top:8px">Правило до зарплаты: на еду и всё личное не больше 2 500 ₸ в день. PS и домен ждут до зарплаты. Главный риск — аренда: если платить раньше 6 декабря, стипендии не хватит.</div><button class="plk" data-go="s-pla">Деньги сейчас</button>');
+h+=card('<h3>Распределить зарплату</h3><label for="pl-sal">Сколько пришло, ₸</label><input id="pl-sal" inputmode="numeric" value="'+sal+'" style="margin-bottom:8px">'+A.R.map((x,j)=>'<div class="alc" style="--c:'+x[2]+'"><div class="row sp"><span>'+esc(x[0])+'</span><span class="num">'+fmt(x[1],0)+'</span></div><div class="cb"><i style="--w:'+(x[1]/mx).toFixed(3)+';--j:'+j+'"></i></div></div>').join('')+(A.rest<0?'<div class="note" style="color:var(--bad);margin-top:8px">Не хватает '+fmt(-A.rest,0)+' ₸: в этом месяце без сетапа, урежь личное. Подушку не опускай ниже 10%.</div>':'<div class="note" style="margin-top:8px">Подушку переводишь первой, в день зарплаты, на отдельный счёт или депозит.</div>'));
+h+=card('<h3>Подушка</h3>'+prg('Сейчас',fmt(p.saved,0)+' ₸',p.saved/400000,'var(--teal)')+'<div class="note" style="margin:8px 0 10px">Цель на '+g[1].toLowerCase()+': '+fmt(g[4],0)+' ₸, к июлю около 400 000 — три месяца обязательных расходов.</div><div class="row"><input id="pl-saved" inputmode="numeric" placeholder="сколько отложено" aria-label="Сколько отложено"><button class="btn sm press" data-pa="saved">Записать</button></div>');
+h+=card('<div class="note">Цель 100 000 $ на ночных сменах не собирается: зарплата сейчас около 600 $ в месяц. Настоящий путь — навыки по специальности (программирование), а подушка даёт свободу в них вложиться.</div>');
+return h},
+study(){const p=P(),n=STODO.filter((x,i)=>p.todo[i]).length;
+let h=card('<h3>Сначала проверь статусы</h3><div class="note">В учебном плане у шести предметов стоит красное «Сәтсіз аяқталды»: казахский, история Казахстана, физкультура, архитектура компьютеров (CSAD), высшая математика, ООП. Если это незачёт или проблема с регистрацией — это главная угроза стипендии.</div>','warnc');
+h+=card('<div class="row sp"><h3 style="margin:0">На этой неделе</h3><span class="mu">'+n+' из '+STODO.length+'</span></div><div style="margin-top:6px">'+STODO.map((x,i)=>'<div class="chk'+(p.todo[i]?' done':'')+'">'+ckb('todo',i,p.todo[i],x)+'<div class="t"><b>'+esc(x)+'</b></div></div>').join('')+'</div><button class="plk" data-go="s-ring">Внести даты в дедлайны</button>');
+h+=card('<h3>Как учиться со сменами</h3>'+ul(SHOW.map(esc),'var(--ice)'));
+return h},
+goals(){const p=P(),cur=lastW(),g=curGoal();
+let h='<div class="ph"><b>'+fmt(cur,1)+'</b><span>кг сейчас. Взвешивайся раз в неделю утром натощак, в один день</span></div>';
+h+=card(GOALM.map(r=>{const st0=r[0]<g[0]?'past':r[0]===g[0]?'cur':'';return '<div class="gl '+st0+'"><b>'+r[1]+'</b><div class="g3"><span><i>Тело:</i> '+esc(r[3])+(st0==='cur'?(cur<=r[2][0]?', ты уже в цели':', осталось '+fmt(cur-r[2][0],1)+' кг'):'')+'</span><span><i>Деньги:</i> '+esc(r[5])+(st0==='cur'?', сейчас '+fmt(p.saved,0):'')+'</span><span><i>Учёба:</i> '+esc(r[6])+'</span></div></div>'}).join(''));
+h+=card('<div class="note">На 1 кг выше линии плана две недели подряд — режешь сладкое и добавляешь шаги. Линия веса — в разделе «Ритм и тело».</div><button class="plk" data-go="s-neb">Записать вес</button>');
+return h},
+ask(){const p=P();
+let h=card('<div class="note">Ответь здесь или напиши мне в чат — я пересчитаю план и сайт.</div>');
+h+=card(ASKQ.map((q,i)=>'<div class="ask'+(p.ask[i]?' done':'')+'"><div class="row">'+ckb('ask',i,p.ask[i],q)+'<span class="t">'+esc(q)+'</span></div><input data-note="'+i+'" value="'+esc(p.note[i]||'')+'" placeholder="ответ" aria-label="Ответ"></div>').join(''));
+return h}};
+const tmrTxt=()=>{const s=Math.max(0,Math.ceil((ptEnd-Date.now())/1000));return pad(Math.floor(s/60))+':'+pad(s%60)};
+/* --- панель --- */
+const sheet=document.getElementById('plan'),spanel=sheet.querySelector('.sh-panel'),ptabs=document.getElementById('ptabs'),pbody=document.getElementById('pbody'),pind=ptabs.querySelector('.pind');
+ptabs.insertAdjacentHTML('afterbegin',PT.map(t=>'<button role="tab" id="pt-'+t[0]+'" data-pt="'+t[0]+'" aria-controls="pbody" aria-selected="false">'+t[1]+'</button>').join(''));
+function moveInd(){const b=ptabs.querySelector('[data-pt="'+ptab+'"]');if(!b)return;pind.style.width=b.offsetWidth+'px';pind.style.transform='translateX('+b.offsetLeft+'px)';
+const l=b.offsetLeft-ptabs.clientWidth/2+b.offsetWidth/2;ptabs.scrollTo({left:l,behavior:RM.matches?'auto':'smooth'})}
+function renderPlan(dir){const keep=pbody.scrollTop;pbody.innerHTML='<div class="pp'+(dir?' anim'+(dir==='l'?' fl':dir==='r'?' fr':''):'')+'">'+PV[ptab]()+'</div>';
+pbody.querySelectorAll('.pp>*').forEach((el,i)=>el.style.setProperty('--n',Math.min(i,8)));
+if(dir){pbody.scrollTop=0}else pbody.scrollTop=keep;
+ptabs.querySelectorAll('[data-pt]').forEach(b=>b.setAttribute('aria-selected',b.dataset.pt===ptab?'true':'false'));moveInd();
+pbody.querySelectorAll('.cu[data-k]').forEach(el=>{const k=el.dataset.k,v=+el.dataset.v,d=+el.dataset.d,f=pv[k];pv[k]=v;if(RM.matches||!dir)return;el.textContent=fmt(f!=null?f:0,d);countUp(el,f!=null?f:0,v,d,900)})}
+function setTab(t){if(t===ptab||!PV[t])return;const a=PT.findIndex(x=>x[0]===ptab),b=PT.findIndex(x=>x[0]===t);ptab=t;buzz(6);psos=false;renderPlan(b>a?'l':'r')}
+function openPlan(t){if(PV[t])ptab=t;pdt=null;pedit=false;psos=false;if(popen){renderPlan('u');return}popen=true;pfocus=document.activeElement;sheet.hidden=false;sheet.classList.remove('cl');
+document.documentElement.style.overflow='hidden';app.inert=true;dock.querySelector('.dk-plan').classList.add('act');buzz(10);FX.pulse('K',.45);
+renderPlan('u');requestAnimationFrame(()=>requestAnimationFrame(()=>{sheet.classList.add('op');moveInd()}));setTimeout(()=>{const x=sheet.querySelector('.sh-x');if(x)x.focus({preventScroll:true})},60)}
+function closePlan(){if(!popen)return;popen=false;sheet.classList.add('cl');sheet.classList.remove('op');spanel.style.transform='';clearInterval(ptm);ptm=null;
+document.documentElement.style.overflow='';app.inert=false;dock.querySelector('.dk-plan').classList.remove('act');
+setTimeout(()=>{if(!popen){sheet.hidden=true;sheet.classList.remove('cl')}},RM.matches?160:380);render(['gal']);if(pfocus&&pfocus.focus)pfocus.focus({preventScroll:true})}
+function tickTmr(){const el=document.getElementById('pt-tm');if(ptEnd<=Date.now()){clearInterval(ptm);ptm=null;if(ptEnd){ptEnd=0;buzz([20,60,20]);if(el)el.textContent='Готово';}return}if(el)el.textContent=tmrTxt()}
+sheet.addEventListener('click',e=>{
+if(e.target.closest('[data-pclose]')){closePlan();return}
+const t=e.target.closest('[data-pt]');if(t){setTab(t.dataset.pt);return}
+const d=e.target.closest('[data-pdt]');if(d){pdt=d.dataset.pdt;buzz(6);renderPlan();const c=pbody.querySelector('.card');if(c&&!RM.matches&&c.animate)c.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:420,easing:'cubic-bezier(.16,1,.3,1)'});return}
+const g=e.target.closest('[data-go]');if(g){const id=g.dataset.go;closePlan();setTimeout(()=>goTo(id),RM.matches?0:240);return}
+const a=e.target.closest('[data-pa]');if(!a)return;const v=a.dataset.pa,i=a.dataset.i,p=P();
+if(['shop','prep','todo','rev','ask'].includes(v)){const o=v==='shop'?p.shop.got:v==='prep'?p.prep.done:v==='rev'?p.rev.done:p[v];const on=!o[i];if(on)o[i]=true;else delete o[i];
+if(v==='prep'&&Object.keys(p.prep.done).length===PREP.length){p.prep.d=TODAY;FX.pulse('K',.6);buzz([14,40,20])}
+save();renderPlan();if(on){buzz(8);const b=pbody.querySelector('[data-pa="'+v+'"][data-i="'+i+'"]');if(b){b.classList.add('pop');sparks(b,v==='shop'||v==='prep'?'var(--teal)':'var(--ice)')}}return}
+if(v==='prepreset'){p.prep.done={};save();renderPlan();return}
+if(v==='pedit'){pedit=!pedit;renderPlan();if(pedit){const f=pbody.querySelector('[data-price]');if(f)f.focus({preventScroll:true})}return}
+if(v==='sos'){psos=!psos;buzz(8);renderPlan();if(psos){const s=pbody.querySelector('.sos');if(s&&!RM.matches&&s.animate)s.animate([{opacity:0,transform:'translateY(-8px)'},{opacity:1,transform:'none'}],{duration:400,easing:'cubic-bezier(.16,1,.3,1)'})}return}
+if(v==='tmr'){if(ptEnd>Date.now()){ptEnd=0;clearInterval(ptm);ptm=null}else{ptEnd=Date.now()+600000;clearInterval(ptm);ptm=setInterval(tickTmr,1000);buzz(10)}renderPlan();return}
+if(v==='saved'){const f=document.getElementById('pl-saved'),val=num(f.value);if(!(val>=0)||f.value.trim()===''){f.style.borderColor='var(--bad)';f.placeholder='сумма в ₸';f.focus();return}p.saved=Math.round(val);save();buzz([10,30,14]);FX.pulse('A',.8);renderPlan();return}});
+sheet.addEventListener('change',e=>{const t=e.target,p=P();
+if(t.dataset.price!=null){const v=num(t.value);if(v>0)p.price[t.dataset.price]=Math.round(v);else delete p.price[t.dataset.price];save();return}
+if(t.dataset.note!=null){const v=t.value.trim().slice(0,200);if(v)p.note[t.dataset.note]=v;else delete p.note[t.dataset.note];save();return}
+if(t.id==='pl-sal'){const v=num(t.value);if(v>0){p.sal=Math.round(v);save();renderPlan()}return}});
+sheet.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();closePlan();return}
+if(e.key==='Enter'&&e.target.id==='pl-saved'){sheet.querySelector('[data-pa="saved"]').click();return}
+if(e.key==='Enter'&&e.target.matches('input')){e.target.blur();return}
+if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&e.target.matches('[role="tab"]')){const i=PT.findIndex(x=>x[0]===ptab),n=PT[(i+(e.key==='ArrowRight'?1:PT.length-1))%PT.length][0];setTab(n);const b=ptabs.querySelector('[data-pt="'+n+'"]');if(b)b.focus()}
+if(e.key==='Tab'){const f=[...sheet.querySelectorAll('button,input,[tabindex]')].filter(x=>!x.disabled&&x.offsetParent);if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+/* смахнуть вниз, чтобы закрыть */
+(function(){const top=sheet.querySelector('.sh-top');let y0=null,dy=0;
+top.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;y0=e.clientY;dy=0;spanel.classList.add('drag');top.setPointerCapture(e.pointerId)});
+top.addEventListener('pointermove',e=>{if(y0==null)return;dy=Math.max(0,e.clientY-y0);spanel.style.transform='translateY('+dy+'px)'});
+const end=()=>{if(y0==null)return;y0=null;spanel.classList.remove('drag');if(dy>110)closePlan();else spanel.style.transform=''};
+top.addEventListener('pointerup',end);top.addEventListener('pointercancel',end)})();
+addEventListener('resize',()=>{if(popen)moveInd()});
+
+/* ================= космос: одна WebGL-картина, четыре сцены ================= */
+const FX=(function(){
+const el=document.getElementById('sky');let gl=null;
+const api={set(){},pulse(){},anchors(){},start(){}};
+try{gl=el.getContext('webgl',{alpha:false,antialias:false,depth:false,powerPreference:'high-performance'})}catch(e){}
+const fail=()=>{el.remove();const d=document.createElement('div');d.className='fallback';d.setAttribute('aria-hidden','true');document.body.prepend(d);return api};
+if(!gl)return fail();
+const FS=`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 R;uniform float T,U,Y,V,L,K,M,A,I,W;uniform vec3 G,N,B,Q,S;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=mat2(1.6,1.2,-1.2,1.6)*p+vec2(3.1,1.7);a*=.5;}return v;}
+float sl(vec2 f,float sc,float th,float w){vec2 g=floor(f/sc);float s=h(g);if(s<th)return 0.;vec2 o=vec2(h(g+1.3),h(g+7.1))*sc;vec2 d=f-g*sc-o;d.y/=1.+abs(V)*w;
+return (s-th)/(1.-th)*exp(-dot(d,d)/(.35+.08*sc))*(.65+.35*sin(T*1.6+s*90.));}
+vec3 galaxy(vec2 f){vec2 g=(f-G.xy)/(U*mix(.25,1.,I));float t=T*.012;mat2 rr=mat2(cos(t),sin(t),-sin(t),cos(t));
+vec2 q=mat2(.86,.5,-.5,.86)*g;q=rr*q;q.y/=.55;float r=length(q)*2.2,a=atan(q.y,q.x);
+float arm=pow(.5+.5*cos(2.*(a-log(r+.03)*2.6)),3.);float cl=fb(q*7.+vec2(fb(q*3.)*2.));
+float core=exp(-r*7.)*3.*(.55+.7*L+2.5*K);
+float I0=core+arm*cl*exp(-r*1.15)*2.2*(.75+.4*L)+.3*exp(-r*1.6);
+I0=max(I0-smoothstep(.45,.75,fb(q*11.+2.))*arm*exp(-r*1.2)*.9,0.);
+vec3 col=mix(vec3(.95,.93,1.),vec3(.45,.55,1.3),smoothstep(.05,.6,r));col=mix(col,vec3(.75,.45,1.3),smoothstep(.5,1.2,r)*.6);
+vec3 c=col*I0+vec3(1.,.45,.75)*smoothstep(.72,.9,fb(q*18.))*arm*exp(-r*1.3)*1.2;
+c+=vec3(.3,.22,.6)*.14*fb(g*3.+T*.01)*(1.-smoothstep(0.,.9,length(g)));return c*I;}
+vec3 nebula(vec2 f){vec2 p=(f-N.xy)/U;vec2 q=p*1.7;float t=T*.012;
+vec2 w=vec2(fb(q+vec2(0.,1.)+t),fb(q+vec2(5.2,1.3)-t*.7));float v=fb(q*1.3+2.2*w);float v2=fb(q*2.6+1.6*w+4.);
+float m=exp(-dot(p,p*vec2(5.5,3.2)))+.35*exp(-dot(p-vec2(.27,-.38),(p-vec2(.27,-.38))*12.));
+vec3 c=vec3(.05,.3,1.4)*smoothstep(.3,.8,v)*(.3+m)*1.2;
+float d=smoothstep(.42,.9,v)*m,d2=smoothstep(.5,.85,v2)*m;
+c+=mix(vec3(1.4,.18,.75),vec3(.65,.35,1.6),smoothstep(.35,.65,w.y))*d*2.6+vec3(.85,.9,1.)*pow(d2,2.)*1.5;
+c*=1.-.8*smoothstep(.5,.75,fb(q*2.3+w*2.5+7.))*smoothstep(.15,.5,m);
+float sr=length(p-vec2(.05,.01)),tw=.85+.15*sin(T*1.7);c+=vec3(.9,.95,1.)*(exp(-sr*sr*1400.)*3.+exp(-sr*30.)*.35)*tw;
+c+=vec3(.9,.95,1.)*(exp(-abs(p.y-.01)*500.)*exp(-abs(p.x-.05)*16.)+exp(-abs(p.x-.05)*500.)*exp(-abs(p.y-.01)*16.))*.35*tw;return c;}
+vec4 ring(vec2 f){vec2 p=(f-B.xy)/U;float r=length(p),R0=.125,aa=atan(p.y,p.x);vec3 c=vec3(0.);
+c+=vec3(.35,.55,1.)*exp(-max(r-R0,0.)*7.)*(.16+.25*M);
+float rg=exp(-pow((r-R0)*170.,2.))*1.8+exp(-pow((r-R0)*45.,2.))*.6;c+=vec3(.62,.8,1.)*rg*(.75+.35*fb(vec2(aa*3.+T*.25,T*.1)+3.))*(1.+M);
+vec2 dir=normalize(vec2(1.,-.36));float tt=dot(p,dir),dn=dot(p,vec2(-dir.y,dir.x));
+c+=(vec3(.75,.88,1.)*exp(-dn*dn*9000.)*exp(-abs(tt)*2.2)*1.4+vec3(.4,.6,1.)*exp(-dn*dn*900.)*exp(-abs(tt)*3.)*.25)*step(R0*.97,r)*(1.+.6*M);
+c+=vec3(.9,.96,1.)*exp(-pow((r-R0)*400.,2.))*.8;float cov=1.-smoothstep(R0*.96,R0,r);return vec4(c,cov);}
+vec4 planet(vec2 f){vec2 q=(f-Q.xy)/U;float Rr=.95,r=length(q);vec3 Lt=normalize(vec3(-.55,.75,.45));vec3 c=vec3(0.);float cov=0.;
+vec2 gs=q-vec2(.05,1.1);c+=vec3(.45,.25,.7)*.22*smoothstep(.45,.9,fb(gs*2.5+vec2(4.,1.)+T*.004))*smoothstep(.0,.5,gs.y);
+c+=vec3(.2,.4,.9)*.18*smoothstep(.5,.95,fb(gs*3.+vec2(9.,2.)))*smoothstep(-.1,.5,gs.y);
+if(r<Rr){vec3 nn=vec3(q/Rr,sqrt(1.-dot(q,q)/(Rr*Rr)));vec2 uv=vec2(atan(nn.x,nn.z)+T*.006,asin(nn.y))*1.4;
+float t=fb(uv*3.+vec2(fb(uv*2.)*2.,0.)),t2=fb(uv*9.+3.+vec2(T*.01,0.));
+vec3 base=mix(vec3(.02,.12,.2),vec3(.22,.62,.72),t);base=mix(base,vec3(.85,.95,1.),smoothstep(.62,.8,t2)*.55);base*=1.-.35*smoothstep(.55,.7,fb(uv*5.+8.));
+float dl=max(dot(nn,Lt),0.);c=base*(pow(dl,.9)*1.5+.015)+vec3(.4,.75,1.)*pow(1.-nn.z,3.)*dl*1.4;cov=smoothstep(Rr,Rr-.003,r);}
+float lit=max(dot(normalize(vec3(q,0.)),Lt),0.);
+c+=vec3(.55,.85,1.)*exp(-pow((r-Rr)*55.,2.))*(.3+1.6*lit)*(1.+1.5*A);c+=vec3(.5,.75,1.)*exp(-max(r-Rr,0.)*14.)*(.05+.35*lit)*step(Rr*.98,r)*(1.+2.*A);
+vec2 mp=q-vec2(.25,1.12);float mr=length(mp);if(mr<.035){vec3 nn=vec3(mp/.035,sqrt(1.-dot(mp,mp)/.001225));c=vec3(.8,.82,.86)*(.25+.75*fb(mp*80.))*max(dot(nn,Lt),0.)*1.4;cov=1.;}
+return vec4(c,cov);}
+vec3 starS(vec2 f){vec2 p=(f-S.xy)/U;float r=length(p);vec3 c=vec3(0.);float tw=.9+.1*sin(T*2.3);
+c+=vec3(.12,.3,.95)*.3*fb(p*2.6+vec2(T*.01,-T*.006))*exp(-r*1.6);
+c+=vec3(.45,.7,1.)*exp(-r*8.)*1.1*(1.+1.5*W)+vec3(1.)*exp(-r*r*1500.)*3.2*tw;
+c+=vec3(.75,.88,1.)*(exp(-abs(p.y)*380.)*exp(-abs(p.x)*4.)+exp(-abs(p.x)*380.)*exp(-abs(p.y)*4.))*.7*tw*(1.+W);
+vec2 d=mat2(.707,.707,-.707,.707)*p;c+=vec3(.6,.75,1.)*(exp(-abs(d.y)*500.)*exp(-abs(d.x)*9.)+exp(-abs(d.x)*500.)*exp(-abs(d.y)*9.))*.25*tw;
+c+=vec3(.4,.6,1.)*exp(-pow((r-.19)*55.,2.))*.1;return c;}
+vec4 rocks(vec2 f){vec2 p=(f-S.xy)/U;float cov=0.;vec3 rc=vec3(0.);
+for(int l=0;l<2;l++){float fl=float(l),sc=mix(.15,.085,fl);vec2 q=p/sc+vec2(T*.03*(1.+fl),T*.008);vec2 id=floor(q),fr=fract(q)-.5;float hh=h(id+fl*17.);
+if(hh>.74){vec2 o=(vec2(h(id+3.1),h(id+5.7))-.5)*.4;vec2 dd=fr-o;float rad=.1+.12*h(id+9.);float a=atan(dd.y,dd.x);float rr=rad*(1.+.3*(n(vec2(a*1.6+hh*30.,hh*7.))-.5));float ds=length(dd);
+if(ds<rr){vec2 nr=dd/rr;vec3 N3=vec3(nr,sqrt(max(0.,1.-dot(nr,nr))));vec3 Ls=normalize(vec3(-normalize(p+1e-4),.35));float li=max(dot(N3,Ls),0.);
+vec3 col=vec3(.07,.08,.11)*(.4+.6*n(dd*40./sc))+vec3(.45,.65,1.)*pow(li,2.)*.9;float a2=smoothstep(rr,rr-.02,ds);rc=mix(rc,col,a2);cov=max(cov,a2);}}}
+float fm=smoothstep(.5,.22,length(p));return vec4(rc*fm,cov*fm);}
+vec3 tm(vec3 c){c=1.-exp(-c*1.25);return pow(c,vec3(.92));}
+void main(){vec2 f=gl_FragCoord.xy;vec3 c=vec3(.004,.005,.016);
+c+=vec3(.75,.82,1.)*sl(f+vec2(0.,Y*.08),3.,.982,6.)*.9+vec3(1.)*sl(f+vec2(0.,Y*.18),6.,.986,12.)*1.4;
+if(G.z>.01)c+=G.z*galaxy(f);
+if(N.z>.01)c+=N.z*nebula(f);
+if(B.z>.01){vec4 r=ring(f);c=c*(1.-B.z*r.w)+B.z*r.rgb;}
+if(S.z>.01){c+=S.z*starS(f);vec4 rk=rocks(f);c=c*(1.-S.z*rk.w)+S.z*rk.rgb;}
+if(Q.z>.01){vec4 p=planet(f);c=mix(c,p.rgb,Q.z*p.w)+Q.z*p.rgb*(1.-p.w);}
+gl_FragColor=vec4(tm(c),1.);}`;
+const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o},pr=gl.createProgram();
+gl.attachShader(pr,sh(gl.VERTEX_SHADER,'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
+if(!gl.getProgramParameter(pr,gl.LINK_STATUS))return fail();
+gl.useProgram(pr);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+const lp=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
+const u={};['R','T','U','Y','V','L','K','M','A','I','W','G','N','B','Q','S'].forEach(x=>u[x]=gl.getUniformLocation(pr,x));
+let k=.5,T=0,raf=0,last=0,t0=performance.now(),Lc=.3,Lt=.3,P={K:0,M:0,A:0,W:0},vel=0,lastY=scrollY,an={};
+function size(){const dpr=Math.min(devicePixelRatio||1,2);k=dpr*.45;const px=innerWidth*innerHeight*k*k;if(px>7e5)k*=Math.sqrt(7e5/px);
+el.width=Math.max(2,Math.round(innerWidth*k));el.height=Math.max(2,Math.round(innerHeight*k));gl.viewport(0,0,el.width,el.height);gl.uniform2f(u.R,el.width,el.height)}
+api.anchors=()=>{an={gal:document.getElementById('a-gal'),neb:document.getElementById('a-neb'),ring:document.getElementById('a-ring'),star:document.getElementById('a-star'),hz:document.getElementById('a-hz'),s:[SEC.gal,SEC.neb,SEC.ring,SEC.work,SEC.pla]}};
+const vis=el2=>{if(!el2)return 0;const r=el2.getBoundingClientRect(),vh=innerHeight;const o=Math.min(r.bottom,vh)-Math.max(r.top,0);return Math.max(0,Math.min(1,o/Math.min(vh,r.height)))};
+const sm=x=>x*x*(3-2*x);
+function draw(now){if(!an.s)api.anchors();const H=innerHeight,cw=innerWidth/2,Ucss=2.16*Math.min(innerWidth,520),cy=e=>{const r=e.getBoundingClientRect();return r.top+r.height/2};
+const intro=RM.matches?1:Math.min(1,(now-t0)/2200),I=1-Math.pow(1-intro,3);
+const w=an.s.map(vis).map(sm);
+gl.uniform1f(u.T,T);gl.uniform1f(u.U,Ucss*k);gl.uniform1f(u.Y,scrollY*k);gl.uniform1f(u.V,RM.matches?0:Math.max(Math.min(vel,40),-40)*.08+(1-I)*6);
+gl.uniform1f(u.L,Lc);gl.uniform1f(u.K,P.K);gl.uniform1f(u.M,P.M);gl.uniform1f(u.A,P.A);gl.uniform1f(u.W,P.W);gl.uniform1f(u.I,I);
+const set=(name,e,wt,dy)=>{if(!e){gl.uniform3f(u[name],0,0,0);return}gl.uniform3f(u[name],cw*k,(H-(cy(e)+(dy||0)))*k,wt)};
+set('G',an.gal,Math.max(w[0],.0001),0);set('N',an.neb,w[1],0);set('B',an.ring,w[2],0);if(an.star){const r=an.star.getBoundingClientRect();gl.uniform3f(u.S,cw*k,(H-(r.top+97))*k,w[3])}else gl.uniform3f(u.S,0,0,0);
+if(an.hz){const r=an.hz.getBoundingClientRect();gl.uniform3f(u.Q,(cw-.05*Ucss)*k,(H-(r.top+250+.95*Ucss))*k,w[4])}else gl.uniform3f(u.Q,0,0,0);
+gl.drawArrays(gl.TRIANGLES,0,3)}
+function loop(ts){raf=requestAnimationFrame(loop);if(document.hidden)return;if(ts-last<30)return;const dt=Math.min(.1,(ts-(last||ts))/1000);last=ts;
+T+=dt*(1+P.K*3);const dyS=scrollY-lastY;lastY=scrollY;vel+=(dyS-vel)*.35;
+Lc+=(Lt-Lc)*Math.min(1,dt*2.5);for(const x in P)P[x]*=Math.exp(-dt*1.6);draw(ts)}
+function start(){cancelAnimationFrame(raf);if(RM.matches){Lc=Lt;draw(performance.now())}else raf=requestAnimationFrame(loop)}
+let sq2=0;addEventListener('scroll',()=>{if(RM.matches&&!sq2)sq2=requestAnimationFrame(()=>{sq2=0;draw(performance.now())})},{passive:true});
+addEventListener('resize',()=>{size();draw(performance.now())});
+el.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(raf)});
+el.addEventListener('webglcontextrestored',()=>location.reload());
+if(RM.addEventListener)RM.addEventListener('change',start);
+size();
+api.set=l=>{Lt=.25+.75*Math.max(0,Math.min(1,l));if(RM.matches){Lc=Lt;draw(performance.now())}};
+api.pulse=(x,v)=>{if(!RM.matches)P[x]=Math.max(P[x],v)};api.start=start;
+return api})();
+let booted=false;
+if(applyPatches())save();
+render();booted=true;FX.start();
+requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('go')));
+(async()=>{try{
+if(!window.claude){sync='local';setSync();return}
+const db=await claude.use('db'),user=await claude.use('user');
+if(!db||!user){sync='local';setSync();return}
+const id=await user.id();if(!id){sync='local';setSync();return}
+dbDoc=db.doc('data/users/'+id+'/routine');
+const snap=await dbDoc.get();
+if(snap.exists){const o=snap.data()||{};
+if(dirty){const loc=st;apply(o);Object.assign(st.days,loc.days);st.budget=loc.budget;const ids=new Set(st.spend.map(s=>s.id));loc.spend.forEach(s=>{if(!ids.has(s.id))st.spend.push(s)});const di=new Set(st.dl.map(s=>s.id));loc.dl.forEach(s=>{if(!di.has(s.id))st.dl.push(s)})}else apply(o);
+if(applyPatches())dirty=true;
+try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}
+dbReady=true;sync='ok';if(dirty)await pushDb();render()}
+else{dbReady=true;sync='ok';if(dirty||Object.keys(st.days).length||st.spend.length||st.dl.length)await pushDb();render()}
+}catch(e){sync=dbDoc?'err':'local';setSync()}})();
+</script>
+</body>
+</html>
