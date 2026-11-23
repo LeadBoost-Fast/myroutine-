@@ -1061,7 +1061,8 @@ const tm=l.match(/(\d{1,2}):(\d{2})/);if(tm)time=pad(+tm[1])+':'+tm[2];
 if(cur&&nm&&l.includes(nm))found[cur]=time||found[cur]||''});
 return {dates:[...seen].sort(),mine:Object.keys(found).sort(),times:found}}
 /* --- резервная копия и файл календаря --- */
-function download(name,text,type){try{const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},500);return true}catch(e){return false}}
+let dlNs;if(window.claude&&claude.use)claude.use('downloads').then(n=>{dlNs=n}).catch(()=>{dlNs=null});
+function download(name,text,type){if(dlNs){dlNs.save({filename:name,data:text}).then(()=>toast('Файл сохранён')).catch(()=>toast('Сохранение отменено'));return true}if(window.claude)return false;try{const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},500);return true}catch(e){return false}}
 function icsFor(n){const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//moya-rutina//RU','CALSCALE:GREGORIAN','X-WR-CALNAME:Моя рутина'];let uid=0;
 const dt=(k,m)=>k.replace(/-/g,'')+'T'+pad(Math.floor(m/60))+pad(m%60)+'00',esc2=s=>String(s).replace(/[,;\\]/g,x=>'\\'+x);
 const ev=(k,m1,k2,m2,t,al)=>{L.push('BEGIN:VEVENT','UID:r'+(uid++)+'-'+k+'@moya-rutina','DTSTAMP:'+TODAY.replace(/-/g,'')+'T000000','DTSTART:'+dt(k,m1),'DTEND:'+dt(k2,m2),'SUMMARY:'+esc2(t));if(al)L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+esc2(t),'TRIGGER:-PT'+al+'M','END:VALARM');L.push('END:VEVENT')};
@@ -1138,8 +1139,8 @@ else{const d=g('qa-d').value;if(!d)return bad(g('qa-d'));if(st.work.shifts[d]==n
 save();buzz([10,30,14]);render();return}
 if(v==='sparse'){const t=document.getElementById('sc-t');schedRaw=t?t.value:'';if(!schedRaw.trim()){if(t){t.style.borderColor='var(--bad)';t.focus()}return}schedP=parseSched(schedRaw,st.work.name||'Алинур');buzz(8);render();return}
 if(v==='sapply'){if(!schedP)return;const S=st.work.shifts;let n=0;schedP.dates.forEach(k=>{const want=schedP.mine.includes(k);if(want&&S[k]==null){S[k]=st.work.rate||0;n++}else if(!want&&S[k]!=null&&!(S[k]>0))delete S[k]});schedP=null;schedRaw='';save();FX.pulse('W',1);buzz([10,30,14]);toast(n?'Смены отмечены: '+n:'График совпадает с календарём');setSub('shifts');return}
-if(v==='ics'){const ok=download('moya-rutina.ics',icsFor(14),'text/calendar');toast(ok?'Файл календаря скачан':'Не получилось скачать здесь — открой сайт на github.io');return}
-if(v==='bexp'){const ok=download('moya-rutina-'+TODAY+'.json',exportJSON(),'application/json');toast(ok?'Копия скачана':'Скачать не получилось — нажми «Скопировать»');return}
+if(v==='ics'){const ok=download('moya-rutina.ics',icsFor(14),'text/calendar');if(!dlNs)toast(ok?'Файл календаря скачан':'Не получилось скачать здесь — открой сайт на github.io');return}
+if(v==='bexp'){const ok=download('moya-rutina-'+TODAY+'.json',exportJSON(),'application/json');if(!dlNs)toast(ok?'Копия скачана':'Скачать не получилось — нажми «Скопировать»');return}
 if(v==='bcopy'){const t=exportJSON();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Копия скопирована')).catch(()=>{const x=document.getElementById('b-txt');if(x){x.value=t;x.select()}toast('Выдели текст в поле и скопируй')});return}
 if(v==='bimp'){const x=document.getElementById('b-txt');if(!x||!x.value.trim()){if(x){x.style.borderColor='var(--bad)';x.focus()}return}if(!impArm){impArm=true;render();setTimeout(()=>{impArm=false},4000);return}impArm=false;const er=importJSON(x.value);toast(er||'Данные загружены');render();return}});
 app.addEventListener('change',e=>{const t=e.target;
