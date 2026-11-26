@@ -495,6 +495,14 @@ textarea::placeholder{color:var(--dim)}
 .grg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .grg label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--mute)}
 .grg input{padding:8px 6px;text-align:center;font-size:14px}
+.sd{padding:11px 0;border-top:1px solid var(--line)}
+.sd:first-of-type{border-top:0}
+.sd>.row b{font-weight:500;font-size:15px}
+.sd.today>.row b{color:var(--ice)}
+.sr{display:grid;grid-template-columns:50px 1fr;gap:10px;padding:5px 0;font-size:14px}
+.sr .tm{color:var(--mute);font-variant-numeric:tabular-nums}
+.sr .t{display:flex;flex-direction:column}
+.sr small{font-size:12px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -1037,7 +1045,8 @@ const prepLabel=k=>{const f=foodPlan()[k];if(!f||!f.prep)return null;return (f.s
 /* --- дела на день: собираются сами --- */
 function todoFor(k){const T=dayType(k),L=plan(k),tr=trainFor(k),fp=foodPlan()[k],d=day(k),R=[],add=(id,t,o)=>R.push(Object.assign({id,t},o||{}));
 const sl=L.find(x=>x.k==='sleep'&&/перед сменой|после смены|между сменами/.test(x.x));if(sl)add('sleep',sl.x,{tm:sl.t,c:'var(--ice)',go:'today',sb:'sleep'});
-if(fp)fp.take.forEach((x,i)=>add('take'+i,'Взять '+x,{c:'var(--teal)',tm:x.startsWith('на смену')?1140:400}));
+if(fp)fp.take.forEach((x,i)=>add('take'+i,'Взять '+x+(typeof classesOf==='function'&&((/^(на учёбу|после смены)/.test(x)&&classesOf(k).some(c=>c[2]==='Физкультура'))||(x.startsWith('на смену')&&classesOf(addD(k,1)).some(c=>c[2]==='Физкультура')))?', форму на физкультуру':''),{c:'var(--teal)',tm:x.startsWith('на смену')?1140:400}));
+if(typeof classesOf==='function'){const CL=classesOf(k);if(CL.length)add('cls','Пары '+CL[0][0]+'–'+CL[CL.length-1][1]+': '+[...new Set(CL.map(c=>shortSubj(c[2])))].join(', '),{c:'var(--ice)',go:'study',sb:'sched',tm:tmin(CL[0][0])-1})}
 if(fp&&fp.gap)add('gap','Заготовок на сегодня нет: купи по дороге творог, кефир, яйца или готовую курицу',{tm:700,c:'var(--teal)',go:'food',sb:'plan'});
 if(fp&&fp.prep){const pl=L.find(x=>/заготовк/i.test(x.x));add('prep',fp.shop==='big'?'Магазин: весь список на неделю, потом заготовки':fp.shop==='top'?'Докупить свежее (творог, кефир, хлеб, яблоки) и заготовки':'Заготовки на 2–3 дня',{tm:pl?pl.t:780,c:'var(--teal)',go:'food',sb:fp.shop==='big'?'shop':'prep',done:P().prep.d===k})}
 if(tr.w){const tl=L.find(x=>x.k==='train');add('train','Тренировка: '+tr.w.n+(tr.light?', легко':''),{tm:tl?tl.t:1110,c:'var(--vio)',go:'sport',done:!!tr.done})}
@@ -1282,17 +1291,30 @@ if(A.length)h+=card('<h3>Что сделать до 7 декабря</h3>'+A.map
 h+=card(L.map((g,i)=>{const c=C[i],op=grOpen===g.id,col=c.lvl==='bad'?'var(--bad)':c.lvl==='mid'?'#ffd59a':'var(--teal)';
 return '<div class="gr"><button class="grh" data-a="gropen" data-id="'+g.id+'" aria-expanded="'+op+'"><i style="--c:'+col+'"></i><div class="t"><b>'+esc(g.n)+'</b><span>'+esc(c.why)+(g.abs?', пропусков '+g.abs+' ('+g.absP+'%)':'')+'</span></div><div class="grn"><span>РК1 <b>'+(c.r1??'—')+'</b></span><span>РК2 <b>'+(c.r2??'—')+'</b></span><span>РД <b style="color:'+col+'">'+(c.rd??'—')+'</b></span></div></button>'
 +(op?'<div class="grd"><div class="grg">'+GCOL.map((n,j)=>'<label><span>'+n+'</span><input inputmode="numeric" data-grv="'+g.id+':'+j+'" value="'+(g.v[j]??'')+'" placeholder="—"></label>').join('')+'<label><span>Экзамен</span><input inputmode="numeric" data-grx="'+g.id+'" value="'+(g.ex??'')+'" placeholder="—"></label><label><span>Пропуски</span><input inputmode="numeric" data-gra="'+g.id+'" value="'+g.abs+'"></label></div>'
-+(c.rd!=null?'<div class="note" style="margin-top:8px">Для сдачи нужно на экзамене от '+c.exFor(PASS)+', для итога 70 — '+(c.exFor(STIP)>100?'больше 100: сначала подними РК2':c.exFor(STIP))+', для 90 — '+(c.exFor(90)>100?'больше 100':c.exFor(90))+'.'+(c.final!=null?' Итог: <b>'+c.final+'</b>.':'')+'</div>':'<div class="note" style="margin-top:8px">Для допуска нужно РК2 от '+c.need2+'.</div>')+'</div>':'')+'</div>'}).join('')+'<div class="note" style="margin-top:10px">Нажми на предмет, чтобы обновить баллы. Когда пришлёшь новый журнал, я обновлю всё сам.</div>');
++(()=>{const nc=typeof nextClass==='function'?nextClass(g.n):null;return nc?'<div class="note" style="margin-top:8px">Ближайшая пара: '+relDay(nc.k)+' в '+nc.c[0]+(nc.c[4]?', '+roomTxt(nc.c[4]):'')+'. Там можно сдать СРС и спросить про баллы.</div>':''})()+(c.rd!=null?'<div class="note" style="margin-top:8px">Для сдачи нужно на экзамене от '+c.exFor(PASS)+', для итога 70 — '+(c.exFor(STIP)>100?'больше 100: сначала подними РК2':c.exFor(STIP))+', для 90 — '+(c.exFor(90)>100?'больше 100':c.exFor(90))+'.'+(c.final!=null?' Итог: <b>'+c.final+'</b>.':'')+'</div>':'<div class="note" style="margin-top:8px">Для допуска нужно РК2 от '+c.need2+'.</div>')+'</div>':'')+'</div>'}).join('')+'<div class="note" style="margin-top:10px">Нажми на предмет, чтобы обновить баллы. Когда пришлёшь новый журнал, я обновлю всё сам.</div>');
 return h};
-PANE.study.sched=function(){const wd=wdn(TODAY),names=['','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];let h=card('<h3>Пары по дням</h3>'+[1,2,3,4,5,6,7].map(d=>{const c=CLS[d];return '<div class="wkr'+(d===wd?' today':'')+'"><b style="width:auto"></b><div class="t">'+names[d]+'<span>'+(c?'выход '+hm(tmin(c[0])-COM)+', дома '+hm(tmin(c[1])+COM):'выходной')+'</span></div><span class="num">'+(c?c[0]+'–'+c[1]:'—')+'</span></div>'}).join('')+'<div class="note" style="margin-top:8px">Пары идут до 11 декабря и с 11 января по 23 апреля. На сессии и каникулах сайт сам переключает режим. Онлайн-пар нет.</div>');
-const next=ACAD.filter(a=>a[1]>=TODAY).slice(0,4);h+=card('<h3>Ближайшее по учёбе</h3>'+next.map(a=>'<div class="wkr"><b style="width:auto"></b><div class="t">'+esc(a[2])+'<span>'+shortDate(a[0])+(a[0]!==a[1]?' — '+shortDate(a[1]):'')+'</span></div><span class="tag'+(dleft(a[0])<=14?' mid':'')+'">'+(TODAY>=a[0]?'сейчас':'через '+dleft(a[0])+' '+plural(dleft(a[0]),'день','дня','дней'))+'</span></div>').join(''));
-return h+card('<div class="note">Предметы по дням появятся здесь, когда пришлёшь скриншоты расписания ещё раз.</div>')};
 app.addEventListener('click',e=>{const a=e.target.closest('[data-a="gropen"]');if(!a)return;const id=+a.dataset.id;grOpen=grOpen===id?null:id;buzz(6);render()});
 app.addEventListener('change',e=>{const t=e.target,d=t.dataset;if(!d)return;const G=GR();let ch=false;
 if(d.grv){const [id,j]=d.grv.split(':').map(Number),g=G.list.find(x=>x.id===id);if(g){const v=t.value.trim()===''?null:Math.max(0,Math.min(100,Math.round(num(t.value))));g.v[j]=isNaN(v)?null:v;ch=true}}
 if(d.grx){const g=G.list.find(x=>x.id===+d.grx);if(g){const v=t.value.trim()===''?null:Math.max(0,Math.min(100,Math.round(num(t.value))));g.ex=isNaN(v)?null:v;ch=true}}
 if(d.gra){const g=G.list.find(x=>x.id===+d.gra);if(g){const v=Math.max(0,Math.round(num(t.value)||0)),old=g.abs;g.absP=old?Math.round(g.absP*v/old):g.absP;g.abs=v;ch=true}}
 if(ch){G.upd=TODAY;save();render()}});
+
+/* ================= расписание осеннего семестра (без онлайн-лекций) ================= */
+const SCHED={1:[['08:30','10:20','Английский язык','практика','510'],['10:30','11:20','Цифровые системы','практика','510'],['11:30','12:20','ООП','практика','510'],['12:30','14:20','Зелёные технологии в экономике','практика','406'],['14:30','15:20','Зелёные технологии в экономике','лекция','']],
+2:[['08:30','10:20','История Казахстана','лекция','506'],['10:30','12:20','Казахский язык','практика','407'],['12:30','13:20','Физкультура','практика','спортзал, корп. 2']],
+3:[['08:30','10:20','История Казахстана','практика','712'],['10:30','12:20','Казахский язык','практика','405'],['12:30','13:20','Английский язык','практика','406'],['13:30','14:20','Английский язык','практика','2']],
+4:[['08:30','10:20','Высшая математика','практика','513'],['10:30','12:20','Физкультура','практика','спортзал, корп. 2']],
+5:[['10:30','12:20','Физика','практика','706']]};
+const roomTxt=r=>(/спортзал/.test(r)?'':'ауд. ')+esc(r);
+const classesOf=k=>clsOf(k)?(SCHED[wdn(k)]||[]):[];
+const shortSubj=n=>({'Английский язык':'английский','Цифровые системы':'цифровые системы','Зелёные технологии в экономике':'зелёные технологии','История Казахстана':'история','Казахский язык':'казахский','Физкультура':'физкультура','Высшая математика':'вышмат','Физика':'физика','ООП':'ООП'})[n]||n;
+function nextClass(subj){for(let i=0;i<30;i++){const k=addD(TODAY,i),L=classesOf(k);const nowM=i===0?new Date().getHours()*60+new Date().getMinutes():-1;const c=L.find(x=>x[2]===subj&&tmin(x[0])>nowM);if(c)return {k,c}}return null}
+PANE.study.sched=function(){const wd=wdn(TODAY),names=['','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'],nowM=new Date().getHours()*60+new Date().getMinutes(),todayL=classesOf(TODAY);
+let h='';if(todayL.length){const cur=todayL.find(x=>tmin(x[0])<=nowM&&tmin(x[1])>nowM),nx=todayL.find(x=>tmin(x[0])>nowM);h+=card('<h3>Сегодня</h3>'+(cur?'<div class="note">Сейчас: <b>'+esc(cur[2])+'</b>, до '+cur[1]+(cur[4]?', '+roomTxt(cur[4]):'')+'</div>':'')+(nx?'<div class="note">Дальше: <b>'+esc(nx[2])+'</b> в '+nx[0]+(nx[4]?', '+roomTxt(nx[4]):'')+'</div>':!cur?'<div class="note">Пары на сегодня закончились.</div>':''))}
+h+=card('<h3>Пары по дням</h3><div class="note" style="margin-bottom:4px">Весь осенний семестр, до 11 декабря. Онлайн-лекции не показываю.</div>'+[1,2,3,4,5].map(d=>{const L=SCHED[d];return '<div class="sd'+(d===wd?' today':'')+'"><div class="row sp"><b>'+names[d]+'</b><span class="num">'+L[0][0]+'–'+L[L.length-1][1]+'</span></div>'+L.map(x=>'<div class="sr"><span class="tm">'+x[0]+'</span><span class="t">'+esc(x[2])+'<small>'+x[3]+(x[4]?', '+roomTxt(x[4]):'')+'</small></span></div>').join('')+'</div>'}).join('')+'<div class="sd"><div class="row sp"><b>Суббота, воскресенье</b><span class="num">—</span></div></div>');
+const next=ACAD.filter(a=>a[1]>=TODAY).slice(0,4);h+=card('<h3>Ближайшее по учёбе</h3>'+next.map(a=>'<div class="wkr"><b style="width:auto"></b><div class="t">'+esc(a[2])+'<span>'+shortDate(a[0])+(a[0]!==a[1]?' — '+shortDate(a[1]):'')+'</span></div><span class="tag'+(dleft(a[0])<=14?' mid':'')+'">'+(TODAY>=a[0]?'сейчас':'через '+dleft(a[0])+' '+plural(dleft(a[0]),'день','дня','дней'))+'</span></div>').join(''));
+return h};
 
 /* ================= космос: одна WebGL-картина, четыре сцены ================= */
 const FX=(function(){
