@@ -614,6 +614,57 @@ input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.45)!impor
 .nlist .past{opacity:.35}
 @media (prefers-reduced-motion:reduce){.moons i{animation:none}.bar i{animation:none}}
 .keybox{font:500 20px/1.3 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.06em;text-align:center;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);user-select:all;-webkit-user-select:all}
+/* ===== boost ===== */
+.qfab{position:fixed;z-index:12;right:max(18px,calc(50% - 300px));bottom:calc(98px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(160deg,rgba(255,255,255,.2),rgba(255,255,255,.07));color:#fff;border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 12px 34px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);transition:transform .2s var(--out),opacity .2s}
+.qfab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.qfab:active{transform:scale(.92)}
+body.qlock .qfab{opacity:0;pointer-events:none}
+body.qlock{overflow:hidden}
+.qsheet{position:fixed;inset:0;z-index:45;pointer-events:none}
+.qsheet .qbg{position:absolute;inset:0;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;transition:opacity .2s var(--out)}
+.qsheet .qbox{position:absolute;left:50%;top:calc(12px + env(safe-area-inset-top,0px));width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px - env(safe-area-inset-top,0px));overflow-y:auto;transform:translate(-50%,-12px);opacity:0;transition:transform .2s var(--out),opacity .2s var(--out);padding:12px;border-radius:28px;background:linear-gradient(160deg,rgba(40,42,52,.92),rgba(14,15,20,.94));border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 30px 80px rgba(0,0,0,.6)}
+.qsheet.on{pointer-events:auto}.qsheet.on .qbg{opacity:1}.qsheet.on .qbox{opacity:1;transform:translate(-50%,0)}
+.qrow{display:flex;gap:8px;align-items:center}
+.qrow input{font-size:17px!important;padding:14px 16px!important;border-radius:18px!important}
+.qx{flex:none;width:44px;height:44px;border-radius:50%;color:var(--mute);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.qhit{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:12px 12px;margin-top:6px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:14px;line-height:1.35}
+.qhit.go{background:rgba(255,255,255,.92);color:#0a0b0f;border-color:transparent;margin-top:10px}
+.qhit.go em{color:rgba(10,11,15,.55)}
+.qi{font-size:20px;flex:none;width:28px;text-align:center}
+.qt{display:flex;flex-direction:column;gap:2px;min-width:0}.qt b{font-weight:600}.qt em{font-style:normal;font-size:12px;color:var(--dim)}
+.qtag{flex:none;font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:var(--mute)}
+.qsec{font-size:12px;color:var(--dim);margin:14px 4px 2px}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.qchips button{font-size:13px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--ink)}
+.qnone{font-size:13px;color:var(--mute);padding:12px 6px 4px;line-height:1.45}
+.utoast{position:fixed;z-index:44;left:14px;right:14px;margin:0 auto;width:fit-content;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateY(200%);display:flex;gap:12px;align-items:center;max-width:calc(100% - 28px);padding:10px 10px 10px 18px;border-radius:999px;background:rgba(245,246,248,.97);color:#0a0b0f;font-size:14px;font-weight:500;box-shadow:0 14px 40px rgba(0,0,0,.5);transition:transform .3s var(--out)}
+.utoast.on{transform:none}
+.utoast button{flex:none;padding:8px 14px;border-radius:999px;background:#0a0b0f;color:#fff;font-size:13px;font-weight:600}
+.utoast span{min-width:0}
+.rembn{position:fixed;z-index:46;left:50%;top:calc(10px + env(safe-area-inset-top,0px));width:min(520px,calc(100% - 20px));transform:translate(-50%,-150%);display:flex;gap:12px;align-items:center;padding:14px 12px 14px 18px;border-radius:24px;background:linear-gradient(160deg,rgba(52,54,64,.95),rgba(18,19,24,.96));border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 20px 60px rgba(0,0,0,.6);transition:transform .3s var(--out)}
+.rembn.on{transform:translate(-50%,0)}
+.rembn div{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.rembn b{font-size:15px}.rembn span{font-size:13px;color:var(--mute);line-height:1.35}
+.rembn button{flex:none;padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.92);color:#0a0b0f;font-weight:600;font-size:14px}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 2px}
+.kv2>div{padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
+.kv2 b{font-size:20px;font-weight:600;letter-spacing:-.02em}.kv2 span{font-size:12px;color:var(--dim)}
+.rks{display:grid;grid-template-columns:10px 1fr auto;gap:4px 10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.rks:first-of-type{border-top:0}.rks .pbar{grid-column:2/4;margin:2px 0 0}
+.lv{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4)}.lv.bad{background:var(--bad)}.lv.mid{background:var(--mid)}.lv.ok{background:#fff}
+.rkd{padding:10px 0;border-top:1px solid var(--line)}.rkd:first-of-type{border-top:0}
+.rkd.cur .rkh b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;margin-left:8px;vertical-align:middle}
+.rkh{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:4px}
+.rkb{display:flex;gap:12px;align-items:center;padding:6px 0;font-size:14px}.rkb span{flex:1}.rkb.done span{color:var(--dim);text-decoration:line-through}
+.rvg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.rvg>div{padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
+.rvg span{font-size:12px;color:var(--dim)}.rvg b{font-size:15px;font-weight:600}.rvg em{font-style:normal;font-size:11px}.rvg em.up{color:#fff}.rvg em.dn{color:var(--bad)}
+.nt{padding:12px 0;border-top:1px solid var(--line);margin-top:6px}.nt p{margin:4px 0 0;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}.nt .lnk{padding:4px 0 0}
+.remr{display:flex;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}.remr:first-of-type{border-top:0}.remr .tm{flex:none;min-width:86px;color:var(--mute);font-variant-numeric:tabular-nums}
+.tgl{flex:none;position:relative;width:51px;height:31px;border-radius:999px;background:rgba(255,255,255,.14);transition:background-color .2s var(--out)}
+.tgl i{position:absolute;left:2px;top:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .2s var(--out)}
+.tgl.on{background:rgba(255,255,255,.85)}.tgl.on i{transform:translateX(20px);background:#0a0b0f}
+body.offline::after{content:"Офлайн";position:fixed;z-index:30;left:50%;top:calc(6px + env(safe-area-inset-top,0px));transform:translateX(-50%);font-size:11px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.12);color:var(--mute);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media (prefers-reduced-motion:reduce){.qsheet .qbox,.qsheet .qbg,.utoast,.rembn,.tgl i,.qfab{transition:opacity .15s!important}.qsheet .qbox{transform:translate(-50%,0)}.utoast{transform:none;opacity:0}.utoast.on{opacity:1}.rembn{transform:translate(-50%,0);opacity:0;pointer-events:none}.rembn.on{opacity:1;pointer-events:auto}}
 </style>
 </head>
 <body>
@@ -1617,6 +1668,206 @@ if(v==='pushon'){pushEnable();return}});
 if(cloudKey&&CLOUD_OK)setTimeout(cloudStart,800);
 /* напоминания на сервере обновляются раз в час, даже если ничего не менялось */
 setInterval(()=>{if(cloudKey&&fbDb&&!document.hidden)docRef().set({rem:remindersAhead()},{merge:true}).catch(()=>{})},3600000);
+
+/* ================= boost: быстрый ввод, отмена, живые напоминания, сон, РК2, итоги недели, жесты ================= */
+/* ---------- отмена ---------- */
+function utoast(msg,snap,label){let el=document.getElementById('utoast');if(!el){el=document.createElement('div');el.id='utoast';el.className='utoast';el.setAttribute('role','status');document.body.appendChild(el)}
+el.innerHTML='<span>'+esc(msg)+'</span>'+(snap?'<button type="button" class="press">'+(label||'Отменить')+'</button>':'');
+const b=el.querySelector('button');if(b)b.onclick=()=>{try{apply(JSON.parse(snap));migrate();save();render();toast('Отменено')}catch(e){}el.classList.remove('on')};
+el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),snap?6000:2800)}
+const snapNow=()=>JSON.stringify(st);
+const capS=x=>{x=String(x||'');return x.charAt(0).toUpperCase()+x.slice(1)};const subjN=n=>capS(typeof shortSubj==='function'?shortSubj(n):n);
+
+/* ---------- даты из текста ---------- */
+const QWD={'пн':1,'пон':1,'вт':2,'ср':3,'чт':4,'чет':4,'пт':5,'пят':5,'сб':6,'суб':6,'вс':0,'вос':0};
+const QMN={'янв':0,'фев':1,'мар':2,'апр':3,'мая':4,'май':4,'июн':5,'июл':6,'авг':7,'сен':8,'окт':9,'ноя':10,'дек':11};
+function qdate(s){let t=' '+s+' ',k=null;const cut=re=>{t=t.replace(re,' ')};
+let m;
+if(/\sпослезавтра\s/.test(t)){k=addD(TODAY,2);cut(/\sпослезавтра\s/)}
+else if(/\sзавтра\s/.test(t)){k=addD(TODAY,1);cut(/\sзавтра\s/)}
+else if(/\sвчера\s/.test(t)){k=addD(TODAY,-1);cut(/\sвчера\s/)}
+else if(/\sсегодня\s/.test(t)){k=TODAY;cut(/\sсегодня\s/)}
+else if(m=/\sчерез\s(\d{1,2})\s(день|дня|дней)\s/.exec(t)){k=addD(TODAY,+m[1]);cut(m[0])}
+else if(m=/\s(\d{1,2})[.\/](\d{1,2})(?:[.\/](\d{2,4}))?\s/.exec(t)){const y=m[3]?(m[3].length===2?2000+ +m[3]:+m[3]):null;k=qfix(+m[1],+m[2]-1,y);cut(m[0])}
+else if(m=/\s(\d{1,2})\s(янв|фев|мар|апр|ма[яй]|июн|июл|авг|сен|окт|ноя|дек)[а-я]*\.?\s/.exec(t)){k=qfix(+m[1],QMN[m[2]],null);cut(m[0])}
+else if(m=/\s(?:в|во|на|к)?\s?(пн|вт|ср|чт|пт|сб|вс|понедельник[а-яa-z]*|вторник[а-яa-z]*|сред[а-яa-z]*|четверг[а-яa-z]*|пятниц[а-яa-z]*|суббот[а-яa-z]*|воскресень[а-яa-z]*)\s/.exec(t)){const w=QWD[m[1].slice(0,3)]!=null?QWD[m[1].slice(0,3)]:QWD[m[1].slice(0,2)];let d=parse(TODAY),n=0;while(d.getDay()!==w||n===0){d.setDate(d.getDate()+1);n++;if(n>8)break}k=iso(d);cut(m[0])}
+return {k,rest:t.replace(/\s+/g,' ').trim()}}
+function qfix(dd,mm,y){const now=parse(TODAY);let d=new Date(y||now.getFullYear(),mm,dd,12);if(!y&&d<now&&(now-d)>40*864e5)d=new Date(now.getFullYear()+1,mm,dd,12);return isNaN(d)?null:iso(d)}
+const qnum=s=>parseFloat(String(s).replace(',','.'));
+
+/* ---------- разбор фразы ---------- */
+function qsubj(t){const L=(typeof GR==='function'?GR().list.map(g=>g.n):[]).concat(typeof FSUB!=='undefined'?FSUB:[]);const w=t.toLowerCase();
+const ali={'матем':'математ','вышк':'математ','физик':'физик','англ':'англ','инф':'информ','истор':'истор','казах':'казах','каз ':'казах','эконом':'эконом','физр':'физкульт','физкульт':'физкульт','програм':'програм','цифров':'цифров','филос':'филос'};
+for(const a in ali)if(w.includes(a)){const s=L.find(n=>n.toLowerCase().includes(ali[a]));if(s)return s}
+return L.find(n=>w.includes(n.toLowerCase().slice(0,5)))||null}
+function qparse(raw){const s=(raw||'').trim();if(!s)return null;const lo=s.toLowerCase().replace(/ё/g,'е');const D=qdate(lo),k=D.k||TODAY,t=D.rest,when=k===TODAY?'сегодня':k===addD(TODAY,1)?'завтра':k===addD(TODAY,-1)?'вчера':shortDate(k);let m;
+const R=(icon,label,run)=>({icon,label,run,k});
+if(/^(лег|ложусь|иду спать|сплю|спать|ушел спать)(?=\s|$)/.test(t))return R('🌙','Начать сон сейчас',()=>{slStart();return 'Сон пошёл. Нажми «Проснулся», когда встанешь'});
+if(/^(встал|проснулся|подъем|подъём|проснулась)(?=\s|$)/.test(t))return R('☀️','Закончить сон сейчас',()=>slStop());
+if(m=/^(?:вес|вешу|взвесил[а-яa-z]*)\s*(\d{2,3}(?:[.,]\d)?)/.exec(t)||/^(\d{2,3}(?:[.,]\d)?)\s*кг$/.exec(t)){const v=qnum(m[1]);if(v>30&&v<250)return R('⚖️','Вес '+fmt(v)+' кг · '+when,()=>{st.weights[k]=v;save();return 'Вес записан: '+fmt(v)+' кг'})}
+if(m=/^(?:вода|выпил[а-яa-z]*|попил[а-яa-z]*)\s*(\d+(?:[.,]\d+)?)\s*(л|литр[а-яa-z]*|мл)?/.exec(t)){let v=qnum(m[1]);if(m[2]==='мл'||v>20)v=v/1000;v=Math.round(v*100)/100;return R('💧','Вода +'+fmt(v,2)+' л · '+when,()=>{setDay(k,o=>{o.water=Math.round(((o.water||0)+v)*100)/100});return 'Вода: всего '+fmt(day(k).water,2)+' л'})}
+if(m=/^(?:сон|спал[а-яa-z]*|поспал[а-яa-z]*)\s*(\d+(?:[.,]\d+)?)\s*(ч|час[а-яa-z]*|мин[а-яa-z]*)?/.exec(t)){let v=qnum(m[1]);if(m[2]&&m[2].startsWith('мин'))v=v/60;v=Math.round(v*4)/4;if(v>0&&v<=16)return R('🌙','Сон '+fmt(v,2)+' ч · '+when,()=>{setDay(k,o=>{o.sleep=v});return 'Сон записан: '+fmt(v,2)+' ч'})}
+if(m=/^(?:настроение)\s*(\d{1,2})/.exec(t)){const v=Math.min(10,Math.max(1,+m[1]));return R('🙂','Настроение '+v+'/10 · '+when,()=>{setDay(k,o=>{o.mood=v});return 'Настроение записано'})}
+if(m=/^(?:трен[а-яa-z]*|спорт|зал|пробежка|бег)\s*(\d{1,3})\s*(мин[а-яa-z]*|м)?$/.exec(t)){const v=+m[1];return R('🏋️','Спорт '+v+' мин · '+when,()=>{setDay(k,o=>{o.sport=(o.sport||0)+v});return 'Спорт записан'})}
+if(m=/^(?:учил[а-яa-z]*|учеба|занимал[а-яa-z]*|готовил[а-яa-z]* к)\s*(.*?)(\d+(?:[.,]\d+)?)\s*(ч|час[а-яa-z]*|мин[а-яa-z]*)/.exec(t)){let v=qnum(m[2]);if(m[3].startsWith('мин'))v=v/60;v=Math.round(v*4)/4;const sj=qsubj(m[1]||'');return R('📚','Учёба '+fmt(v,2)+' ч'+(sj?' · '+subjN(sj):'')+' · '+when,()=>{setDay(k,o=>{o.study=Math.round(((o.study||0)+v)*4)/4});if(sj){FO().log.push({d:k,subj:sj,min:Math.round(v*60)});save()}return 'Учёба записана'})}
+if(/^(?:не работаю|без смены|отмени[а-яa-z]* смену|убери[а-яa-z]* смену|смены нет|нет смены)/.test(t))return R('🗓️','Убрать смену · '+when,()=>{delete st.work.shifts[k];save();return 'Смена убрана: '+shortDate(k)});
+if(/^(?:смена|работаю|выхожу|на смену|выход)(?=\s|$)/.test(t))return R('🗓️','Смена '+st.work.start+'–'+st.work.end+' · '+when,()=>{if(st.work.shifts[k]==null)st.work.shifts[k]=0;save();return 'Смена добавлена: '+shortDate(k)});
+if(m=/^(?:заметка|мысль|идея|запомни|запиши)[:\s,]+(.+)/i.exec(s.replace(/ё/g,'е'))){const txt=s.slice(s.length-m[1].length).trim();return R('📝','Заметка: '+txt.slice(0,60),()=>{if(!Array.isArray(st.notes))st.notes=[];st.notes.push({id:Date.now(),d:TODAY,tm:nowMin(),t:txt.slice(0,400)});save();return 'Заметка сохранена'})}
+if(m=/^(?:оплатил[а-яa-z]*|заплатил[а-яa-z]*)\s+(.+)/.exec(t)){const w=m[1].replace(/\d+/g,'').trim();const f=st.cash.fix.find(f=>!f.paid&&w.length>2&&f.n.toLowerCase().replace(/ё/g,'е').includes(w.slice(0,4)));if(f)return R('✅','Отметить оплаченным: '+f.n+' '+fmt(f.amt,0)+' ₸',()=>{f.paid=true;save();return f.n+': оплачено'})}
+if(m=/^(?:задача|сделать|надо|не забыть|напомни)[:\s]+(.+)/.exec(t)){const tm=/\sв\s(\d{1,2})(?::(\d{2}))?\b/.exec(' '+m[1]);let tx=m[1],at=null;if(tm){at=+tm[1]*60+(+tm[2]||0);tx=(' '+tx).replace(tm[0],'').trim()}const txt=tx.charAt(0).toUpperCase()+tx.slice(1);return R('☑️','Дело: '+txt.slice(0,60)+' · '+when+(at!=null?' в '+hm(at):''),()=>{if(!Array.isArray(st.tasks))st.tasks=[];st.tasks.push({id:Date.now(),d:k,t:txt.slice(0,120),tm:at});save();return 'Дело добавлено в «Что делать»'})}
+const sj=qsubj(t);
+if((m=/^(?:дедлайн|сдать|сдача|срок|дз|задание|рк|срс|лаба|лабораторн[а-я]*|контрольн[а-я]*|эссе|экзамен|тест)(?=\s|$)/.exec(t))||(sj&&D.k)){if(D.k){let task=t.replace(/^(дедлайн|сдать|сдача|срок)\s*/,'').trim();if(sj){const w4=sj.toLowerCase().slice(0,4);task=task.split(' ').filter(w=>!(w.slice(0,4)===w4||/^(матем|вышк|физик|англ|инф|истор|казах|эконом|програм|цифров|филос)/.test(w))).join(' ')}task=/^(срс|рк\d?|дз|сро)$/.test(task)?task.toUpperCase():task.charAt(0).toUpperCase()+task.slice(1);if(!task)task='Задание';const sjN=sj?(s=>s.charAt(0).toUpperCase()+s.slice(1))(shortSubj(sj)):null;return R('📌','Дедлайн '+shortDate(k)+(sjN?' · '+sjN:'')+': '+task.slice(0,50),()=>{const nid=Date.now();st.dl.push({id:nid,subj:sjN||'Без предмета',task:task.slice(0,80),due:k,done:false});save();return 'Дедлайн добавлен: '+shortDate(k)})}}
+if(m=/^(?:потратил[а-яa-z]*|купил[а-яa-z]*|минус|трата)?\s*(\d[\d\s]*(?:[.,]\d+)?)\s*(?:тг|тенге|₸|т)?\s*(?:на\s)?(.*)$/.exec(t)){const am=qnum(m[1].replace(/\s/g,'')),w=(m[2]||'').trim();if(am>0&&!/^(кг|л|мл|ч|час|мин)/.test(w)){const cat=w?catOf(w):'Другое';return R('💸','Трата '+fmt(am,0)+' ₸ · '+cat+(w?' · '+w.slice(0,30):'')+' · '+when,()=>{st.spend.push({id:Date.now(),d:k,cat,amt:am,note:w.slice(0,80)});save();return 'Записал: '+fmt(am,0)+' ₸, '+cat})}}
+if(m=/^([а-яa-z].*?)\s+(\d[\d\s]*)\s*(?:тг|тенге|₸)?$/.exec(t)){const am=qnum(m[2].replace(/\s/g,''));if(am>0){const nt=m[1].replace(/^(купил[а-я]*|потратил[а-я]*|оплатил[а-я]*|заплатил[а-я]*)\s*(на\s)?/,'').trim()||m[1];const cat=catOf(nt);return R('💸','Трата '+fmt(am,0)+' ₸ · '+cat+' · '+nt.slice(0,30)+' · '+when,()=>{st.spend.push({id:Date.now(),d:k,cat,amt:am,note:nt.slice(0,80)});save();return 'Записал: '+fmt(am,0)+' ₸, '+cat})}}
+const H=(st.habits||[]).find(h=>lo.includes(h.name.toLowerCase().slice(0,5)));if(H&&/(сделал|готово|выполнил|\+)/.test(lo))return R('✔️','Привычка: '+H.name+' · '+when,()=>{setDay(k,o=>{o.done=Object.assign({},o.done);o.done[H.id]=true});return H.name+': отмечено'});
+return null}
+
+/* ---------- поиск по сайту ---------- */
+function qsearch(q){q=(q||'').toLowerCase().replace(/ё/g,'е').trim();if(q.length<2)return [];const R=[],has=s=>String(s).toLowerCase().replace(/ё/g,'е').includes(q);
+const NM={today:'Сегодня',food:'Еда',sport:'Спорт',study:'Учёба',work:'Работа',money:'Деньги',goals:'Цели'};
+ORDER.forEach(s=>{if(has(NM[s]))R.push(['Раздел',NM[s],s,null]);SCR[s].tabs.forEach(t=>{if(has(t[1]))R.push(['Вкладка',NM[s]+' → '+t[1],s,t[0]])})});
+st.dl.filter(x=>has(x.task)||has(x.subj)).slice(0,4).forEach(x=>R.push(['Дедлайн',x.subj+': '+x.task+' · '+shortDate(x.due),'study','dl']));
+if(typeof SHOP!=='undefined')SHOP.forEach(x=>{if(has(x[0]))R.push(['Покупки',x[0],'food','shop'])});
+if(typeof DISH!=='undefined')DISH.forEach(x=>{if(has(x[0])||has(x[1]))R.push(['Блюдо',x[0]+': '+x[1].slice(0,50),'food','menu'])});
+if(typeof GR==='function')GR().list.forEach(g=>{if(has(g.n))R.push(['Оценки',g.n,'study','grades'])});
+(st.notes||[]).filter(n=>has(n.t)).slice(-4).reverse().forEach(n=>R.push(['Заметка',shortDate(n.d)+': '+n.t.slice(0,60),'goals','notes']));
+st.spend.filter(x=>has(x.note)||has(x.cat)).slice(-3).reverse().forEach(x=>R.push(['Трата',shortDate(x.d)+' · '+fmt(x.amt,0)+' ₸ · '+(x.note||x.cat),'money','spend']));
+return R.slice(0,8)}
+
+/* ---------- лист быстрого ввода ---------- */
+const QEX=['1500 еда','автобус 120','вес 91,5','вода 0,5','спал 6,5','лёг','встал','физика лаба 5 декабря','смена завтра','задача купить тетрадь','заметка идея для проекта','оплатил аренду','учил физику 45 мин','настроение 8'];
+let qOpen=false;
+function qHist(){try{return JSON.parse(localStorage.getItem('routine-qhist')||'[]')}catch(e){return []}}
+function qPush(s){const h=qHist().filter(x=>x!==s);h.unshift(s);try{localStorage.setItem('routine-qhist',JSON.stringify(h.slice(0,6)))}catch(e){}}
+function qBuild(){if(document.getElementById('qsheet'))return;
+const f=document.createElement('button');f.id='qfab';f.className='qfab press';f.type='button';f.setAttribute('aria-label','Быстрый ввод: трата, вес, сон, дедлайн, заметка');f.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';f.onclick=()=>qShow(true);document.body.appendChild(f);
+const w=document.createElement('div');w.id='qsheet';w.className='qsheet';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label','Быстрый ввод');
+w.innerHTML='<div class="qbg" data-q="close"></div><div class="qbox"><div class="qrow"><input id="q-in" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" placeholder="Напиши, что случилось или что найти" aria-label="Быстрый ввод"><button class="qx press" data-q="close" aria-label="Закрыть">✕</button></div><div id="q-out" aria-live="polite"></div></div>';
+document.body.appendChild(w);const inp=w.querySelector('#q-in');
+inp.addEventListener('input',qDraw);inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();qGo()}if(e.key==='Escape')qShow(false)});
+w.addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(!b)return;const v=b.dataset.q;
+if(v==='close')qShow(false);else if(v==='go')qGo();else if(v==='ex'){inp.value=b.dataset.v;qDraw();inp.focus()}else if(v==='nav'){qShow(false);goTo(b.dataset.s,b.dataset.t||undefined)}});
+document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();qShow(!qOpen)}})}
+function qShow(on){qOpen=on;const w=document.getElementById('qsheet');if(!w)return;w.classList.toggle('on',on);document.body.classList.toggle('qlock',on);const i=w.querySelector('#q-in');if(on){i.value='';qDraw();i.focus();buzz(6)}else i.blur()}
+function qDraw(){const i=document.getElementById('q-in'),o=document.getElementById('q-out'),v=i.value,p=qparse(v);let h='';
+if(p)h+='<button class="qhit go press" data-q="go"><span class="qi" aria-hidden="true">'+p.icon+'</span><span class="qt"><b>'+esc(p.label)+'</b><em>Нажми Enter или сюда, чтобы записать</em></span></button>';
+const S=v.trim().length>1?qsearch(v):[];
+if(S.length)h+='<div class="qsec">'+(p?'Или открыть':'Найдено')+'</div>'+S.map(r=>'<button class="qhit press" data-q="nav" data-s="'+r[2]+'"'+(r[3]?' data-t="'+r[3]+'"':'')+'><span class="qtag">'+esc(r[0])+'</span><span class="qt">'+esc(r[1])+'</span></button>').join('');
+if(!v.trim()){const H=qHist();if(H.length)h+='<div class="qsec">Недавние</div><div class="qchips">'+H.map(x=>'<button class="press" data-q="ex" data-v="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div>';
+h+='<div class="qsec">Можно писать так</div><div class="qchips">'+QEX.map(x=>'<button class="press" data-q="ex" data-v="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div>'}
+else if(!p&&!S.length)h+='<div class="qnone">Не понял. Начни с суммы («1500 еда»), со слова «вес», «вода», «спал», «смена», «задача», «заметка» или с предмета и даты.</div>';
+o.innerHTML=h}
+function qGo(){const i=document.getElementById('q-in'),v=i.value.trim(),p=qparse(v);if(!p){const S=qsearch(v);if(S.length){qShow(false);goTo(S[0][2],S[0][3]||undefined)}return}
+const snap=snapNow();let msg='';try{msg=p.run()||'Готово'}catch(e){msg='Не получилось: '+e.message}
+qPush(v);qShow(false);buzz(10);render();utoast(msg,snap);try{FX.pulse('K',1)}catch(e){}}
+
+/* ---------- трекер сна ---------- */
+function SL(){if(!st.slog||typeof st.slog!=='object')st.slog={on:null,last:[]};if(!Array.isArray(st.slog.last))st.slog.last=[];return st.slog}
+function slStart(){const s=SL();s.on=Date.now();save();render()}
+function slStop(){const s=SL();if(!s.on)return 'Сон не был начат. Запиши часы: «спал 7»';const e=Date.now(),h=(e-s.on)/36e5;const start=s.on;s.on=null;
+if(h<.25){save();render();return 'Меньше 15 минут — не считаю'}
+if(h>16){save();render();return 'Больше 16 часов — похоже, забыл нажать. Запиши часы вручную'}
+const v=Math.round(h*4)/4,k=iso(new Date(e));s.last.push({s:start,e});s.last=s.last.slice(-30);setDay(k,o=>{o.sleep=Math.round(((o.sleep||0)+v)*4)/4});render();return 'Сон '+fmt(v,2)+' ч, за сутки '+fmt(day(k).sleep,2)+' ч'}
+function slDebt(){const D=wk7(TODAY),v=D.map(k=>day(k).sleep).filter(x=>x!=null),tg=GOAL.sleep||8;return {n:v.length,avg:v.length?v.reduce((a,b)=>a+b,0)/v.length:null,debt:v.reduce((a,b)=>a+Math.max(0,tg-b),0),tg,D}}
+function slCard(){const s=SL(),on=s.on,D=slDebt();let h='<div class="row sp"><h3 style="margin:0">'+(on?'Спишь с '+hm(new Date(on).getHours()*60+new Date(on).getMinutes()):'Трекер сна')+'</h3>'+(on?'<span class="tag">'+fmt((Date.now()-on)/36e5,1)+' ч</span>':'')+'</div>';
+h+='<div class="note" style="margin:6px 0 10px">'+(on?'Проснулся — нажми, часы сами запишутся в сон за сутки.':'Нажми, когда ложишься, и когда встал. Дневной и ночной сон сложатся в один день.')+'</div>';
+h+='<button class="btn press" data-a="'+(on?'slstop':'slstart')+'">'+(on?'Проснулся':'Ложусь спать')+'</button>';
+if(D.n){h+='<div class="kv2"><div><b>'+fmt(D.avg,1)+' ч</b><span>в среднем за '+D.n+' '+plural(D.n,'день','дня','дней')+'</span></div><div><b>'+fmt(D.debt,1)+' ч</b><span>недосып за неделю</span></div></div>';
+h+=bars(D.D,k=>day(k).sleep,Math.max(10,D.tg),v=>fmt(v,1));
+h+='<div class="note" style="margin-top:8px">'+(D.debt>=6?'Долг большой. Ближайшие 2–3 дня добавь по 1–1,5 часа: ложись в окно сна сразу, телефон за 20 минут до сна убирай.':D.debt>=3?'Есть недосып. Сегодня ляг на 30–60 минут раньше или добери 20–30 минут днём.':'Сон в норме. Держи окна сна как в плане.')+'</div>'}
+return card(h)}
+
+/* ---------- подготовка к РК2 ---------- */
+function rkTarget(){const r=(typeof ACAD!=='undefined'?ACAD:[]).find(x=>/убежн|РК ?2/i.test(x[2])&&x[1]>=TODAY);return r?r[0]:null}
+const RKCAP={E:3,D:2,V:2,A:1,A0:1,G:1,G2:1};
+function rkNeed(){if(typeof GR!=='function')return [];return GR().list.filter(g=>!/физкульт|физическ/i.test(g.n)).map(g=>{const c=grCalc(g);const n=c.lvl==='bad'?4:c.lvl==='mid'?3:2;return {id:'rk'+g.id,n:g.n,need:n,lvl:c.lvl}}).sort((a,b)=>b.need-a.need)}
+function rkDone(id){let c=0;for(const k in st.days){const t=st.days[k].todo;if(t&&t[id])c++}return c}
+function rkPlan(){const T=rkTarget();if(!T)return null;const N=rkNeed();if(!N.length)return null;const days=[];for(let k=TODAY;k<T;k=addD(k,1))days.push(k);
+const left={};N.forEach(x=>left[x.id]=Math.max(0,x.need-rkDone(x.id)));const P={};days.forEach(k=>P[k]=[]);
+/* сегодня уже сделанные остаются в плане */
+N.forEach(x=>{if((day(TODAY).todo||{})[x.id])P[TODAY].push(x.id)});
+let prev=[];days.forEach(k=>{const cap=Math.max(1,RKCAP[dayType(k)]||1);const room=cap-P[k].length;for(let s=0;s<room;s++){const c=N.filter(x=>left[x.id]>0&&!P[k].includes(x.id)).sort((a,b)=>(prev.includes(a.id)-prev.includes(b.id))||(left[b.id]-left[a.id]));if(!c.length)break;P[k].push(c[0].id);left[c[0].id]--}prev=P[k]});
+let rest=Object.values(left).reduce((a,b)=>a+b,0),extra=0;if(rest>0){days.forEach(k=>{if(rest<=0||!/^(A0|A|G|E|D|V)$/.test(dayType(k)))return;const c=N.filter(x=>left[x.id]>0&&!P[k].includes(x.id)).sort((a,b)=>left[b.id]-left[a.id]);if(c.length){P[k].push(c[0].id);left[c[0].id]--;rest--;extra++}})}
+return {T,days,P,N,left,rest,extra}}
+const rkName=id=>{const x=rkNeed().find(x=>x.id===id);return x?x.n:id};
+function rkCard(){const R=rkPlan();if(!R)return card('<h3>Подготовка к РК</h3><div class="note">Ближайших рубежных контролей нет. Новый план появится, когда в календаре будет следующий РК.</div>');
+const dn=dleft(R.T),tot=R.N.reduce((a,x)=>a+x.need,0),done=R.N.reduce((a,x)=>a+Math.min(x.need,rkDone(x.id)),0);
+let h=card('<div class="row sp"><h3 style="margin:0">РК2 через '+dn+' '+plural(dn,'день','дня','дней')+'</h3><span class="mu">'+done+' из '+tot+'</span></div><div class="pbar" style="margin:10px 0 4px"><i style="--w:'+(tot?done/tot:0).toFixed(3)+'"></i></div>'+(R.rest>0?'<div class="tip" style="--c:var(--bad)"><i></i><span>Не влезает '+R.rest+' '+plural(R.rest,'блок','блока','блоков')+'. Бери по 2 блока в спокойные смены или проси у преподавателей темы, чтобы учить точечно.</span></div>':'')+'<div class="note">План сам раскладывает блоки по 45 минут: больше — где оценки слабее, больше блоков — в выходные, по одному — в дни со сменой (на смене учиться можно). Отметишь блок — он засчитается.</div>');
+h+=card('<h3>По предметам</h3>'+R.N.map(x=>{const d=Math.min(x.need,rkDone(x.id));return '<div class="rks"><span class="lv '+x.lvl+'"></span><b>'+esc(subjN(x.n))+'</b><span class="mu">'+d+'/'+x.need+'</span><div class="pbar sm"><i style="--w:'+(d/x.need).toFixed(3)+'"></i></div></div>'}).join(''));
+h+=card('<h3>По дням</h3>'+R.days.filter(k=>R.P[k].length).map(k=>'<div class="rkd'+(k===TODAY?' cur':'')+'"><div class="rkh"><b>'+(k===TODAY?'Сегодня':wdate(k))+'</b><span class="mu">'+esc(dtName(k))+'</span></div>'+R.P[k].map(id=>{const on=!!(day(k).todo||{})[id];return '<div class="rkb'+(on?' done':'')+'"><button class="ck'+(on?' on':'')+'" data-a="rkt" data-k="'+k+'" data-id="'+id+'" aria-pressed="'+on+'" aria-label="'+esc(rkName(id))+', отметить">'+CHK+'</button><span>'+esc(subjN(rkName(id)))+' · 45 мин</span>'+(k===TODAY&&!on?'<button class="lnk" data-a="rkfo" data-id="'+id+'">Фокус</button>':'')+'</div>'}).join('')+'</div>').join('')+'<div class="note" style="margin-top:8px">В блоке: темы РК2 из силлабуса, 10–15 задач или вопросов, 5 новых карточек. Не знаешь темы — первым делом спроси у преподавателя.</div>');
+return h}
+{const _tf=todoFor;todoFor=function(k){const R=_tf(k);try{const P=rkPlan();if(P&&P.P[k]){const D=day(k).todo||{};P.P[k].forEach(id=>{const x={id,t:'РК2: '+subjN(rkName(id))+', 45 минут',tm:1180,c:'var(--ice)',go:'study',sb:'rk'};x.done=!!D[id];x.time='';R.push(x)})}
+if(k===TODAY&&SL().on){const i=R.findIndex(x=>x.id==='slog');if(i>=0)R.splice(i,1)}}catch(e){}return R.sort((a,b)=>(a.done-b.done)||((a.tm||0)-(b.tm||0)))}}
+SCR.study.tabs.splice(1,0,['rk','РК2']);PANE.study.rk=function(){return rkCard()};
+
+/* ---------- итоги недели ---------- */
+function weekReview(){const wd=wdn(TODAY);if(wd!==7&&wd!==1)return '';const end=wd===7?TODAY:addD(TODAY,-1),key='rv'+end;if((st.seen||{})[key])return '';
+const a=statOf(wk7(end)),b=statOf(wk7(addD(end,-7)));if(a.sleep==null&&!a.train&&!a.focus&&!a.spend&&a.prot<1)return '';const L=[];
+const cmp=(x,y,better)=>y==null||x==null?'':(better?x>y:x<y)?' <em class="up">лучше</em>':Math.abs(x-y)<1e-9?'':' <em class="dn">хуже</em>';
+L.push(['Сон',a.sleep!=null?fmt(a.sleep,1)+' ч':'—',cmp(a.sleep,b.sleep,true)]);L.push(['Тренировки',a.train+'',cmp(a.train,b.train,true)]);L.push(['Белок',Math.round(a.prot)+' г/день',cmp(a.prot,b.prot,true)]);L.push(['Фокус',Math.round(a.focus)+' мин',cmp(a.focus,b.focus,true)]);L.push(['Дела',Math.round(a.todo*100)+'%',cmp(a.todo,b.todo,true)]);L.push(['Траты',fmt(a.spend,0)+' ₸',cmp(a.spend,b.spend,false)]);
+const weak=[[a.sleep!=null?a.sleep/(GOAL.sleep||8):1,'Сон: на этой неделе держи окна сна, ложись сразу после смены'],[a.prot/PROT,'Белок: добавь творог или яйца в каждый приём'],[a.train/3,'Спорт: поставь 3 тренировки в выходные и учебные дни'],[a.todo,'Дела: утром выбери 3 главных и сделай их первыми']].sort((x,y)=>x[0]-y[0])[0];
+return card('<div class="row sp"><h3 style="margin:0">Итоги недели</h3><button class="lnk" data-a="rvok" data-k="'+key+'">Скрыть</button></div><div class="rvg">'+L.map(r=>'<div><span>'+r[0]+'</span><b>'+r[1]+'</b>'+r[2]+'</div>').join('')+'</div><div class="tip" style="--c:var(--ice);margin-top:10px"><i></i><span>Фокус недели — '+esc(weak[1])+'</span></div><button class="plk" data-go="goals" data-sub="stats">Вся статистика</button>')}
+
+/* ---------- заметки ---------- */
+function notesCard(){const N=(st.notes||[]).slice().reverse();return card('<div class="row sp"><h3 style="margin:0">Заметки</h3><span class="mu">'+N.length+'</span></div><div class="row" style="margin-top:8px"><input id="nt-in" placeholder="Мысль, идея, что понял за день" aria-label="Новая заметка" data-enter="#nt-go"><button class="btn sm press" id="nt-go" data-a="ntadd">Сохранить</button></div>'+(N.length?N.slice(0,40).map(n=>'<div class="nt"><div class="mu">'+shortDate(n.d)+(n.tm!=null?' · '+hm(n.tm):'')+'</div><p>'+esc(n.t)+'</p><button class="lnk" data-a="ntdel" data-id="'+n.id+'" aria-label="Удалить заметку">Удалить</button></div>').join(''):'<div class="note" style="margin-top:10px">Пока пусто. Быстрее всего — кнопка «+» внизу: «заметка …».</div>'))}
+SCR.goals.tabs.splice(2,0,['notes','Заметки']);PANE.goals.notes=()=>notesCard();
+
+/* ---------- вставки в экраны ---------- */
+{const _s=PANE.today.sleep;PANE.today.sleep=function(M){return slCard()+_s(M)}}
+{const _n=PANE.today.now;PANE.today.now=function(M){let pre='';const s=SL();if(s.on)pre+=card('<div class="row sp"><div><h3 style="margin:0">Спишь с '+hm(new Date(s.on).getHours()*60+new Date(s.on).getMinutes())+'</h3><div class="note">'+fmt((Date.now()-s.on)/36e5,1)+' ч</div></div><button class="btn sm press" data-a="slstop">Проснулся</button></div>');
+else{const L=plan(TODAY).filter(x=>x.k==='sleep'&&x.t>0),n=nowMin(),w=L.find(x=>n>=x.t-45&&n<=x.t+90);if(w&&sel===TODAY)pre+=card('<div class="row sp"><div><h3 style="margin:0">Скоро сон</h3><div class="note">'+esc(w.x)+'</div></div><button class="btn sm press" data-a="slstart">Ложусь</button></div>')}
+return pre+(sel===TODAY?weekReview():'')+_n(M)}}
+
+/* ---------- действия ---------- */
+app.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const v=a.dataset.a;
+if(v==='slstart'){const sn=snapNow();slStart();buzz(10);utoast('Сон пошёл. Утром нажми «Проснулся»',sn);return}
+if(v==='slstop'){const sn=snapNow();const m=slStop();buzz(10);utoast(m,sn);return}
+if(v==='rkt'){const k=a.dataset.k,id=a.dataset.id;setDay(k,o=>{o.todo=Object.assign({},o.todo);o.todo[id]=!o.todo[id]});buzz(8);render();return}
+if(v==='rkfo'){const n=rkName(a.dataset.id);FO().run={mode:'work',subj:n,min:45,end:Date.now()+45*60000};save();goTo('study','focus');return}
+if(v==='rvok'){st.seen=Object.assign({},st.seen);st.seen[a.dataset.k]=1;save();render();return}
+if(v==='ntadd'){const i=document.getElementById('nt-in'),t=(i.value||'').trim();if(!t){i.focus();return}if(!Array.isArray(st.notes))st.notes=[];st.notes.push({id:Date.now(),d:TODAY,tm:nowMin(),t:t.slice(0,400)});save();buzz(8);render();return}
+if(v==='ntdel'){const sn=snapNow();st.notes=(st.notes||[]).filter(n=>n.id!==+a.dataset.id);save();render();utoast('Заметка удалена',sn);return}});
+
+/* ---------- живые напоминания, пока приложение открыто ---------- */
+function remShown(){try{return JSON.parse(localStorage.getItem('routine-remshown')||'{}')}catch(e){return {}}}
+function remCheck(){if(st.remOn===false)return;let R=[];try{R=remindersAhead()}catch(e){return}const now=Date.now(),S=remShown();let changed=false;
+for(const id in S)if(now-S[id]>3*864e5){delete S[id];changed=true}
+const due=R.filter(r=>r.at<=now+15000&&r.at>now-6*60000&&!S[r.id]).sort((a,b)=>b.at-a.at);
+if(due.length){const r=due[0];due.forEach(x=>S[x.id]=now);changed=true;remBanner(r)}
+if(changed)try{localStorage.setItem('routine-remshown',JSON.stringify(S))}catch(e){}}
+function remBanner(r){let el=document.getElementById('rembn');if(!el){el=document.createElement('div');el.id='rembn';el.className='rembn';el.setAttribute('role','alert');document.body.appendChild(el)}
+el.innerHTML='<div><b>'+esc(r.t)+'</b><span>'+esc(r.b||'')+'</span></div><button class="press" type="button">Ок</button>';el.querySelector('button').onclick=()=>el.classList.remove('on');
+el.classList.add('on');buzz([20,60,20]);clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),20000);
+try{if(document.hidden&&'Notification' in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(g=>g.showNotification(r.t,{body:r.b||'',icon:'icon-192.png',tag:r.id}))}catch(e){}}
+function remNext(n){let R=[];try{R=remindersAhead()}catch(e){}return R.filter(r=>r.at>Date.now()).sort((a,b)=>a.at-b.at).slice(0,n||5)}
+{const _d=PANE.goals.data;PANE.goals.data=function(){const N=remNext(6);return card('<div class="row sp"><h3 style="margin:0">Напоминания в приложении</h3><button class="tgl'+(st.remOn===false?'':' on')+'" data-a="remtgl" role="switch" aria-checked="'+(st.remOn!==false)+'" aria-label="Показывать напоминания"><i></i></button></div><div class="note" style="margin:6px 0 8px">Пока сайт открыт, в нужное время сверху появится плашка. Пуш при закрытом сайте — через синхронизацию ниже.</div>'+(N.length?N.map(r=>{const d=new Date(r.at),k=iso(d);return '<div class="remr"><span class="tm">'+(k===TODAY?'':k===addD(TODAY,1)?'завтра ':shortDate(k)+' ')+hm(d.getHours()*60+d.getMinutes())+'</span><span>'+esc(r.t)+'</span></div>'}).join(''):'<div class="mu">На ближайшие двое суток напоминаний нет</div>'))+_d()}}
+app.addEventListener('click',e=>{const a=e.target.closest('[data-a="remtgl"]');if(!a)return;st.remOn=st.remOn===false;save();buzz(6);render()});
+setInterval(()=>{if(!document.hidden)remCheck()},20000);
+
+/* ---------- новый день: если приложение висело в фоне через полночь — обновить ---------- */
+function dayGuard(){if(iso(new Date())!==TODAY&&!qOpen){try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}location.reload()}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){dayGuard();setTimeout(remCheck,600)}});
+setInterval(()=>{if(!document.hidden&&!document.activeElement.matches('input,textarea,select'))dayGuard()},60000);
+
+/* ---------- офлайн ---------- */
+function netMark(){document.body.classList.toggle('offline',navigator.onLine===false)}
+addEventListener('online',()=>{netMark();toast('Снова онлайн')});addEventListener('offline',()=>{netMark();toast('Нет интернета — всё работает и сохранится')});
+
+/* ---------- свайпы между вкладками ---------- */
+(function(){let x0=0,y0=0,t0=0,ok=false;
+app.addEventListener('touchstart',e=>{if(e.touches.length!==1){ok=false;return}const t=e.touches[0],tg=e.target;ok=!tg.closest('input,textarea,select,.subt,.seg,.seg2,.bars,.chips,.qchips,[data-noswipe],.dock,.cal,.calh,.wcal,.mo,.bento');
+if(ok){let el=tg;while(el&&el!==app){if(el.scrollWidth>el.clientWidth+4&&getComputedStyle(el).overflowX!=='visible'){ok=false;break}el=el.parentElement}}
+x0=t.clientX;y0=t.clientY;t0=Date.now()},{passive:true});
+app.addEventListener('touchend',e=>{if(!ok||qOpen)return;ok=false;const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Date.now()-t0>600||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*2)return;
+if(x0<24||x0>innerWidth-24)return;/* край экрана — системный жест назад */
+const T=SCR[scr].tabs,i=T.findIndex(x=>x[0]===sub[scr]),j=i+(dx<0?1:-1);if(j>=0&&j<T.length)setSub(T[j][0])},{passive:true})})();
+
+{const _co=catOf;catOf=function(w){const x=(w||'').toLowerCase();const M=[[/магаз|супер|рынок|продукт|магнум|small|смол|анвар|кафе|шаурм|бургер|пицц|фастфуд|столов|перекус|вода|молок|творог|яйц|куриц/,'Еда'],[/такси|яндекс|индрайв|метро|бус|автобус|проезд|онай|onay/,'Транспорт'],[/тетрад|ручк|курс|учеб|учёб|печат|ксерокс/,'Учёба'],[/подпис|spotify|youtube|icloud|связь|тариф|интернет/,'Подписки']];for(const r of M)if(r[0].test(x)&&st.cats.includes(r[1]))return r[1];return _co(w)}}
+{const _sh=PANE.food.shop;PANE.food.shop=function(M){return _sh(M)+card('<h3>Чек из магазина</h3><div class="note" style="margin-bottom:8px">Сходил в магазин — впиши сумму чека. Запишется в траты «Еда», отмеченные покупки останутся.</div><div class="row"><input id="rc-amt" inputmode="numeric" placeholder="сумма чека, ₸" aria-label="Сумма чека" data-enter="#rc-go"><button class="btn sm press" id="rc-go" data-a="rcgo">Записать</button></div>')}}
+app.addEventListener('click',e=>{const a=e.target.closest('[data-a="rcgo"]');if(!a)return;const i=document.getElementById('rc-amt'),v=qnum((i.value||'').replace(/\s/g,''));if(!(v>0)){i.focus();return}const sn=snapNow(),n=Object.keys(P().shop.got).length;st.spend.push({id:Date.now(),d:TODAY,cat:st.cats.includes('Еда')?'Еда':st.cats[0],amt:v,note:'Магазин'+(n?', '+n+' '+plural(n,'позиция','позиции','позиций'):'')});save();buzz(10);render();utoast('Чек '+fmt(v,0)+' ₸ записан в траты',sn)});
+/* невыполненные свои дела переносятся на сегодня */
+(function(){if(!Array.isArray(st.tasks))return;let n=0;st.tasks.forEach(x=>{if(x.d<TODAY&&!((st.days[x.d]||{}).todo||{})['u'+x.id]){x.d=TODAY;x.moved=(x.moved||0)+1;n++}});if(n){try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}setTimeout(()=>toast('Перенёс на сегодня '+n+' '+plural(n,'дело','дела','дел')+' со вчера'),2200)}})();
+qBuild();netMark();setTimeout(remCheck,1500);
 
 /* ================= космос: одна WebGL-картина, четыре сцены ================= */
 const FX=(function(){
