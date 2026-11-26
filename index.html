@@ -568,6 +568,51 @@ input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.45)!impor
 .wcl .cur::before{content:"";position:absolute}
 .lab .t b{font-weight:600}
 @media (prefers-reduced-motion:reduce){.w{transition:none}}
+/* ---------- механики ---------- */
+.btn[disabled]{opacity:.35;pointer-events:none}
+.lvl{margin-left:10px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18)}
+.top b{display:inline-flex;align-items:center}
+.moons{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
+.moons i{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s)/-2);border-radius:50%;background:#fff;box-shadow:0 0 8px #fff,0 0 18px rgba(255,255,255,.5);transform:rotate(var(--a)) translateX(var(--r)) scaleY(.55);animation:orb var(--d) linear infinite}
+@keyframes orb{from{transform:rotate(var(--a)) translateX(var(--r))}to{transform:rotate(calc(var(--a) + 360deg)) translateX(var(--r))}}
+.moons{transform:scaleY(.55)}
+.fo{text-align:center;padding:16px 0 4px}
+.fot{font-size:76px;font-weight:200;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:150px;align-items:end;padding-top:18px}
+.bar{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.bar i{display:block;width:100%;max-width:26px;height:calc(var(--h)*100px + 3px);border-radius:8px;background:linear-gradient(180deg,#fff,rgba(255,255,255,.35));box-shadow:0 0 12px rgba(255,255,255,.25);transform-origin:bottom;animation:gy .9s var(--out) both}
+.bar.t i{background:#fff}
+.bar span{font-size:11px;color:var(--mute)}
+.bar em{position:absolute;top:0;font-style:normal;font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums}
+@keyframes gy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.kv small.up,.kv small.dn,.kv b small{font-size:12px;font-weight:500}
+.kv b small.up{color:#fff}.kv b small.dn{color:var(--mid)}
+.fc{min-height:150px;display:flex;flex-direction:column;justify-content:center;gap:12px;text-align:center;padding:18px 8px;margin:10px 0;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.fc .fq{font-size:19px;font-weight:600;letter-spacing:-.02em}
+.fc .fa{font-size:16px;color:var(--ink);padding-top:12px;border-top:1px solid var(--line);animation:pin .45s var(--out) both}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.pgrid figure{margin:0;position:relative}
+.pgrid img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px;display:block}
+.pgrid figcaption{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--mute);padding:3px 2px}
+.night{position:fixed;inset:0;z-index:50;background:radial-gradient(ellipse at 50% 0%,#0b0c12,#000 70%);color:#fff;opacity:0;pointer-events:none;transition:opacity .4s var(--out);overflow-y:auto}
+.night.on{opacity:1;pointer-events:auto}
+.nt{max-width:520px;margin:0 auto;padding:calc(40px + env(safe-area-inset-top,0px)) 22px calc(40px + env(safe-area-inset-bottom,0px))}
+.nx{position:absolute;right:18px;top:calc(18px + env(safe-area-inset-top,0px));width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.7);font-size:22px}
+.nl{font-size:13px;color:rgba(255,255,255,.5);font-weight:600}
+.nbig{font-size:64px;font-weight:200;letter-spacing:-.04em;line-height:1;margin-top:8px}
+.ns{font-size:13px;color:rgba(255,255,255,.5);margin-top:6px}
+.nbar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin:18px 0 20px;overflow:hidden}
+.nbar i{display:block;height:100%;background:#fff;transform-origin:left;transform:scaleX(var(--w));box-shadow:0 0 10px #fff}
+.ngrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.nw{padding:14px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:4px}
+.nw span{font-size:12px;color:rgba(255,255,255,.5)}.nw b{font-size:16px;font-weight:500}
+.nbtn{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:#fff;font-size:14px;margin-top:6px;background:rgba(255,255,255,.06)}
+.nbtn.big{padding:16px 12px;border-radius:22px;margin:0}
+.nlist{margin:6px 0 16px}
+.nlist div{display:grid;grid-template-columns:50px 1fr;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.07);font-size:15px}
+.nlist div span{color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
+.nlist .past{opacity:.35}
+@media (prefers-reduced-motion:reduce){.moons i{animation:none}.bar i{animation:none}}
 </style>
 </head>
 <body>
@@ -775,10 +820,10 @@ const SCR={
 today:{sc:'G',tabs:[['now','Сегодня'],['week','Неделя'],['mode','Режим'],['sleep','Сон']]},
 food:{sc:'N',tabs:[['now','Сегодня'],['plan','План'],['menu','Меню'],['prep','Заготовки'],['shop','Покупки']]},
 sport:{sc:'N',tabs:[['now','Сегодня'],['prog','Программа'],['wt','Вес']]},
-study:{sc:'B',tabs:[['dl','Дедлайны'],['grades','Оценки'],['sched','Расписание'],['cal','Календарь'],['how','Как учиться']]},
+study:{sc:'B',tabs:[['dl','Дедлайны'],['grades','Оценки'],['sched','Расписание'],['focus','Фокус'],['cards','Карточки'],['cal','Календарь'],['how','Как учиться']]},
 work:{sc:'S',tabs:[['shifts','Смены'],['nights','Ночи'],['paste','Вставить график']]},
 money:{sc:'Q',tabs:[['now','Сейчас'],['spend','Траты'],['sal','Зарплата'],['save','Подушка'],['setup','Сетап']]},
-goals:{sc:'G',tabs:[['prog','Прогресс'],['ach','Награды'],['ask','Вопросы'],['data','Данные']]}};
+goals:{sc:'G',tabs:[['prog','Прогресс'],['stats','Статистика'],['ach','Награды'],['ask','Вопросы'],['data','Данные']]}};
 const ALIAS={'s-gal':'today','s-neb':'today','s-ring':'study','s-work':'work','s-pla':'money'};
 let scr='today';const sub={};ORDER.forEach(k=>sub[k]=SCR[k].tabs[0][0]);
 (function(){const m=/^#(\w+)(?:\/(\w+))?/.exec(location.hash||'');if(m&&SCR[m[1]]){scr=m[1];if(m[2]&&SCR[scr].tabs.some(t=>t[0]===m[2]))sub[scr]=m[2]}})();
@@ -1121,6 +1166,7 @@ st.cash.inc.filter(i=>!i.got&&i.d<=k&&k===TODAY).forEach(i=>add('in'+i.id,'Пр�
 if(k===TODAY)st.dl.filter(x=>!x.done&&dleft(x.due)<=2).forEach(x=>add('dl'+x.id,x.task+(dleft(x.due)<0?' — просрочено':dleft(x.due)===0?' — сегодня':' — через '+dleft(x.due)+' '+plural(dleft(x.due),'день','дня','дней')),{c:'var(--pink)',go:'study',tm:620}));
 if(k===TODAY){const W=wmodel(TODAY.slice(0,7));if(W.need.length)add('pay','Внести оплату за '+W.need.length+' '+plural(W.need.length,'смену','смены','смен'),{c:'var(--pink)',go:'work',tm:630})}
 const lw=Object.keys(st.weights).sort().pop();if(wdn(k)===7||k===TODAY&&(!lw||dleft(lw)<=-7))add('weigh','Взвеситься утром натощак и записать',{tm:500,c:'var(--ice)',go:'sport',sb:'wt',done:!!st.weights[k]});
+{const W=st.body&&st.body.waist?Object.keys(st.body.waist).sort().pop():null;if(wdn(k)===7&&(!W||dleft(W)<=-13))add('body','Замер талии и фото прогресса (раз в 2 недели)',{tm:505,c:'var(--ice)',go:'sport',sb:'wt',done:!!(st.body&&st.body.waist&&st.body.waist[k])})}
 if(wdn(k)===7)add('review','План на неделю, 10 минут',{tm:1190,c:'var(--ice)',go:'today',sb:'week',done:Object.keys(P().rev.done).length>=REV.length});
 if(k===TODAY&&d.sleep==null)add('slog','Записать, сколько спал',{tm:450,c:'var(--ice)',done:false,go:'today',sb:'sleep'});
 if(k===TODAY&&typeof suNext==='function'){const sn=suNext();if(sn)add('su'+sn.n,'Хватает на сетап: '+sn.it.map(x=>x.n.split(' ').slice(0,2).join(' ')).join(', '),{c:'var(--mid)',go:'money',sb:'setup',tm:1200})}
@@ -1399,7 +1445,7 @@ const p=protein(k),C2=2*Math.PI*22;h+='<button class="w" data-go="food"><span cl
 const Cs=cash();h+='<button class="w" data-go="money"><span class="wl">'+IC.money+'Можно в день</span><div class="wv">'+fmt(Cs.per,0)+'<small>₸</small></div><div class="ws">'+(Cs.today>0?'потрачено '+fmt(Cs.today,0):Cs.nx?'до «'+esc(Cs.nx.n.split(' ')[0])+'» '+Cs.days+' дн.':'')+'</div></button>';
 /* смена */
 const U=upcoming(14),ns=U[0];let sv='нет',ss='отметь в календаре';if(ns){const live=wstatus().live;sv=live?'идёт':ns===TODAY?st.work.start:relDay(ns).split(',')[0];ss=live?'до '+st.work.end:ns===TODAY?'сегодня, '+nightRisk(ns)[1]:shortDate(ns)+', '+st.work.start}
-h+='<button class="w" data-go="work"><span class="wl">'+IC.moon+'Смена</span><div class="wv" style="font-size:22px">'+esc(sv)+'</div><div class="ws">'+esc(ss)+'</div></button>';
+h+='<button class="w" '+(wstatus().live?'data-a="night"':'data-go="work"')+'><span class="wl">'+IC.moon+'Смена</span><div class="wv" style="font-size:22px">'+esc(sv)+'</div><div class="ws">'+esc(ss)+'</div></button>';
 /* тренировка */
 const tr=trainFor(k),nt=nextTrain();h+='<button class="w" data-go="sport"><span class="wl">'+IC.gym+'Тренировка</span><div class="wv" style="font-size:22px">'+(tr.done?'сделана':tr.w?'сегодня':nt?relDay(nt.k).split(',')[0]:'—')+'</div><div class="ws">'+esc(tr.w?tr.w.n:tr.why||'')+'</div></button>';
 return h+'</div>'}
@@ -1407,6 +1453,110 @@ return h+'</div>'}
 /* живое обновление виджета «Сейчас» раз в минуту */
 setInterval(()=>{if(scr==='today'&&sub.today==='now'&&!document.hidden&&!document.activeElement.matches('input,textarea,select'))render()},60000);
 
+/* ================= механики: утро и вечер, опыт, фокус, ночной экран, быстрые траты, тело, карточки, статистика ================= */
+const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
+/* ---------- утро и вечер за 30 секунд ---------- */
+const FEEL=['плохо','так себе','нормально','хорошо','отлично'],WHY=['недосып','голод или срыв','лень','не было времени','телефон','ничего'];
+let ciD={};
+function checkinCard(){if(sel!==TODAY)return '';const d=day(TODAY),h=new Date().getHours();let o='';
+if(!d.am&&h>=4&&h<15){const sl=ciD.sl??d.sleep,fe=ciD.fe;o+=card('<h3>Доброе утро. Как спал?</h3><div class="note" style="margin-bottom:8px">Сколько часов за последние сутки</div><div class="seg">'+[4,5,6,7,8,9,10].map(v=>'<button class="'+(sl===v?'on':'')+'" data-a="ci" data-f="sl" data-v="'+v+'">'+v+' ч</button>').join('')+'</div><div class="note" style="margin:4px 0 8px">Самочувствие</div><div class="seg">'+FEEL.map((x,i)=>'<button class="'+(fe===i+1?'on':'')+'" data-a="ci" data-f="fe" data-v="'+(i+1)+'">'+x+'</button>').join('')+'</div><button class="btn press" data-a="ciam" style="margin-top:8px"'+(sl==null||fe==null?' disabled':'')+'>Готово</button>','ci')}
+else if(!d.pm&&(h>=19||h<4)){const sc=ciD.sc,wy=ciD.wy||[];o+=card('<h3>Как прошёл день?</h3><div class="seg">'+[1,2,3,4,5].map(v=>'<button class="'+(sc===v?'on':'')+'" data-a="ci" data-f="sc" data-v="'+v+'">'+v+'</button>').join('')+'</div><div class="note" style="margin:4px 0 8px">Что помешало</div><div class="seg">'+WHY.map(x=>'<button class="'+(wy.includes(x)?'on':'')+'" data-a="ci" data-f="wy" data-v="'+x+'">'+x+'</button>').join('')+'</div><button class="btn press" data-a="cipm" style="margin-top:8px"'+(sc==null?' disabled':'')+'>Сохранить</button>','ci')}
+return o}
+/* ---------- опыт и уровни ---------- */
+function xpAll(){let xp=0;Object.keys(st.days).forEach(k=>{const d=st.days[k]||{};xp+=Object.keys(d.todo||{}).length*5+Object.values(d.done||{}).filter(Boolean).length*5+(d.am?10:0)+(d.pm?10:0)+(protein(k)>=PROT?20:0)});
+xp+=Object.keys(st.train.done).length*30+Math.floor(((st.focus&&st.focus.log)||[]).reduce((a,x)=>a+x.min,0)/25)*10+Object.keys(st.ach||{}).length*50+((st.cards||[]).reduce((a,c)=>a+(c.box||0),0))*2+st.dl.filter(x=>x.done&&!x.demo).length*15;return xp}
+const lvlOf=xp=>Math.floor((Math.sqrt(1+8*xp/100)-1)/2)+1,lvlXp=L=>100*L*(L-1)/2;
+function lvlInfo(){const xp=xpAll(),L=lvlOf(xp),a=lvlXp(L),b=lvlXp(L+1);return {xp,L,frac:(xp-a)/(b-a),toNext:b-xp}}
+const XPRULES=[['Дело из «Что делать»',5],['Привычка',5],['Белок 160 г за день',20],['Утро или вечер отмечены',10],['Тренировка',30],['25 минут фокуса',10],['Закрытый дедлайн',15],['Награда',50]];
+/* ---------- фокус-таймер ---------- */
+const FSUB=['Высшая математика','Физика','ООП','Цифровые системы','Английский язык','Казахский язык','История Казахстана','Зелёные технологии в экономике','Повторение'];
+function FO(){if(!st.focus||typeof st.focus!=='object')st.focus={log:[]};if(!Array.isArray(st.focus.log))st.focus.log=[];return st.focus}
+let foSub='Высшая математика';
+function foLeft(){const r=FO().run;return r?Math.max(0,Math.ceil((r.end-Date.now())/1000)):0}
+function foFinish(){const f=FO(),r=f.run;if(!r)return;if(r.mode==='work'){f.log.push({d:TODAY,subj:r.subj,min:r.min});toast('Фокус '+r.min+' минут: '+shortSubj(r.subj)+'. Перерыв 5 минут');FX.pulse('M',1);buzz([20,60,20,60,40]);f.run={mode:'break',subj:r.subj,min:5,end:Date.now()+300000}}else{f.run=null;toast('Перерыв окончен');buzz([20,60,20])}save();render()}
+setInterval(()=>{const f=st.focus;if(!f||!f.run)return;const l=foLeft();document.querySelectorAll('[data-fot]').forEach(el=>el.textContent=pad(Math.floor(l/60))+':'+pad(l%60));if(l<=0)foFinish()},1000);
+PANE.study.focus=function(){const f=FO(),r=f.run,l=foLeft(),wk=monOf(TODAY),by={};f.log.filter(x=>x.d>=wk).forEach(x=>by[x.subj]=(by[x.subj]||0)+x.min);const tot=Object.values(by).reduce((a,b)=>a+b,0),mx=Math.max(1,...Object.values(by)),today=f.log.filter(x=>x.d===TODAY).reduce((a,x)=>a+x.min,0);
+let h=card('<div class="fo"><div class="fot" data-fot>'+(r?pad(Math.floor(l/60))+':'+pad(l%60):'25:00')+'</div><div class="note">'+(r?(r.mode==='work'?'Фокус: '+esc(r.subj):'Перерыв, отдохни от экрана'):'Выбери предмет и запусти 25 минут')+'</div></div>'+(r?'':'<div class="seg" style="margin-top:12px">'+FSUB.map(x=>'<button class="'+(x===foSub?'on':'')+'" data-a="fosub" data-v="'+esc(x)+'">'+shortSubj(x)+'</button>').join('')+'</div>')+'<div class="grid2" style="margin-top:10px">'+(r?'<button class="btn ghost press" data-a="fostop">Остановить</button><button class="btn ghost press" data-a="foskip">'+(r.mode==='work'?'Засчитать сейчас':'Пропустить перерыв')+'</button>':'<button class="btn press" data-a="fogo" data-m="25">25 минут</button><button class="btn ghost press" data-a="fogo" data-m="50">50 минут</button>')+'</div>');
+h+=card('<div class="row sp"><h3 style="margin:0">Эта неделя</h3><span class="mu">сегодня '+today+' мин</span></div><div class="cashbig" style="margin-top:8px"><b>'+(tot/60).toFixed(1).replace('.',',')+' ч</b><span>фокуса за неделю</span></div>'+(tot?Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([s,m])=>'<div class="alc"><div class="row sp"><span>'+esc(s)+'</span><span class="num">'+m+' мин</span></div><div class="cb"><i style="--w:'+(m/mx).toFixed(3)+'"></i></div></div>').join(''):'<div class="calm">Пока пусто. Начни с предмета, где РК2 под угрозой.</div>'));
+return h+card('<div class="note">Сначала то, что горит: ООП и зелёные технологии (СРС 2), вышмат (нужен РК2 выше). На смене — режим «Повторение» на 30 минут, если тихо.</div>')};
+/* ---------- ночной экран смены ---------- */
+let nightOpen=false,nightT=null;
+function shiftDayNow(){const t=TODAY,y=addD(TODAY,-1),S=st.work.shifts,m=nowMin(),s0=tmin(st.work.start),e=tmin(st.work.end);if(S[y]!=null&&m<e)return y;if(S[t]!=null)return t;return null}
+function nightHTML(){const k=shiftDayNow()||TODAY,s0=tmin(st.work.start),e=tmin(st.work.end)+1440,m0=nowMin(),m=k===TODAY?m0:m0+1440,left=Math.max(0,e-m),fr=Math.min(1,Math.max(0,(m-s0)/(e-s0))),coffee=m<1560,d=day(k),cups=Math.round((d.water||0)/.25),r=FO().run;
+const T=[[s0,'Начало смены'],[s0+210,'Контейнер: главная еда'],[s0+270,'30 минут повторения, если тихо'],[1560,'Последний кофе'],[1620,'Творог и яблоко, пройдись 5 минут'],[1740,'Дальше без тяжёлой еды'],[e,'Конец смены']];
+return '<div class="nt"><button class="nx" data-n="close" aria-label="Закрыть ночной экран">×</button><div class="nl">Ночная смена</div><div class="nbig">'+(left>0?inMin(left):'смена закончилась')+'</div><div class="ns">до конца, в '+st.work.end+'</div><div class="nbar"><i style="--w:'+fr.toFixed(3)+'"></i></div>'
++'<div class="ngrid"><div class="nw"><span>Кофе</span><b>'+(coffee?'можно до 02:00':'уже нельзя')+'</b></div><div class="nw"><span>Вода</span><b>'+cups+' из 6 стаканов</b><button class="nbtn" data-n="water">+ стакан</button></div></div>'
++'<div class="nlist">'+T.map(x=>'<div class="'+(x[0]<=m?'past':'')+'"><span>'+hm(x[0])+'</span>'+esc(x[1])+'</div>').join('')+'</div>'
++'<div class="ngrid"><button class="nbtn big" data-n="study">'+(r?'Таймер: <span data-fot>'+pad(Math.floor(foLeft()/60))+':'+pad(foLeft()%60)+'</span>':'Повторение 30 минут')+'</button><button class="nbtn big" data-n="cards">Карточки</button></div></div>'}
+function openNight(){let el=document.getElementById('night');if(!el){el=document.createElement('div');el.id='night';el.className='night';el.setAttribute('role','dialog');el.setAttribute('aria-label','Ночной экран смены');document.body.appendChild(el);
+el.addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(!b)return;const v=b.dataset.n,k=shiftDayNow()||TODAY;
+if(v==='close')closeNight();else if(v==='water'){setDay(k,o=>{o.water=Math.round(((o.water||0)+.25)*100)/100});buzz(8);el.innerHTML=nightHTML()}
+else if(v==='study'){const f=FO();if(!f.run){f.run={mode:'work',subj:'Повторение',min:30,end:Date.now()+1800000};save();toast('30 минут повторения')}el.innerHTML=nightHTML()}
+else if(v==='cards'){closeNight();goTo('study','cards')}})}
+nightOpen=true;el.innerHTML=nightHTML();el.classList.add('on');document.documentElement.style.overflow='hidden';clearInterval(nightT);nightT=setInterval(()=>{if(nightOpen)el.innerHTML=nightHTML()},30000)}
+function closeNight(){nightOpen=false;const el=document.getElementById('night');if(el)el.classList.remove('on');document.documentElement.style.overflow='';clearInterval(nightT);render()}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&nightOpen)closeNight()});
+/* ---------- быстрые траты ---------- */
+const QUICK=[['Автобус',120,'Транспорт'],['Джет',null,'Транспорт'],['Еда',null,'Еда'],['Кофе',null,'Еда'],['Учёба',null,'Учёба']];
+function catOf(w){w=(w||'').toLowerCase();const map={'еда':'Еда','продукт':'Еда','кофе':'Еда','обед':'Еда','автобус':'Транспорт','джет':'Транспорт','такси':'Транспорт','проезд':'Транспорт','учёб':'Учёба','учеб':'Учёба','книг':'Учёба','подпис':'Подписки','claude':'Подписки'};for(const x in map)if(w.startsWith(x)||w.includes(x))return st.cats.includes(map[x])?map[x]:st.cats[0];const c=st.cats.find(c=>c.toLowerCase().startsWith(w.slice(0,3)));return c||'Другое'}
+function quickCard(){return card('<h3>Быстрая трата</h3><div class="seg">'+QUICK.map((q,i)=>'<button data-a="qsp" data-i="'+i+'">'+q[0]+(q[1]?' '+q[1]:'')+'</button>').join('')+'</div><div class="row" style="margin-top:6px"><input id="qs-t" placeholder="например: 1200 еда" aria-label="Трата текстом" data-enter="#qs-go"><button class="btn sm press" id="qs-go" data-a="qstext">Записать</button></div>')}
+{const _m=PANE.money.now;PANE.money.now=function(M){return quickCard()+_m(M)}}
+/* ---------- тело: талия и фото ---------- */
+const PHK='routine-photos';const photos=()=>{try{return JSON.parse(localStorage.getItem(PHK)||'[]')}catch(e){return []}};
+function BODY(){if(!st.body||typeof st.body!=='object')st.body={waist:{}};if(!st.body.waist)st.body.waist={};return st.body}
+function bodyCard(){const B=BODY(),W=Object.keys(B.waist).sort(),last=W[W.length-1],first=W[0],P=photos();
+let h=card('<h3>Талия</h3>'+(last?'<div class="cashbig"><b>'+fmt(B.waist[last],1)+' см</b><span>'+shortDate(last)+(first!==last?', было '+fmt(B.waist[first],1)+' ('+(B.waist[last]-B.waist[first]>0?'+':'')+fmt(B.waist[last]-B.waist[first],1)+')':'')+'</span></div>':'<div class="note">Замеряй раз в 2 недели утром, на уровне пупка. Талия часто уходит раньше веса.</div>')+'<div class="row" style="margin-top:10px"><input id="bw" inputmode="decimal" placeholder="см" aria-label="Талия, см" data-enter="#bw-go"><button class="btn sm press" id="bw-go" data-a="bwaist">Записать</button></div>');
+h+=card('<div class="row sp"><h3 style="margin:0">Фото прогресса</h3><span class="mu">только на этом устройстве</span></div><div class="pgrid">'+P.slice().reverse().map((p,i)=>'<figure><img src="'+p.u+'" alt="Фото '+shortDate(p.d)+'"><figcaption>'+shortDate(p.d)+'<button class="x" data-a="phdel" data-i="'+(P.length-1-i)+'" aria-label="Удалить фото">×</button></figcaption></figure>').join('')+'</div><label for="ph-in" class="btn ghost press filebtn">Добавить фото</label><input id="ph-in" type="file" accept="image/*" class="vh"><div class="note" style="margin-top:8px">Раз в 2 недели, тот же свет и поза. Фото не уходят в облако.</div>');
+return h}
+{const _w=PANE.sport.wt;PANE.sport.wt=function(M){return _w(M)+bodyCard()}}
+/* ---------- карточки и СРС ---------- */
+const BOXD=[0,1,2,4,8,16];let cdFlip=false,cdSub='Все';
+function CARDS(){if(!Array.isArray(st.cards))st.cards=[];return st.cards}
+function SRS(){if(!st.srs||typeof st.srs!=='object')st.srs={};return st.srs}
+const SRSN=['не начато','делаю','сдано'];
+PANE.study.cards=function(){const C=CARDS(),due=C.filter(c=>c.next<=TODAY&&(cdSub==='Все'||c.subj===cdSub)),c=due[0],S=SRS(),G=GR().list;
+let h=card('<div class="row sp"><h3 style="margin:0">СРС по предметам</h3><span class="mu">нажми, чтобы сменить статус</span></div>'+G.map(g=>{const s=S[g.n]??(g.v[5]===0&&grCalc(g).rd<70?0:g.v[5]>0?2:0);return '<div class="wkr"><b style="width:auto"></b><div class="t">'+esc(g.n)+'<span>СРС 2'+(g.v[5]!=null?': '+g.v[5]+' баллов':'')+'</span></div><button class="tag'+(s===0?' bad':s===1?' mid':'')+'" data-a="srs" data-n="'+esc(g.n)+'" data-s="'+s+'">'+SRSN[s]+'</button></div>'}).join(''));
+h+=card('<div class="row sp"><h3 style="margin:0">Повторение</h3><span class="mu">'+due.length+' на сегодня из '+C.length+'</span></div>'+(c?'<div class="fc'+(cdFlip?' flip':'')+'"><div class="fq">'+esc(c.q)+'</div>'+(cdFlip?'<div class="fa">'+esc(c.a)+'</div>':'')+'<div class="mu">'+esc(shortSubj(c.subj))+'</div></div>'+(cdFlip?'<div class="grid2"><button class="btn ghost press" data-a="cdno">Не помню</button><button class="btn press" data-a="cdyes">Помню</button></div>':'<button class="btn press" data-a="cdflip">Показать ответ</button>'):'<div class="calm">'+(C.length?'На сегодня всё повторено.':'Карточек пока нет. Добавь формулы, определения, слова.')+'</div>'));
+return h+card('<h3>Новая карточка</h3><div class="gapf"><div><label for="cd-s">Предмет</label><select id="cd-s">'+FSUB.slice(0,8).map(x=>'<option>'+esc(x)+'</option>').join('')+'</select></div><div><label for="cd-q">Вопрос</label><input id="cd-q" placeholder="Что такое инкапсуляция?"></div><div><label for="cd-a">Ответ</label><textarea id="cd-a" rows="2" placeholder="Скрытие данных внутри класса…"></textarea></div><button class="btn ghost press" data-a="cdadd">Добавить карточку</button></div><div class="note" style="margin-top:8px">Помнишь — карточка вернётся через 1, 2, 4, 8, 16 дней. Не помнишь — завтра снова.</div>')};
+/* ---------- статистика недели ---------- */
+function wk7(end){const a=[];for(let i=6;i>=0;i--)a.push(addD(end,-i));return a}
+function statOf(days){const n=days.length,g=f=>days.map(f);const sl=g(k=>day(k).sleep).filter(x=>x!=null),pr=g(k=>protein(k)),sc=g(k=>(day(k).pm||{}).score).filter(x=>x!=null);
+return {sleep:sl.length?sl.reduce((a,b)=>a+b,0)/sl.length:null,prot:pr.reduce((a,b)=>a+b,0)/n,train:days.filter(k=>st.train.done[k]).length,spend:st.spend.filter(s=>days.includes(s.d)).reduce((a,s)=>a+s.amt,0),focus:FO().log.filter(x=>days.includes(x.d)).reduce((a,x)=>a+x.min,0),score:sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:null,todo:days.filter(k=>k<=TODAY).reduce((a,k)=>{const t=todoFor(k);return a+(t.length?t.filter(x=>x.done).length/t.length:0)},0)/Math.max(1,days.filter(k=>k<=TODAY).length)}}
+function bars(days,f,max,fmtv){return '<div class="bars">'+days.map(k=>{const v=f(k)||0;return '<div class="bar'+(k===TODAY?' t':'')+'"><i style="--h:'+Math.min(1,v/max).toFixed(3)+'"></i><span>'+['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][parse(k).getDay()]+'</span><em>'+(v?fmtv(v):'')+'</em></div>'}).join('')+'</div>'}
+PANE.goals.stats=function(){const D=wk7(TODAY),P0=wk7(addD(TODAY,-7)),a=statOf(D),b=statOf(P0);
+const cmp=(x,y,d,u,better)=>x==null?'—':fmt(x,d)+u+(y!=null&&y!==0&&x!==y?'<small class="'+((x>y)===better?'up':'dn')+'"> '+(x>y?'↑':'↓')+' '+fmt(Math.abs(x-y),d)+'</small>':'');
+let h='<div class="kgrid">'+[['Сон в среднем',cmp(a.sleep,b.sleep,1,' ч',true)],['Белок в среднем',cmp(a.prot,b.prot,0,' г',true)],['Тренировки',cmp(a.train,b.train,0,'',true)],['Фокус',cmp(a.focus/60,b.focus/60,1,' ч',true)],['Траты',cmp(a.spend,b.spend,0,' ₸',false)],['Дела по плану',cmp(a.todo*100,b.todo*100,0,'%',true)]].map(x=>'<div class="kv"><span>'+x[0]+'</span><b class="sm">'+x[1]+'</b><small>за 7 дней, стрелка — к прошлой неделе</small></div>').join('')+'</div>';
+h+=card('<h3>Сон по дням</h3>'+bars(D,k=>day(k).sleep,10,v=>fmt(v,1)));
+h+=card('<h3>Белок по дням</h3>'+bars(D,k=>protein(k),PROT,v=>v));
+const why={};D.forEach(k=>((day(k).pm||{}).why||[]).forEach(w=>{if(w!=='ничего')why[w]=(why[w]||0)+1}));const W=Object.entries(why).sort((x,y)=>y[1]-x[1]);
+h+=card('<h3>Что мешало чаще всего</h3>'+(W.length?W.map(x=>'<div class="alc"><div class="row sp"><span>'+esc(x[0])+'</span><span class="num">'+x[1]+' '+plural(x[1],'день','дня','дней')+'</span></div><div class="cb"><i style="--w:'+(x[1]/7).toFixed(3)+'"></i></div></div>').join(''):'<div class="calm">Отмечай вечером, как прошёл день — здесь появится, что мешает больше всего.</div>')+(a.score!=null?'<div class="note" style="margin-top:8px">Средняя оценка дня: <b>'+fmt(a.score,1)+' из 5</b>.</div>':''));
+return h};
+/* ---------- встраивание ---------- */
+{const _n=PANE.today.now;PANE.today.now=function(M){return checkinCard()+_n(M)}}
+{const _a=PANE.goals.ach;PANE.goals.ach=function(){const I=lvlInfo();return card('<div class="row sp"><h3 style="margin:0">Уровень '+I.L+'</h3><span class="mu">'+fmt(I.xp,0)+' опыта</span></div><div class="pbar" style="margin:10px 0 4px"><i style="--w:'+I.frac.toFixed(3)+'"></i></div><div class="note">До уровня '+(I.L+1)+' — '+fmt(I.toNext,0)+' опыта. С каждым уровнем вокруг галактики на главной появляется новая звезда.</div>'+ul(XPRULES.map(r=>r[0]+': +'+r[1]),'var(--ice)'))+_a()}}
+function moons(){const L=Math.min(14,lvlInfo().L);let h='<div class="moons" aria-hidden="true">';for(let i=0;i<L;i++){const r=90+((i*37)%70),d=18+((i*13)%22),a=(i*47)%360;h+='<i style="--r:'+r+'px;--d:'+d+'s;--a:'+a+'deg;--s:'+(2+(i%3))+'px"></i>'}return h+'</div>'}
+{const _h=HERO.today;HERO.today=function(M){const I=lvlInfo();return _h(M).replace('<b>Моя рутина</b>','<b>Моя рутина</b><button class="lvl press" data-go="goals" data-sub="ach">Уровень '+I.L+'</button>').replace('<div class="stage" id="a-gal" data-sc="G">','<div class="stage" id="a-gal" data-sc="G">'+moons())}}
+/* ---------- события ---------- */
+app.addEventListener('click',e=>{const a=e.target.closest('[data-a]');if(!a)return;const v=a.dataset.a;
+if(v==='ci'){const f=a.dataset.f,val=a.dataset.v;if(f==='wy'){const w=ciD.wy||[];ciD.wy=w.includes(val)?w.filter(x=>x!==val):(val==='ничего'?['ничего']:w.filter(x=>x!=='ничего').concat(val))}else ciD[f]=+val;buzz(6);render();return}
+if(v==='ciam'){setDay(TODAY,o=>{o.am={feel:ciD.fe,t:Date.now()};o.sleep=ciD.sl??o.sleep});ciD={};buzz([10,30,14]);toast('Утро отмечено: +10 опыта');render();return}
+if(v==='cipm'){setDay(TODAY,o=>{o.pm={score:ciD.sc,why:ciD.wy||[],t:Date.now()}});ciD={};buzz([10,30,14]);toast('День сохранён: +10 опыта');render();return}
+if(v==='fosub'){foSub=a.dataset.v;buzz(6);render();return}
+if(v==='fogo'){const m=+a.dataset.m;FO().run={mode:'work',subj:foSub,min:m,end:Date.now()+m*60000};save();buzz(10);render();return}
+if(v==='fostop'){FO().run=null;save();render();return}
+if(v==='foskip'){const r=FO().run;if(r&&r.mode==='work'){r.min=Math.max(1,Math.round((r.min*60-foLeft())/60))}foFinish();return}
+if(v==='night'){openNight();return}
+if(v==='qsp'){const q=QUICK[+a.dataset.i];if(q[1]){st.spend.push({id:Date.now(),d:sel,cat:st.cats.includes(q[2])?q[2]:'Другое',amt:q[1],note:q[0]});save();buzz([10,30,14]);toast(q[0]+' '+q[1]+' ₸ записано');FX.pulse('A',.6);render()}else{const t=document.getElementById('qs-t');t.value=q[0].toLowerCase()+' ';t.focus();t.placeholder='сумма, например '+q[0].toLowerCase()+' 1500'}return}
+if(v==='qstext'){const t=document.getElementById('qs-t'),m=t.value.match(/(\d[\d\s]*[.,]?\d*)/);if(!m){t.style.borderColor='var(--bad)';t.focus();return}const amt=num(m[1].replace(/\s/g,'')),word=t.value.replace(m[1],'').trim();if(!(amt>0)){t.focus();return}const cat=catOf(word);st.spend.push({id:Date.now(),d:sel,cat,amt,note:word.slice(0,60)});save();buzz([10,30,14]);toast(fmt(amt,0)+' ₸: '+cat.toLowerCase());FX.pulse('A',.6);render();return}
+if(v==='bwaist'){const f=document.getElementById('bw'),x=num(f.value);if(!(x>40&&x<200)){f.style.borderColor='var(--bad)';f.focus();return}BODY().waist[TODAY]=Math.round(x*10)/10;save();toast('Талия записана');render();return}
+if(v==='phdel'){const P=photos();P.splice(+a.dataset.i,1);try{localStorage.setItem(PHK,JSON.stringify(P))}catch(_){}render();return}
+if(v==='srs'){const s=SRS(),n=a.dataset.n;s[n]=((+a.dataset.s)+1)%3;save();buzz(6);if(s[n]===2){toast('СРС сдано: '+n);sparks(a,'#fff')}render();return}
+if(v==='cdflip'){cdFlip=true;render();return}
+if(v==='cdyes'||v==='cdno'){const C=CARDS(),c=C.filter(c=>c.next<=TODAY&&(cdSub==='Все'||c.subj===cdSub))[0];if(c){c.box=v==='cdyes'?Math.min(5,(c.box||0)+1):0;c.next=addD(TODAY,v==='cdyes'?BOXD[c.box]:1);save()}cdFlip=false;buzz(v==='cdyes'?[10,30,14]:8);render();return}
+if(v==='cdadd'){const q=document.getElementById('cd-q'),an=document.getElementById('cd-a');if(!q.value.trim()){q.style.borderColor='var(--bad)';q.focus();return}if(!an.value.trim()){an.style.borderColor='var(--bad)';an.focus();return}CARDS().push({id:Date.now(),subj:document.getElementById('cd-s').value,q:q.value.trim().slice(0,200),a:an.value.trim().slice(0,400),box:0,next:TODAY});save();toast('Карточка добавлена');render();return}});
+app.addEventListener('change',e=>{const t=e.target;if(t.id!=='ph-in'||!t.files||!t.files[0])return;const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,520/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const P=photos();P.push({d:TODAY,u:c.toDataURL('image/jpeg',.72)});try{localStorage.setItem(PHK,JSON.stringify(P.slice(-24)));toast('Фото сохранено')}catch(_){toast('Места на устройстве мало: удали старые фото')}render()};img.src=fr.result};fr.readAsDataURL(t.files[0])});
+
+{const _ws=PANE.work.shifts;PANE.work.shifts=function(M){const k=shiftDayNow();return (k||st.work.shifts[TODAY]!=null?card('<div class="row sp"><div><h3 style="margin:0">Ночной экран</h3><div class="note">Таймер смены, кофе, вода, еда и повторение</div></div><button class="btn sm press" data-a="night">Открыть</button></div>'):'')+_ws(M)}}
 /* ================= космос: одна WebGL-картина, четыре сцены ================= */
 const FX=(function(){
 const el=document.getElementById('sky');let gl=null;
