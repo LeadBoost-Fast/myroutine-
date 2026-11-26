@@ -613,6 +613,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.45)!impor
 .nlist div span{color:rgba(255,255,255,.5);font-variant-numeric:tabular-nums}
 .nlist .past{opacity:.35}
 @media (prefers-reduced-motion:reduce){.moons i{animation:none}.bar i{animation:none}}
+.keybox{font:500 20px/1.3 ui-monospace,"SF Mono",Menlo,monospace;letter-spacing:.06em;text-align:center;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);user-select:all;-webkit-user-select:all}
 </style>
 </head>
 <body>
@@ -756,6 +757,7 @@ else{const s1=home+25;if(s1<1095-45)a(s1,'Сон перед сменой до 18
 else if(T==='A0'){a(480,'Подъём, завтрак','eat');a(570,prepLabel(k)?cap(prepLabel(k)):'Учёба или дела',prepLabel(k)?'eat':'study');a(720,'Обед','eat');a(840,'Сон перед сменой до 18:15','sleep');a(1110,'Ужин перед сменой, контейнеры на ночь','eat');night()}
 else if(T==='V'){a(480,'С работы сразу на учёбу, кефир и банан','move');a(c.s,c.s<540?'Пары до '+hm(c.e)+' (к первой опоздаешь)':'Пары до '+hm(c.e),'study');const home=c.e+COM,se=Math.min(home+25+285,1140);a(home,'Дома, небольшой обед','eat');a(home+25,'Сон после смены до '+hm(se),'sleep');a(se+15,'Ужин и прогулка 20–30 минут','eat');a(se+60,prepLabel(k)?cap(prepLabel(k)):'Лёгкие дела, повторение. Тренировки нет',prepLabel(k)?'eat':'study');a(1380,'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
 else if(T==='G'){a(510,'Дома: лёгкий завтрак, душ','eat');a(540,'Сон после смены до 14:30','sleep');a(885,'Обед','eat');a(930,prepLabel(k)?cap(prepLabel(k)):'Учёба или дела',prepLabel(k)?'eat':'study');a(1050,trn?'Тренировка (легко): '+trn:'Прогулка 30 минут','train');a(1170,'Ужин','eat');a(1380,'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
+else if(T==='G2'&&clsOf(k)){const c=clsOf(k),h=c.e+COM;a(480,'С работы сразу на учёбу: кефир и банан из сумки','move');a(c.s,'Пары до '+hm(c.e),'study');a(h,'Дома: обед','eat');a(h+20,'Сон перед сменой до 18:15','sleep');a(1110,'Ужин перед сменой, контейнеры на ночь','eat');night()}
 else if(T==='G2'){a(510,'Дома: лёгкий завтрак','eat');a(540,'Сон между сменами до 16:00','sleep');a(975,'Обед','eat');a(1020,'Прогулка 30 минут, сборы','move');a(1110,'Ужин перед сменой','eat');night()}
 else{const ses=inSession(k),pl=prepLabel(k);a(480,'Подъём, завтрак','eat');a(570,ses?'Подготовка к экзаменам, 2,5 часа':'Учёба: самое сложное за неделю','study');a(720,'Обед','eat');a(780,pl?cap(pl):ses?'Вторая подготовка к экзаменам, 1,5 часа':'Свободное время',pl?'eat':ses?'study':'move');a(1050,trn?'Тренировка: '+trn:'Прогулка 30 минут','train');a(1170,'Ужин, план на неделю','eat');a(bedFor(k),'Сон до '+hm(wakeOf(addD(k,1))),'sleep')}
 return L.sort((x,y)=>x.t-y.t)}
@@ -770,7 +772,7 @@ function tips(k){const T=dayType(k),L=plan(k),f=(re)=>L.find(x=>re.test(x.x)),R=
 if(T==='A'||T==='A0'){const s=f(/^Сон перед сменой/);R.push(['var(--ice)',s?'Перед сменой поспи '+hm(s.t)+'–18:15. Это главное дело дня.':'Перед сменой мало времени на сон: хотя бы 20 минут лёжа с закрытыми глазами.'])}
 if(T==='V'){const s=f(/^Сон после смены/);R.push(['var(--ice)','После пар сразу спать'+(s?' с '+hm(s.t):'')+'. Тренировки сегодня нет.'])}
 if(T==='G')R.push(['var(--ice)','Спи до 14:30, не дольше: вечером вернёшься в обычный режим.']);
-if(T==='G2')R.push(['var(--ice)','Две смены подряд: днём спи 7 часов, с 09:00 до 16:00.']);
+if(T==='G2')R.push(['var(--ice)',clsOf(k)?'Две смены подряд и пары: сразу после пар домой и спать до 18:15, это главное за день.':'Две смены подряд: днём спи 7 часов, с 09:00 до 16:00.']);
 if(T==='D'||T==='E')R.push(['var(--ice)','Ложись в '+hm(bedFor(k))+': завтра подъём в '+hm(wakeOf(addD(k,1)))+'.']);
 if(st.work.shifts[k]!=null)R.push(['var(--pink)','Ночью кофе — одна чашка и не позже 02:00. Энергетики не пьём.']);
 R.push(['var(--vio)',tr.w?(tr.done?'Тренировка «'+tr.w.n+'» сделана.':'Сегодня тренировка: '+tr.w.n+(tr.light?', на лёгком уровне':'')+'.'):tr.why+'.']);
@@ -1219,7 +1221,7 @@ L.push('END:VCALENDAR');return L.join('\r\n')}
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))})();
 /* ================= новые вкладки и главный список дел ================= */
 const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-function dtName(k){const T=dayType(k);if(T==='E'&&inSession(k))return 'Сессия: день подготовки';if(T==='E'&&HOLI[k])return 'Праздник: '+HOLI[k];if(T==='E'&&wdn(k)<=5&&!inTerm(k))return 'Пар нет';return DTN[T]}
+function dtName(k){const T=dayType(k);if(T==='G2'&&clsOf(k))return 'Между сменами, есть пары';if(T==='E'&&inSession(k))return 'Сессия: день подготовки';if(T==='E'&&HOLI[k])return 'Праздник: '+HOLI[k];if(T==='E'&&wdn(k)<=5&&!inTerm(k))return 'Пар нет';return DTN[T]}
 let qaOpen=false,qaType='task',schedP=null,schedRaw='',impArm=false;
 function qaForm(){const T=[['task','Задача'],['spend','Трата'],['dl','Дедлайн'],['shift','Смена']];
 let h='<div class="qa"><div class="seg" role="group" aria-label="Что добавить">'+T.map(t=>'<button class="'+(t[0]===qaType?'on':'')+'" data-qt="'+t[0]+'" aria-pressed="'+(t[0]===qaType)+'">'+t[1]+'</button>').join('')+'</div><div class="gapf">';
@@ -1557,6 +1559,64 @@ if(v==='cdadd'){const q=document.getElementById('cd-q'),an=document.getElementBy
 app.addEventListener('change',e=>{const t=e.target;if(t.id!=='ph-in'||!t.files||!t.files[0])return;const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const s=Math.min(1,520/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const P=photos();P.push({d:TODAY,u:c.toDataURL('image/jpeg',.72)});try{localStorage.setItem(PHK,JSON.stringify(P.slice(-24)));toast('Фото сохранено')}catch(_){toast('Места на устройстве мало: удали старые фото')}render()};img.src=fr.result};fr.readAsDataURL(t.files[0])});
 
 {const _ws=PANE.work.shifts;PANE.work.shifts=function(M){const k=shiftDayNow();return (k||st.work.shifts[TODAY]!=null?card('<div class="row sp"><div><h3 style="margin:0">Ночной экран</h3><div class="note">Таймер смены, кофе, вода, еда и повторение</div></div><button class="btn sm press" data-a="night">Открыть</button></div>'):'')+_ws(M)}}
+/* ================= облако: общая база в Firebase и пуш-уведомления (только на своём сайте, не в Claude) ================= */
+const FB_CFG={apiKey:"AIzaSyBXkoZuizAXYk5H40GbtaY-4dCqOhEr1nE",authDomain:"myroutine-19073.firebaseapp.com",projectId:"myroutine-19073",storageBucket:"myroutine-19073.firebasestorage.app",messagingSenderId:"484573090882",appId:"1:484573090882:web:03ea4ff43736a9385c09db"};
+const FB_VAPID='';/* ключ Web Push — добавится, когда пришлёшь */
+const FBV='10.12.2',CLOUD_OK=!window.claude&&location.protocol==='https:';
+let fbApp=null,fbDb=null,cloudKey=null,cloudState='off',cloudErr='',cloudT=0,cloudPulling=false;
+try{cloudKey=localStorage.getItem('rutina-key')}catch(e){}
+const ldS=src=>new Promise((res,rej)=>{if(document.querySelector('script[src="'+src+'"]'))return res();const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('load'));document.head.appendChild(s)});
+async function fbBoot(){if(fbDb)return true;if(!CLOUD_OK)return false;const b='https://www.gstatic.com/firebasejs/'+FBV+'/';
+await ldS(b+'firebase-app-compat.js');await Promise.all([ldS(b+'firebase-auth-compat.js'),ldS(b+'firebase-firestore-compat.js')]);
+fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(FB_CFG);if(!firebase.auth().currentUser)await firebase.auth().signInAnonymously();fbDb=firebase.firestore();return true}
+const newKey=()=>{const a=new Uint8Array(18);crypto.getRandomValues(a);return Array.from(a,b=>'abcdefghjkmnpqrstuvwxyz23456789'[b%31]).join('')};
+const docRef=()=>fbDb.collection('rutina').doc(cloudKey);
+function packState(){const o=Object.assign({},st);return JSON.stringify(o)}
+async function cloudPush(){if(!cloudKey||!fbDb||cloudPulling)return;try{cloudState='saving';st._upd=Date.now();try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}
+await docRef().set({data:packState(),upd:st._upd,rem:remindersAhead(),dev:navigator.userAgent.slice(0,60)},{merge:true});cloudState='on';cloudErr=''}catch(e){cloudState='err';cloudErr=e.code||e.message||'ошибка'}}
+async function cloudPull(force){if(!cloudKey||!fbDb)return false;cloudPulling=true;try{const s=await docRef().get();if(!s.exists){cloudPulling=false;return false}const d=s.data();if(d.data&&(force||(d.upd||0)>(st._upd||0))){const o=JSON.parse(d.data);apply(o);migrate();applyPatches();try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}cloudPulling=false;render();return true}}catch(e){cloudState='err';cloudErr=e.code||e.message||'ошибка'}cloudPulling=false;return false}
+async function cloudStart(){if(!cloudKey||!CLOUD_OK)return;try{await fbBoot();cloudState='on';const pulled=await cloudPull(false);if(!pulled)await cloudPush();
+docRef().onSnapshot(s=>{const d=s.data();if(d&&d.data&&(d.upd||0)>(st._upd||0)+500&&!s.metadata.hasPendingWrites){try{apply(JSON.parse(d.data));migrate();try{localStorage.setItem('routine1',JSON.stringify(st))}catch(e){}render()}catch(e){}}})}catch(e){cloudState='err';cloudErr=e.code||e.message||'нет связи'}if(scr==='goals')render()}
+/* сохраняем в облако после каждого изменения, с задержкой */
+{const _save=save;save=function(){_save();if(cloudKey&&fbDb){clearTimeout(cloudT);cloudT=setTimeout(cloudPush,2500)}}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloudKey&&fbDb)cloudPull(false)});
+/* напоминания на 2 суток вперёд: их отправляет сервер по расписанию */
+function remindersAhead(){const R=[],now=Date.now(),add=(k,m,t,b,id)=>{const d=parse(k);d.setHours(0,0,0,0);const at=d.getTime()+m*60000;if(at>now-60000&&at<now+48*3600000)R.push({id:k+'-'+id,at,t,b})};
+for(let i=0;i<3;i++){const k=addD(TODAY,i),L=plan(k),s0=tmin(st.work.start);
+L.forEach((x,j)=>{if(x.k==='sleep'&&x.t>0)add(k,x.t-10,'Через 10 минут сон',x.x,'sl'+j);if(x.k==='train'&&/Тренировк/.test(x.x))add(k,x.t-30,'Через 30 минут тренировка',x.x,'tr'+j);if(/заготовк/i.test(x.x))add(k,x.t-30,'Скоро еда на 2–3 дня',x.x,'pr'+j)});
+if(st.work.shifts[k]!=null){add(k,s0-60,'Через час смена','Собери контейнер, творог, яблоко, 1,5 л воды','sh');add(k,1555,'Кофе — до 02:00','Если нужен кофе, сейчас последний шанс','cf')}
+const first=L.find(x=>x.t>=300&&x.k!=='sleep'),T=todoFor(k);if(first)add(k,first.t,'План на '+(i?'день':'сегодня'),T.length+' '+plural(T.length,'дело','дела','дел')+(classesOf(k).length?', пары с '+classesOf(k)[0][0]:'')+'. Открой «Что делать»','am');
+add(k,st.work.shifts[k]!=null?1150:1230,'Как прошёл день?','Отметь вечер за 30 секунд','pm');
+st.cash.fix.filter(f=>!f.paid&&f.d===k).forEach(f=>add(k,600,'Оплатить сегодня',f.n+' '+fmt(f.amt,0)+' ₸','fx'+f.id));
+st.dl.filter(x=>!x.done&&x.due===addD(k,1)).forEach(x=>add(k,1140,'Завтра дедлайн',x.task,'dl'+x.id))}
+return R.sort((a,b)=>a.at-b.at).slice(0,60)}
+/* пуш-уведомления */
+async function pushEnable(){if(!FB_VAPID){toast('Пуши заработают, когда будет ключ Web Push');return}
+if(!('Notification' in window)||!('serviceWorker' in navigator)){toast('На iPhone сначала поставь сайт на экран «Домой» и открой оттуда');return}
+const p=await Notification.requestPermission();if(p!=='granted'){toast('Уведомления не разрешены');return}
+try{await fbBoot();await ldS('https://www.gstatic.com/firebasejs/'+FBV+'/firebase-messaging-compat.js');const reg=await navigator.serviceWorker.ready;const tok=await firebase.messaging().getToken({vapidKey:FB_VAPID,serviceWorkerRegistration:reg});
+if(!cloudKey){cloudKey=newKey();localStorage.setItem('rutina-key',cloudKey)}await docRef().set({tokens:firebase.firestore.FieldValue.arrayUnion(tok),rem:remindersAhead()},{merge:true});
+st.pushOn=true;save();toast('Уведомления включены');render()}catch(e){toast('Не получилось: '+(e.code||e.message))}}
+/* вкладка «Данные»: синхронизация */
+let syncIn=false;
+{const _d=PANE.goals.data;PANE.goals.data=function(){let h='';
+if(!CLOUD_OK)h+=card('<h3>Синхронизация</h3><div class="note">В Claude сайт не может подключиться к облаку. Общая база и пуш-уведомления работают в приложении на github.io: открой <b>leadboost-fast.github.io/myroutine-</b> и поставь на экран «Домой». Данные сюда переносятся резервной копией ниже.</div>');
+else if(cloudKey)h+=card('<div class="row sp"><h3 style="margin:0">Синхронизация</h3><span class="tag'+(cloudState==='err'?' bad':'')+'">'+(cloudState==='err'?'ошибка':cloudState==='saving'?'сохраняю':'включена')+'</span></div><div class="note" style="margin:6px 0 10px">Все изменения сохраняются в облако. На другом устройстве открой сайт и введи этот ключ.'+(cloudErr?' Ошибка: '+esc(cloudErr)+'.':'')+'</div><div class="keybox">'+cloudKey.replace(/(.{6})/g,'$1 ').trim()+'</div><div class="grid2" style="margin-top:10px"><button class="btn ghost press" data-a="ckcopy">Скопировать ключ</button><button class="btn ghost press" data-a="cksync">Обновить сейчас</button></div><div class="note" style="margin-top:8px">Ключ — как пароль: не показывай его другим.</div>')
++card('<div class="row sp"><h3 style="margin:0">Уведомления</h3><span class="tag'+(st.pushOn?'':' mid')+'">'+(st.pushOn?'включены':'выключены')+'</span></div><div class="note" style="margin:6px 0 10px">План утром, сон перед сменой, выход на смену, кофе до 02:00, тренировки, платежи, дедлайны и вечерняя отметка. На iPhone работает, только если сайт стоит на экране «Домой».</div><button class="btn press" data-a="pushon">'+(st.pushOn?'Обновить уведомления':'Включить уведомления')+'</button>');
+else h+=card('<h3>Синхронизация</h3><div class="note" style="margin-bottom:10px">Одни данные на телефоне, компьютере и в приложении на экране «Домой». Плюс пуш-уведомления.</div>'+(syncIn?'<label for="ck-in">Ключ с другого устройства</label><input id="ck-in" placeholder="xxxxxx xxxxxx xxxxxx" autocomplete="off"><div class="grid2" style="margin-top:10px"><button class="btn ghost press" data-a="ckcancel">Отмена</button><button class="btn press" data-a="ckjoin">Подключить</button></div><div class="note" style="margin-top:8px">Данные этого устройства заменятся данными из облака.</div>':'<button class="btn press" data-a="ckmake">Включить синхронизацию</button><button class="btn ghost press" data-a="ckhave" style="margin-top:8px">У меня уже есть ключ</button>'));
+return h+_d()}}
+app.addEventListener('click',async e=>{const a=e.target.closest('[data-a]');if(!a)return;const v=a.dataset.a;if(!/^ck|^pushon$/.test(v))return;
+if(v==='ckhave'){syncIn=true;render();const f=document.getElementById('ck-in');if(f)f.focus();return}
+if(v==='ckcancel'){syncIn=false;render();return}
+if(v==='ckmake'){a.disabled=true;a.textContent='Подключаю…';try{await fbBoot();cloudKey=newKey();localStorage.setItem('rutina-key',cloudKey);await cloudPush();if(cloudState==='err')throw new Error(cloudErr);await cloudStart();toast('Синхронизация включена');FX.pulse('K',1)}catch(err){localStorage.removeItem('rutina-key');cloudKey=null;toast('Не получилось подключиться: '+(err.code||err.message))}render();return}
+if(v==='ckjoin'){const f=document.getElementById('ck-in'),k=(f.value||'').replace(/\s/g,'').toLowerCase();if(k.length<18){f.style.borderColor='var(--bad)';f.focus();return}a.disabled=true;a.textContent='Подключаю…';try{await fbBoot();cloudKey=k;const ok=await cloudPull(true);if(!ok)throw new Error('по этому ключу данных нет');localStorage.setItem('rutina-key',k);syncIn=false;await cloudStart();toast('Данные загружены')}catch(err){cloudKey=null;toast('Не получилось: '+(err.code||err.message))}render();return}
+if(v==='ckcopy'){(navigator.clipboard?navigator.clipboard.writeText(cloudKey):Promise.reject()).then(()=>toast('Ключ скопирован')).catch(()=>toast('Выдели ключ и скопируй'));return}
+if(v==='cksync'){await cloudPull(false);await cloudPush();toast(cloudState==='err'?'Ошибка: '+cloudErr:'Синхронизировано');render();return}
+if(v==='pushon'){pushEnable();return}});
+if(cloudKey&&CLOUD_OK)setTimeout(cloudStart,800);
+/* напоминания на сервере обновляются раз в час, даже если ничего не менялось */
+setInterval(()=>{if(cloudKey&&fbDb&&!document.hidden)docRef().set({rem:remindersAhead()},{merge:true}).catch(()=>{})},3600000);
+
 /* ================= космос: одна WebGL-картина, четыре сцены ================= */
 const FX=(function(){
 const el=document.getElementById('sky');let gl=null;
