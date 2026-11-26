@@ -485,6 +485,16 @@ textarea::placeholder{color:var(--dim)}
 .hvs b{font-weight:500;font-size:14px}
 .hvi{font-size:14px;margin:6px 0 2px;line-height:1.4}
 .hv .tip .lnk{font-size:13px;margin-left:4px}
+.gr{border-top:1px solid var(--line)}
+.gr:first-child{border-top:0}
+.grh{display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;padding:11px 0}
+.grh>i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.grh .t{display:flex;flex-direction:column;min-width:0;font-size:14px}.grh .t b{font-weight:500}.grh .t span{font-size:12px;color:var(--mute);line-height:1.35}
+.grn{display:flex;flex-direction:column;align-items:flex-end;font-size:11px;color:var(--mute);gap:1px;font-variant-numeric:tabular-nums}.grn b{color:var(--ink);font-weight:500;font-size:13px}
+.grd{padding:0 0 12px 18px}
+.grg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.grg label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--mute)}
+.grg input{padding:8px 6px;text-align:center;font-size:14px}
 </style>
 </head>
 <body>
@@ -692,7 +702,7 @@ const SCR={
 today:{sc:'G',tabs:[['now','Сегодня'],['week','Неделя'],['mode','Режим'],['sleep','Сон']]},
 food:{sc:'N',tabs:[['now','Сегодня'],['plan','План'],['menu','Меню'],['prep','Заготовки'],['shop','Покупки']]},
 sport:{sc:'N',tabs:[['now','Сегодня'],['prog','Программа'],['wt','Вес']]},
-study:{sc:'B',tabs:[['dl','Дедлайны'],['cal','Календарь'],['how','Как учиться']]},
+study:{sc:'B',tabs:[['dl','Дедлайны'],['grades','Оценки'],['sched','Расписание'],['cal','Календарь'],['how','Как учиться']]},
 work:{sc:'S',tabs:[['shifts','Смены'],['nights','Ночи'],['paste','Вставить график']]},
 money:{sc:'Q',tabs:[['now','Сейчас'],['spend','Траты'],['sal','Зарплата'],['save','Подушка'],['setup','Сетап']]},
 goals:{sc:'G',tabs:[['prog','Прогресс'],['ach','Награды'],['ask','Вопросы'],['data','Данные']]}};
@@ -995,6 +1005,7 @@ function migrate(){let ch=false;if(!Array.isArray(st.mig))st.mig=[];const C=st.c
 const once=(id,fn)=>{if(!st.mig.includes(id)){fn();st.mig.push(id);ch=true}};
 once('rent-1-10',()=>{C.fix.forEach(f=>{if(/Аренда/.test(f.n)&&!f.paid&&f.d==='2026-12-06')f.d='2026-12-10'})});
 once('gym-50k',()=>{C.fix.push({id:'gym27',n:'Абонемент в зал на год',amt:50000,d:'2027-01-18',paid:false})});
+once('grades-dl-2611',()=>{[[9101,'ООП','Сдать СРС 2 — сейчас за неё 0, без неё нет допуска','2026-12-04'],[9102,'Зелёные технологии','Сдать СРС 2 — сейчас за неё 0','2026-12-04'],[9103,'Физкультура','Сдать СРС 2 и больше не пропускать: пропусков 33%','2026-12-04'],[9104,'Физика','Узнать у преподавателя оценки второй половины (РК2 пусто)','2026-11-30']].forEach(x=>{if(!st.dl.some(y=>y.id===x[0]))st.dl.push({id:x[0],subj:x[1],task:x[2],due:x[3],done:false})})});
 once('acad-dl',()=>{ACADDL.forEach(x=>{if(!st.dl.some(y=>y.id===x[0]))st.dl.push({id:x[0],subj:'Учёба',task:x[1],due:x[2],done:false})})});
 /* аренда до 10-го и тариф в конце месяца — на этот и следующий месяц; зарплата 15-го за прошлый месяц */
 const m0=TODAY.slice(0,7);
@@ -1039,6 +1050,7 @@ const lw=Object.keys(st.weights).sort().pop();if(wdn(k)===7||k===TODAY&&(!lw||dl
 if(wdn(k)===7)add('review','План на неделю, 10 минут',{tm:1190,c:'var(--ice)',go:'today',sb:'week',done:Object.keys(P().rev.done).length>=REV.length});
 if(k===TODAY&&d.sleep==null)add('slog','Записать, сколько спал',{tm:450,c:'var(--ice)',done:false,go:'today',sb:'sleep'});
 if(k===TODAY&&typeof suNext==='function'){const sn=suNext();if(sn)add('su'+sn.n,'Хватает на сетап: '+sn.it.map(x=>x.n.split(' ').slice(0,2).join(' ')).join(', '),{c:'#ffd59a',go:'money',sb:'setup',tm:1200})}
+if(k===TODAY&&typeof grActions==='function'){const ga=grActions().filter(a=>a[2]==='bad');if(ga.length)add('grades','Оценки: '+ga.length+' '+plural(ga.length,'срочное дело','срочных дела','срочных дел')+' до РК2 — '+[...new Set(ga.map(a=>a[0]))].slice(0,3).join(', '),{c:'var(--bad)',go:'study',sb:'grades',tm:640})}
 add('food','Отметить еду: белок '+protein(k)+' из '+PROT+' г',{tm:1300,c:'var(--teal)',go:'food',done:protein(k)>=PROT});
 (st.tasks||[]).filter(x=>x.d===k).forEach(x=>add('u'+x.id,x.t,{c:'var(--ice)',user:x.id,tm:x.tm!=null?x.tm:1250}));
 const D=d.todo||{};R.forEach(x=>{if(x.done==null)x.done=!!D[x.id];x.time=typeof x.tm==='number'&&x.tm>300?hm(x.tm):''});
@@ -1237,6 +1249,50 @@ if(v==='hvclr'){if(!hvArm){hvArm=true;render();setTimeout(()=>{hvArm=false},4000
 if(v==='hvsug'){let s;try{s=JSON.parse(a.dataset.s)}catch(_){return}upd(L=>s.forEach((x,i)=>L.push({id:Date.now()+i,f:x[0],q:x[1],eaten:false})));toast('Добавлено в список');render();return}
 if(v==='hvate'){const S=haveSlots(k),s=S[+a.dataset.slot];if(!s)return;upd(L=>{s.items.forEach((it,i)=>{const r=L.find(x=>x.id===it.rid);if(!r)return;r.q=Math.round((r.q-it.q)*10)/10;L.push({id:Date.now()+i,f:it.f,q:it.q,eaten:true})});for(let i=L.length-1;i>=0;i--)if(!L[i].eaten&&!(L[i].q>0))L.splice(i,1)});
 buzz([10,30,14]);FX.pulse('K',.8);render();toast('Отмечено: белок +'+Math.round(s.p)+' г');return}});
+
+/* ================= оценки: журнал, допуск, что нужно на экзамене ================= */
+/* из журнала META (осень 2026), 26 ноября: [название, пропуски, % пропусков, 1Т, 1БӨЖ, 1ҚР, 1Р, 2Т, 2БӨЖ, 2ҚР, 2Р] (null — ещё нет) */
+const GR0=[['Казахский язык',0,0,82,70,96,81,90,90,null,72],['Английский язык',2,3,75,75,75,75,69,91,null,62],['История Казахстана',8,13,77,76,78,77,65,70,null,54],['Физкультура',15,33,89,0,45,54,45,0,null,23],
+['Физика',0,0,75,75,86,77,null,null,null,null],['Высшая математика',0,0,60,55,65,60,74,70,null,58],['Цифровые системы',0,0,0,0,90,90,0,0,95,95],['ООП',1,3,58,60,60,60,40,0,null,20],['Зелёные технологии в экономике',2,3,73,72,72,73,57,0,null,29]];
+const GCOL=['1Т','1 СРС','1 КР','РК1','2Т','2 СРС','2 КР','РК2'];
+const STIP=70,PASS=50;let grOpen=null;
+function GR(){if(!st.grades||!Array.isArray(st.grades.list))st.grades={upd:'2026-11-26',list:GR0.map((g,i)=>({id:i+1,n:g[0],abs:g[1],absP:g[2],v:g.slice(3),ex:null}))};return st.grades}
+function grCalc(g){const r1=g.v[3],r2=g.v[7],rd=r1!=null&&r2!=null?Math.round((r1+r2)/2):null;
+const exFor=t=>rd==null?null:Math.max(PASS,Math.ceil((t-.6*rd)/.4));
+const final=rd!=null&&g.ex!=null?Math.round(.6*rd+.4*g.ex):null;
+const need2=r1!=null?Math.max(0,100-r1):null;/* РК2 для допуска (РД ≥ 50) */
+const need2s=r1!=null?Math.max(0,Math.ceil(2*((STIP-.4*85)/.6)-r1)):null;/* РК2, чтобы на 70 хватило экзамена на 85 */
+const miss=[];if(g.v[5]===0)miss.push('СРС 2');if(g.v[1]===0)miss.push('СРС 1');if(g.v[4]===0)miss.push('2Т');
+let lvl='ok',why='';
+if(rd==null){lvl='bad';why='РК2 ещё нет — без него нет допуска'}
+else if(rd<PASS){lvl='bad';why='нет допуска: РД '+rd+', нужно 50'}
+else{const e=exFor(STIP);if(e>100){lvl='bad';why='даже 100 на экзамене не дадут 70'}else if(e>85){lvl='mid';why='для 70 нужно '+e+' на экзамене'}else why='для 70 хватит '+e+' на экзамене'}
+if(g.absP>=20&&lvl!=='bad'){lvl='mid'}
+return {r1,r2,rd,exFor,final,need2,need2s,miss,lvl,why}}
+function grActions(){const L=GR().list,A=[];L.forEach(g=>{const c=grCalc(g);
+if(c.miss.includes('СРС 2')&&(c.rd==null||c.rd<70))A.push([g.n,'сдать СРС 2 — сейчас за неё 0','bad']);
+if(c.r2==null&&c.r1!=null)A.push([g.n,'узнать у преподавателя оценки второй половины: РК2 пусто','bad']);
+else if(c.rd!=null&&c.rd<PASS)A.push([g.n,'поднять РК2 минимум до '+c.need2+' (сейчас '+c.r2+'), иначе нет допуска','bad']);
+else if(c.rd!=null&&c.exFor(STIP)>85)A.push([g.n,'поднять РК2 до '+Math.min(100,c.need2s)+' (сейчас '+c.r2+'), чтобы на 70 хватило экзамена на 85','mid']);
+if(g.absP>=20)A.push([g.n,'пропусков '+g.absP+'% — больше не пропускать, узнать лимит у эдвайзера','bad'])});
+return A.sort((a,b)=>(a[2]==='bad'?0:1)-(b[2]==='bad'?0:1))}
+PANE.study.grades=function(){const G=GR(),L=G.list,C=L.map(grCalc),bad=C.filter(c=>c.lvl==='bad').length,mid=C.filter(c=>c.lvl==='mid').length,A=grActions(),rk=dleft('2026-12-07');
+let h=card('<div class="row sp"><h3 style="margin:0">Оценки, осень 2026</h3><span class="mu">журнал на '+shortDate(G.upd)+'</span></div><div class="kgrid" style="margin:12px 0 4px"><div class="kv"><span>Без допуска сейчас</span><b style="color:'+(bad?'var(--bad)':'var(--teal)')+'">'+bad+' из '+L.length+'</b><small>нужно до сессии</small></div><div class="kv"><span>Под вопросом</span><b style="color:'+(mid?'#ffd59a':'var(--teal)')+'">'+mid+'</b><small>для стипендии тяжело</small></div></div><div class="note">РК2 закрывается '+(rk>0?'через '+rk+' '+plural(rk,'день','дня','дней')+', 7–11 декабря':'на этой неделе')+'. Итог = 60% рейтинга допуска + 40% экзамена. Для стипендии обычно нужен итог от 70 по каждому предмету — уточни у эдвайзера.</div>');
+if(A.length)h+=card('<h3>Что сделать до 7 декабря</h3>'+A.map(a=>'<div class="tip" style="--c:'+(a[2]==='bad'?'var(--bad)':'#ffd59a')+'"><i></i><span><b>'+esc(a[0])+':</b> '+esc(a[1])+'</span></div>').join(''),'warnc');
+h+=card(L.map((g,i)=>{const c=C[i],op=grOpen===g.id,col=c.lvl==='bad'?'var(--bad)':c.lvl==='mid'?'#ffd59a':'var(--teal)';
+return '<div class="gr"><button class="grh" data-a="gropen" data-id="'+g.id+'" aria-expanded="'+op+'"><i style="--c:'+col+'"></i><div class="t"><b>'+esc(g.n)+'</b><span>'+esc(c.why)+(g.abs?', пропусков '+g.abs+' ('+g.absP+'%)':'')+'</span></div><div class="grn"><span>РК1 <b>'+(c.r1??'—')+'</b></span><span>РК2 <b>'+(c.r2??'—')+'</b></span><span>РД <b style="color:'+col+'">'+(c.rd??'—')+'</b></span></div></button>'
++(op?'<div class="grd"><div class="grg">'+GCOL.map((n,j)=>'<label><span>'+n+'</span><input inputmode="numeric" data-grv="'+g.id+':'+j+'" value="'+(g.v[j]??'')+'" placeholder="—"></label>').join('')+'<label><span>Экзамен</span><input inputmode="numeric" data-grx="'+g.id+'" value="'+(g.ex??'')+'" placeholder="—"></label><label><span>Пропуски</span><input inputmode="numeric" data-gra="'+g.id+'" value="'+g.abs+'"></label></div>'
++(c.rd!=null?'<div class="note" style="margin-top:8px">Для сдачи нужно на экзамене от '+c.exFor(PASS)+', для итога 70 — '+(c.exFor(STIP)>100?'больше 100: сначала подними РК2':c.exFor(STIP))+', для 90 — '+(c.exFor(90)>100?'больше 100':c.exFor(90))+'.'+(c.final!=null?' Итог: <b>'+c.final+'</b>.':'')+'</div>':'<div class="note" style="margin-top:8px">Для допуска нужно РК2 от '+c.need2+'.</div>')+'</div>':'')+'</div>'}).join('')+'<div class="note" style="margin-top:10px">Нажми на предмет, чтобы обновить баллы. Когда пришлёшь новый журнал, я обновлю всё сам.</div>');
+return h};
+PANE.study.sched=function(){const wd=wdn(TODAY),names=['','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];let h=card('<h3>Пары по дням</h3>'+[1,2,3,4,5,6,7].map(d=>{const c=CLS[d];return '<div class="wkr'+(d===wd?' today':'')+'"><b style="width:auto"></b><div class="t">'+names[d]+'<span>'+(c?'выход '+hm(tmin(c[0])-COM)+', дома '+hm(tmin(c[1])+COM):'выходной')+'</span></div><span class="num">'+(c?c[0]+'–'+c[1]:'—')+'</span></div>'}).join('')+'<div class="note" style="margin-top:8px">Пары идут до 11 декабря и с 11 января по 23 апреля. На сессии и каникулах сайт сам переключает режим. Онлайн-пар нет.</div>');
+const next=ACAD.filter(a=>a[1]>=TODAY).slice(0,4);h+=card('<h3>Ближайшее по учёбе</h3>'+next.map(a=>'<div class="wkr"><b style="width:auto"></b><div class="t">'+esc(a[2])+'<span>'+shortDate(a[0])+(a[0]!==a[1]?' — '+shortDate(a[1]):'')+'</span></div><span class="tag'+(dleft(a[0])<=14?' mid':'')+'">'+(TODAY>=a[0]?'сейчас':'через '+dleft(a[0])+' '+plural(dleft(a[0]),'день','дня','дней'))+'</span></div>').join(''));
+return h+card('<div class="note">Предметы по дням появятся здесь, когда пришлёшь скриншоты расписания ещё раз.</div>')};
+app.addEventListener('click',e=>{const a=e.target.closest('[data-a="gropen"]');if(!a)return;const id=+a.dataset.id;grOpen=grOpen===id?null:id;buzz(6);render()});
+app.addEventListener('change',e=>{const t=e.target,d=t.dataset;if(!d)return;const G=GR();let ch=false;
+if(d.grv){const [id,j]=d.grv.split(':').map(Number),g=G.list.find(x=>x.id===id);if(g){const v=t.value.trim()===''?null:Math.max(0,Math.min(100,Math.round(num(t.value))));g.v[j]=isNaN(v)?null:v;ch=true}}
+if(d.grx){const g=G.list.find(x=>x.id===+d.grx);if(g){const v=t.value.trim()===''?null:Math.max(0,Math.min(100,Math.round(num(t.value))));g.ex=isNaN(v)?null:v;ch=true}}
+if(d.gra){const g=G.list.find(x=>x.id===+d.gra);if(g){const v=Math.max(0,Math.round(num(t.value)||0)),old=g.abs;g.absP=old?Math.round(g.absP*v/old):g.absP;g.abs=v;ch=true}}
+if(ch){G.upd=TODAY;save();render()}});
 
 /* ================= космос: одна WebGL-картина, четыре сцены ================= */
 const FX=(function(){
